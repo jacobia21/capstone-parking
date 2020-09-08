@@ -1,1 +1,1 @@
-web: flask db upgrade; gunicorn capstone-parking:app
+web: flask db upgrade; gunicorn main:app
