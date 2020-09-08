@@ -40,8 +40,8 @@ def forgot():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-            flash('Check your email for the instructions to reset your password')
-            return redirect(url_for('auth.login'))
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('auth.login'))
     return render_template('auth/forgot.html', title='Reset Password', form=form)
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
