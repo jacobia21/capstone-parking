@@ -9,6 +9,10 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or os.environ.get('CLEARDB_DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True,
+    "pool_recycle": 10,
+    "pool_size": 0}
+
     MAIL_SERVER=os.environ.get('MAIL_SERVER')
     MAIL_PORT=os.environ.get('MAIL_PORT')
     MAIL_USE_TLS=os.environ.get('MAIL_USE_TLS')
