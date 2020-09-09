@@ -1,1 +1,1 @@
-web: flask db migrate; gunicorn main:app
+web: flask db stamp head; gunicorn main:app
