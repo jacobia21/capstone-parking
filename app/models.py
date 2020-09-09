@@ -5,6 +5,7 @@ from app import login
 from time import time
 import jwt
 from flask import current_app
+from app.enums import CameraStatus
 
 @login.user_loader
 def load_user(id):
@@ -52,11 +53,19 @@ class ParkingSpace(db.Model):
 class Camera(db.Model):
     __tablename__ = 'camera'
     id = db.Column(db.Integer, primary_key=True)
+    location = db.Column(db.Integer)
+    status = db.Column(db.Enum(CameraStatus))
+    lot_id = db.Column(db.Integer, db.ForeignKey("lot.id"), nullable=False)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    first_name = db.Column(db.String(255), index=True)
+    last_name = db.Column(db.String(255), index = True)
+    middle_initial = db.Column(db.String(1), index= True)
     password_hash = db.Column(db.String(128))
+
+    __table_args__ = (db.UniqueConstraint('first_name', 'last_name', 'middle_initial'),)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)  
