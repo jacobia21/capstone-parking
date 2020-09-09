@@ -1,1 +1,1 @@
-web: flask db stamp head; gunicorn main:app
+web: flask db upgrade; gunicorn main:app
