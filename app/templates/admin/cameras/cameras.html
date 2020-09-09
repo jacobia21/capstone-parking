@@ -46,14 +46,13 @@
                                     </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <?php $index = 1 ?>
-                                    <?php foreach ($adminData as $admin) : ?>
+                                    {% for camera in cameras %}
                                         <tr>
-                                            <th scope="row"><?= $index ?></th>
-                                            <td><?= esc($camera->camera_id) ?></td>
-                                            <td><?= esc($camera->lot_name) ?></td>
-                                            <td><?= esc($camera->camera_location) ?></td>
-                                            <td><?= esc($camera->camera_status) ?></td>
+                                            <th scope="row">{{loop.index}}</th>
+                                            <td>{{camera.id}}</td>
+                                            <td>{{camera.lot_id}}</td>
+                                            <td>{{camera.location}}</td>
+                                            <td>{{camera.status.value}}</td>
                                             <td>
                                                 <a href="{{url_for('admin.edit_camera')}}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
@@ -63,8 +62,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                        <?php $index = $index + 1; ?>
-                                    <?php endforeach; ?>
+                                    {% endfor %}
                                 </tbody>
                             </table>
 

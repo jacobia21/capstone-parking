@@ -15,6 +15,9 @@ def zones():
 
 @bp.route('/lots/<zone_id>')
 def lots(zone_id):
-    lots = Lot.query.join(ParkingSpace, Lot.id==ParkingSpace.lot_id).add_columns(Lot.name,func.count(ParkingSpace.availability).label("available_spaces")).filter(ParkingSpace.zone_id==zone_id).filter(ParkingSpace.availability == "Available").group_by(Lot.id).all()
-    
+    #FIXME this does not get lots with 0 available spaces
+    lots = Lot.query.join(ParkingSpace, Lot.id==ParkingSpace.lot_id).add_columns(Lot.name,func.count(ParkingSpace.availability).label("available_spaces")).filter(ParkingSpace.zone_id==zone_id).filter(ParkingSpace.availability == "Available").group_by(Lot.id)
+
+    print(lots)
+    lots = lots.all()
     return render_template("main/lots.html", title='Lots', lots=lots)

@@ -32,12 +32,15 @@
                                     </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <?php $index = 1 ?>
-                                    <?php foreach ($adminData as $admin) : ?>
+                                   {% for lot in lots%}
                                         <tr>
-                                            <th scope="row"><?= $index ?></th>
-                                            <td><?= esc($lot->lot_name) ?></td>
-                                            <td><?= (str_replace(',', ', ', $lot->zones)) ?></td>
+                                            <th scope="row">{{loop.index}}</th>
+                                            <td>{{lot.name}}</td>
+                                            <td>
+                                                {% for zone in lot.zones.all()%}
+                                                    {{zone.name}},
+                                                {% endfor %}
+                                            </td>
                                             <td>
                                                 <a href="{{url_for('admin.edit_lot')}}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
@@ -47,8 +50,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                        <?php $index = $index + 1; ?>
-                                    <?php endforeach; ?>
+                                        {% endfor %}
                                 </tbody>
                             </table>
 

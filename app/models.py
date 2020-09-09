@@ -57,6 +57,9 @@ class Camera(db.Model):
     status = db.Column(db.Enum(CameraStatus))
     lot_id = db.Column(db.Integer, db.ForeignKey("lot.id"), nullable=False)
 
+    def __repr__(self):
+        return '<Camera {}>'.format(self.id)
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -68,12 +71,13 @@ class User(UserMixin, db.Model):
     __table_args__ = (db.UniqueConstraint('first_name', 'last_name', 'middle_initial'),)
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)  
+        return '<User {}>'.format(self.first_name)  
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        print (self.password_hash, password)
         return check_password_hash(self.password_hash, password)  
 
     def get_reset_password_token(self, expires_in=600):

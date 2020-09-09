@@ -47,15 +47,14 @@
                                     </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <?php $index = 1 ?>
-                                    <?php foreach ($adminData as $admin) : ?>
+                                    {% for admin in administrators%}
                                         <tr>
-                                            <th scope="row"><?= $index ?></th>
-                                            <td><?= esc($admin->first_name) ?></td>
-                                            <td><?= esc($admin->last_name) ?></td>
-                                            <td><?= esc($admin->middle_initial) ?></td>
-                                            <td><?= esc($admin->email) ?></td>
-                                            <td><?= esc($admin->type == "superadmin" ? "Super" : "Regular") ?></td>
+                                            <th scope="row">{{loop.index}}</th>
+                                            <td>{{admin.first_name}}</td>
+                                            <td>{{admin.last_name}}</td>
+                                            <td>{{admin.middle_initial}}</td>
+                                            <td>{{admin.email}}</td>
+                                            <td>Regular</td>
                                             <td>
                                                 <a href="{{url_for('admin.edit_administrator')}}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
@@ -65,8 +64,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                        <?php $index = $index + 1; ?>
-                                    <?php endforeach; ?>
+                                        {% endfor %}
                                 </tbody>
                             </table>
 

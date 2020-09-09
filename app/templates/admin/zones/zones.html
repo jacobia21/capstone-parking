@@ -32,12 +32,11 @@
                                     </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <?php $index = 1 ?>
-                                    <?php foreach ($adminData as $admin) : ?>
+                                   {% for zone in zones%}
                                         <tr>
-                                            <th scope="row"><?= $index ?></th>
-                                            <td><?= esc($zone->zone_name) ?></td>
-                                            <td><?= esc($zone->zone_color) ?></td>
+                                            <th scope="row">{{loop.index}}</th>
+                                            <td>{{zone.name}}</td>
+                                            <td>{{zone.color}}</td>
                                             <td>
                                                 <a href="{{url_for('admin.edit_zone')}}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
@@ -47,8 +46,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                        <?php $index = $index + 1; ?>
-                                    <?php endforeach; ?>
+                                        {% endfor %}
                                 </tbody>
                             </table>
 
