@@ -1,125 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <!-- Fav icon -->
+    <link
+      rel="icon"
+      href="{{url_for('static', filename='img/logo.png') }}"
+      type="image/png"
+    />
     
-    <!-- MDB icon -->
-    <link rel="icon" href="{{url_for('static', filename='img/logo.png') }}" type="image/png">
-    <!-- Font Awesome -->
-    <link rel=" stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-    <!-- Google Fonts Roboto -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="{{ url_for('static' , filename='css/bootstrap.min.css')}}">
     <!-- Material Design Bootstrap -->
-    <link rel="stylesheet" href="{{ url_for('static' , filename='css/mdb.min.css')}}">
-    <!-- Your custom styles (optional) -->
-    <link rel="stylesheet" href="{{ url_for('static' , filename='css/style.css')}}">
-    
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static' , filename='css/mdb.min.css')}}"
+    />
+
+    <!-- Bootstrap CSS-->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static' , filename='css/bootstrap.min.css')}}"
+    />
+    <!-- Font Awesome CSS-->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static' , filename='css/font-awesome.min.css')}}"
+    />
+    <!-- Fontastic Custom icon font-->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static' , filename='css/fontastic.css')}}"
+    />
+    <!-- theme stylesheet-->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static' , filename='css/admin.css')}}"
+      id="theme-stylesheet"
+    />
+    <!-- Custom stylesheet - for your changes-->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static' , filename='css/style.css')}}"
+      id="theme-stylesheet"
+    />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     {% if title %}
     <title>{{ title }} | Soar High Parking</title>
     {% else %}
     <title>Soar High Parking</title>
-    {% endif %}
+    {% endif %} {% block head %}{% endblock %}
   </head>
   <body class="maroon">
-
     <!-- Start your project here-->
     <!--Navbar-->
-    <header class="header">
-    <nav class="navbar">
-        <div class="container-fluid">
-
-            <div class="navbar-holder d-flex align-items-center justify-content-between">
-                <!-- Navbar Header-->
-
-                <div class="navbar-header">
-                    <!-- Navbar Brand --><a href="{{ url_for('main.index') }}"
-                        class="navbar-brand d-none d-inline-block">
-                        <img src="{{ url_for('static', filename='img/logo.png')}}" style = "max-height:60px" 
-                    alt="">
-
-                        <span><strong>Soar High Parking</strong>
-                          
-                        <!-- <div class="brand-text d-none d-md-inline-block d-lg-none"><strong>Soar High</strong></div> -->
-                    </a>
-                </div>
-                <!-- Collapse button -->
-            
-                <!-- Navbar Menu -->
-                <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
-                    <!-- Home -->
-                    <li class="nav-item"><a href="{{ url_for('main.index')}}" class="nav-link logout">
-                            <span class="d-none d-sm-inline">Home</span><i class="fa fa-home"></i></a></li>
-                    <!-- Find Parking    -->
-                    <li class="nav-item"><a href="{{ url_for('main.zones') }}" class="nav-link logout">
-                            <span class="d-none d-sm-inline">Find Parking</span><i class="fa fa-car "></i></a></li>
-                    <!-- Admin    -->
-                        
-                        <li class="nav-item"><a href="{{ url_for('admin.home') }}" class="nav-link logout">
-                            <span class="d-none d-sm-inline">Admin</span><i class="fa fa-user"></i></a></li>        
-                        {% if not current_user.is_anonymous %}
-                        <li class="nav-item"><a href="{{ url_for('auth.logout') }}" class="nav-link logout">
-                            <span class="d-none d-sm-inline">Logout</span><i class="fa fa-sign-out-alt"></i></a></li>        
-                        {% endif %}
-                </ul>
-            
-            </div>
+    
+        <div class="page">
+    {% include "partials/header.html" %}
+    {% include "partials/message_block.html" %}
+    <main style="padding-bottom: 100px">
+      {% block content %} {% endblock content %}
+    </main>
         </div>
-    </nav>
-</header>
-    
-        
-    
-    
-        <main style="padding-bottom: 100px;">
-                {% block content %} {% endblock content %}
-        </main>
-        <!-- Footer -->
-        <footer class=" fixed-bottom page-footer font-small stylish-color py-4 px-2">
-    
-            <!-- Footer Elements -->
-    
-    <div class="container">
-            <div class="row d-flex justify-content-between">
-                <div class="col-6">
-                    <ul class="list-unstyled d-flex mb-0 mt-2">
-                        <li>
-                            <a class="mx-3" role="button">About</a>
-                        </li>
-    
-                        <li>
-                            <a class="mx-3" role="button">Contact</a>
-                        </li>
-                    </ul>
-                    </div>
-                    <div class="col-6">
-                    <!-- Copyright -->
-                    <div class="footer-copyright text-right bg-transparent mt-2">© 2020.
-                        <a href=""> All rights
-                            reserved.</a>
-                    </div>
-                    </div>
-                    <!-- Copyright -->
-              
-    
-    
-            </div>
-            <!-- Footer Elements -->
-            </div>
-        </footer>
-        <!-- Footer -->
-    
-   <!-- jQuery -->
-   <script type="text/javascript" src="{{ url_for('static' , filename='js/jquery.min.js')}}"></script>
-   <!-- Bootstrap tooltips -->
-   <script type="text/javascript" src="{{ url_for('static' , filename='js/popper.min.js')}}"></script>
-   <!-- Bootstrap core JavaScript -->
-   <script type="text/javascript" src="{{ url_for('static' , filename='js/bootstrap.min.js')}}"></script>
-   <!-- MDB core JavaScript -->
-   <script type="text/javascript" src="{{ url_for('static' , filename='js/mdb.min.js')}}"></script>
+    {% include "partials/footer.html" %}
+
+    <!-- jQuery -->
+    <script
+      type="text/javascript"
+      src="{{ url_for('static' , filename='js/jquery.min.js')}}"
+    ></script>
+    <!-- Bootstrap tooltips -->
+    <script
+      type="text/javascript"
+      src="{{ url_for('static' , filename='js/popper.min.js')}}"
+    ></script>
+    <!-- Bootstrap core JavaScript -->
+    <script
+      type="text/javascript"
+      src="{{ url_for('static' , filename='js/bootstrap.min.js')}}"
+    ></script>
+    <!-- MDB core JavaScript -->
+    <script
+      type="text/javascript"
+      src="{{ url_for('static' , filename='js/mdb.min.js')}}"
+    ></script>
   </body>
 </html>

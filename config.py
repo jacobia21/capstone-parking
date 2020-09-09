@@ -20,3 +20,5 @@ class Config(object):
     MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD')
 
     ADMIN = os.environ.get('ADMIN')
+
+    DEBUG_TB_INTERCEPT_REDIRECTS = False

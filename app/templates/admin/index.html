@@ -1,0 +1,139 @@
+{% extends "admin_base.html" %} 
+
+{% block content %}
+    
+    <!-- Dashboard Counts Section-->
+    <section class="dashboard-counts no-padding-bottom">
+        <div class="container-fluid">
+            <div class="row bg-white has-shadow">
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon"><i class="fa fa-3x fa-user"></i> </div>
+                        <div class="title"><span>
+                                <div class="number"><strong><?= $totalAdmin ?></strong></div>Administrators
+                            </span>
+
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon"><i class="fa-3x fa fa-camera"></i></div>
+                        <div class="title"><span>
+                                <div class="number"><strong><?= esc($totalCameras) ?></strong></div>Cameras
+                            </span>
+
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon"><img src="{{url_for('static', filename='img/cone_icon.png')}}" alt="" style="width: 50px; height:50px; vertical-align:unset"></i></div>
+                        <div class="title"><span>
+                                <div class="number"><strong><?= esc($totalZones) ?></strong></div>Zones
+                            </span>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Item -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="item d-flex align-items-center">
+                        <div class="icon"><img src="{{url_for('static', filename='img/lot_icon.png')}}" alt="" style="width: 45px; height:45px; vertical-align:unset"></div>
+                        <div class="title"><span>
+                                <div class="number"><strong><?= esc($totalLots) ?></strong></div>Lots
+                            </span>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="updates">
+        <div class="container-fluid ">
+            <div class="row">
+                <!-- Recent Updates-->
+                <div class="col-lg-6">
+                    <div class="recent-updates card">
+                        <div class="card-header">
+                            <h3 class="h4">Recent Updates</h3>
+                        </div>
+                        <div class="card-body no-padding">
+                            <!-- Item-->
+                            <div class="item d-flex justify-content-between">
+                                <div class="info d-flex">
+                                    <div class="icon"><i class="icon-rss-feed"></i></div>
+                                    <div class="title">
+                                        <h5>New Camera</h5>
+                                        <p>Camera 232145029 was added to the Mary Townes Lot.</p>
+                                    </div>
+                                </div>
+                                <div class="date text-right"><strong>24</strong><span>May</span></div>
+                            </div>
+                            <!-- Item-->
+                            <div class="item d-flex justify-content-between">
+                                <div class="info d-flex">
+                                    <div class="icon"><i class="icon-rss-feed"></i></div>
+                                    <div class="title">
+                                        <h5>Regular Administrator Added</h5>
+                                        <p>Megan Anderson was added as a Regular Administrator</p>
+                                    </div>
+                                </div>
+                                <div class="date text-right"><strong>12</strong><span>Feb</span></div>
+                            </div>
+                            <!-- Item        -->
+                            <div class="item d-flex justify-content-between">
+                                <div class="info d-flex">
+                                    <div class="icon"><i class="icon-rss-feed"></i></div>
+                                    <div class="title">
+                                        <h5>New Zone</h5>
+                                        <p>Residential (Blue) Zone was added to the system.</p>
+                                    </div>
+                                </div>
+                                <div class="date text-right"><strong>8</strong><span>Jan</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center">
+                            <h3 class="h4">Quick Links</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped  table-hover text-center">
+                                    <tbody>
+                                        <tr>
+                                            <td><a href="<?php echo route_to("admin_cameras") . "?quicklink=true" ?>">Add
+                                                    Camera</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="<?php echo route_to("admin_log") ?>">System
+                                                    Log</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="<?php echo route_to("admin_lots") . "?quicklink=true" ?>">Add
+                                                    Lot</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

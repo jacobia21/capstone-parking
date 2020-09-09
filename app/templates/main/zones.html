@@ -1,6 +1,4 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container my-5 py-5 z-depth-5 bg-light animated fadeInRight">
   <section class="px-md-5 mx-md-5 text-center dark-grey-text">
     <!--Grid row-->
@@ -14,23 +12,24 @@
           be subject to ticketing and potential towing of your vehicle. If you
           have not purchased a permit, select None.
         </p>
-        <div class="btn-group">
-          <button
-            type="button"
-            class="btn stylish-color text-white dropdown-toggle"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
+        <a
+          class="btn stylish-color text-white btn-md dropdown-toggle mr-4"
+          type="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Parking Zones
+      </a>
+
+        <div class="dropdown-menu">
+          {% for zone in zones %}
+          <a
+            class="dropdown-item"
+            href="{{ url_for('main.lots', zone_id=zone.id) }}"
+            >{{zone.name}}</a
           >
-            Parking Zones
-          </button>
-          <div class="dropdown-menu">
-            {% for zone in zones %}
-            <a href="{{ url_for('main.lots', zone_id=zone.id) }}">
-              <button class="dropdown-item" type="button">{{zone.name}}</button>
-            </a>
-            {% endfor %}
-          </div>
+          {% endfor %}
         </div>
       </div>
       <!--Grid column-->
