@@ -5,7 +5,7 @@ from app import login
 from time import time
 import jwt
 from flask import current_app
-from app.enums import CameraStatus
+from app.enums import CameraStatus, SpaceAvailability
 
 @login.user_loader
 def load_user(id):
@@ -17,7 +17,7 @@ class LotZone(db.Model):
     zone_id = db.Column('zone_id', db.Integer, db.ForeignKey('zone.id'), primary_key=True)
 
     def __repr__(self):
-        return '<LotZone {}>'.format(self.id)
+        return '<LotZone: Lot {}, Zone{}>'.format(self.lot_id, self.zone_id)
 
    
 class Zone(db.Model):
@@ -42,13 +42,17 @@ class Lot(db.Model):
 class ParkingSpace(db.Model):
     __tablename__ = 'space'
     id = db.Column(db.Integer, primary_key=True)
-    availability = db.Column(db.String(100))
-    lot_id = db.Column(db.Integer, db.ForeignKey('lotzone.lot_id'), nullable=False)
-    zone_id = db.Column(db.Integer, db.ForeignKey('lotzone.zone_id'), nullable=False)
+    availability = db.Column(db.Enum(SpaceAvailability))
+    lot_id = db.Column(db.Integer, db.ForeignKey('lot.id'), nullable=False)
+    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'), nullable=False)
     camera_id = db.Column(db.Integer, db.ForeignKey('camera.id'), nullable=False)
 
+    lot = db.relationship('Lot')
+    zone = db.relationship('Zone')
+    camera = db.relationship('Camera')
+
     def __repr__(self):
-        return '<Lot {}>'.format(self.id)
+        return '<Space {}>'.format(self.id)
 
 class Camera(db.Model):
     __tablename__ = 'camera'

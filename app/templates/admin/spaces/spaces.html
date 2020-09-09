@@ -43,15 +43,14 @@
                                     </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <?php $index = 1 ?>
-                                    <?php foreach ($adminData as $admin) : ?>
+                                    {% for space in spaces %}
                                         <tr>
-                                            <th scope="row"><?= $index ?></th>
-                                            <td><?= esc($space['space_id']) ?></td>
-                                            <td><?= esc($space['space_availability']) ?></td>
-                                            <td><?= esc($space['zone_name']) ?></td>
-                                            <td><?= esc($space['lot_name']) ?></td>
-                                            <td><?= esc($space['camera_id']) ?></td>
+                                            <th scope="row">{{loop.index}}</th>
+                                            <td>{{space.id}}</td>
+                                            <td>{{space.availability.value}}</td>
+                                            <td>{{space.zone.name}}</td>
+                                            <td>{{space.lot.name}}</td>
+                                            <td>{{space.camera.id}}</td>
                                             <td>
                                                 <a href="{{url_for('admin.edit_space')}}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
@@ -61,8 +60,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                        <?php $index = $index + 1; ?>
-                                    <?php endforeach; ?>
+                                       {% endfor %}
                                 </tbody>
                             </table>
 

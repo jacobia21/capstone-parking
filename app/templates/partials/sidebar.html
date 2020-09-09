@@ -5,7 +5,7 @@
         <div class="avatar"><img src="{{url_for('static', filename='img/avatar.jpg') }}" alt=" ..." class="img-fluid rounded-circle"></div>
         <div class="title">
             <a href="">
-                <h1 class="h4">User Name</h1>
+                <h1 class="h4">{{current_user.first_name}} {{current_user.last_name}}</h1>
             </a>
             <p>Administrator</p>
         </div>
