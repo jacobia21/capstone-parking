@@ -1,0 +1,11 @@
+Dear {{ user.username }},
+
+To set your password click on the following link:
+
+{{ url_for('auth.activate_account', token=token, _external=True) }}
+
+If you have not requested an account reset simply ignore this message.
+
+Sincerely,
+
+The Soar High Parking Team

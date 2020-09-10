@@ -1,6 +1,6 @@
 from app.auth import bp
 from flask import render_template, flash, redirect, url_for
-from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm
+from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm, ActivateUserForm
 from flask_login import current_user, login_user, logout_user
 from app.models import User
 from flask import request
@@ -59,3 +59,19 @@ def reset_password(token):
         flash('Your password has been reset.')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
+
+@bp.route('/activate_account/<token>', methods=['GET', 'POST'])
+def activate_account(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    user = User.verify_activation_token(token)
+    print(user)
+    if not user:
+        return redirect(url_for('main.index'))
+    form = ActivateUserForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('You have successfully activated your account!')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/activate_account.html', form=form)

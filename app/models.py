@@ -119,7 +119,6 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(255), index = True)
     middle_initial = db.Column(db.String(1), index= True)
     password_hash = db.Column(db.String(128))
-    activate_hash = db.Column(db.String(128))
     group_id = db.Column(db.Integer, db.ForeignKey('admin_group.id'))
     
     group = db.relationship('AdminGroup', backref=db.backref('administrators', lazy='dynamic'))
@@ -132,6 +131,7 @@ class User(UserMixin, db.Model):
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+
 
     def check_password(self, password):
         print (self.password_hash, password)
@@ -147,6 +147,20 @@ class User(UserMixin, db.Model):
         try:
             id = jwt.decode(token, current_app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return User.query.get(id)
+
+    def get_activation_token(self, expires_in=600):
+        return jwt.encode(
+            {'activation': self.id, 'exp': time() + expires_in},
+            current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+    @staticmethod
+    def verify_activation_token(token):
+        try:
+            id = jwt.decode(token, current_app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['activation']
         except:
             return
         return User.query.get(id)

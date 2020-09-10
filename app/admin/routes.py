@@ -3,6 +3,7 @@ from flask import render_template, url_for, flash, redirect
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog
 from app.admin.forms import AddAdminForm, EditAdminForm
+from app.email import send_activation_email
 from app import db
 
 @bp.route('/home')
@@ -29,9 +30,14 @@ def add_administrator():
         try:
             user = User( email=form.email.data, first_name = form.first_name.data,last_name = form.last_name.data,middle_initial = form.middle_initial.data)
             #TODO send activiation message to the new user
+
+            db.session.add(user)
+            db.session.commit()
+            send_activation_email(user)
             flash("New Admin Added")
             return redirect(url_for('admin.administrators'))
-        except:
+        except Exception as err:
+            print(err)
             flash("Something went wrong! Try again later")
             return render_template("admin/administrators/add_administrator.html", title='Add Administrator', form=form, error=1)
     return render_template("admin/administrators/add_administrator.html", title='Add Administrator', form=form)
