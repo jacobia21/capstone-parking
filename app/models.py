@@ -57,6 +57,21 @@ class ParkingSpace(db.Model):
 
     def __repr__(self):
         return '<Space {}>'.format(self.id)
+        
+class SpaceDimensions(db.Model):
+    __tablename__ = 'space_dimensions'
+    id = db.Column(db.Integer, primary_key=True)
+    start_x = db.Column(db.Integer)
+    start_y = db.Column(db.Integer)
+    end_x = db.Column(db.Integer)
+    end_y = db.Column(db.Integer)
+    space_id = db.Column(db.Integer, db.ForeignKey('space.id'), nullable=False)
+
+    space = db.relationship('Space', backref=db.backref('dimensions', lazy='dynamic'))
+
+
+    def __repr__(self):
+        return '<Space {}>'.format(self.id)
 
 class Camera(db.Model):
     __tablename__ = 'camera'
@@ -67,6 +82,18 @@ class Camera(db.Model):
 
     def __repr__(self):
         return '<Camera {}>'.format(self.id)
+
+class ControlPoints(db.Model):
+    __tablename__ = 'control_points'
+    id = db.Column(db.Integer, primary_key=True)
+    start_x = db.Column(db.Integer)
+    start_y = db.Column(db.Integer)
+    end_x = db.Column(db.Integer)
+    end_y = db.Column(db.Integer)
+    camera_id = db.Column(db.Integer, db.ForeignKey('camera.id'), nullable=False)
+
+    camera = db.relationship('Camera', backref=db.backref('control', lazy='dynamic'))
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
