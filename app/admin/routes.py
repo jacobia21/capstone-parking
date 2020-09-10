@@ -1,7 +1,9 @@
 from app.admin import bp
-from flask import render_template, url_for
+from flask import render_template, url_for, flash, redirect
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot
+from app.admin.forms import AddAdminForm, EditAdminForm
+from app import db
 
 @bp.route('/home')
 @login_required
@@ -21,18 +23,54 @@ def administrators():
 @bp.route('/administrators/add', methods=['GET', 'POST'])
 @login_required
 def add_administrator():
-    return render_template("admin/administrators/administrators.html", title='Administrators')
+    form = AddAdminForm()
+    if form.validate_on_submit():
+        # form.validate_name(form.first_name.data, form.last_name.data,form.middle_initial.data)
+        try:
+            user = User( email=form.email.data, first_name = form.first_name.data,last_name = form.last_name.data,middle_initial = form.middle_initial.data)
+            #TODO send activiation message to the new user
+            flash("New Admin Added")
+            return redirect(url_for('admin.administrators'))
+        except:
+            flash("Something went wrong! Try again later")
+            return render_template("admin/administrators/add_administrator.html", title='Add Administrator', form=form, error=1)
+    return render_template("admin/administrators/add_administrator.html", title='Add Administrator', form=form)
 
-@bp.route('/administrators/edit',  methods=['GET', 'POST'])
+@bp.route('/administrators/edit/<user_id>',  methods=['GET', 'POST'])
 @login_required
-def edit_administrator():
-    return render_template("admin/administrators/administrators.html", title='Administrators')
+def edit_administrator(user_id):
+    form = EditAdminForm()
+    if form.validate_on_submit():
+        try:
+            admin = User.query.get(user_id)
+            admin.email = form.email.data
+            admin.first_name = form.first_name.data
+            admin.last_name = form.last_name.data
+            admin.middle_initial = form.middle_initial.data
+            db.session.commit()
+        except Exception as error:
+            print(error)
+            flash("Something went wrong! Try again later")
+            return render_template("admin/administrators/edit_administrator.html", title='Administrators', form=form, admin=User.query.get(user_id), error=1)
+
+        return redirect(url_for('admin.administrators'))
+    
+    admin = User.query.get(user_id)
+    return render_template("admin/administrators/edit_administrator.html", title='Administrators', form=form, admin=admin)
 
 
-@bp.route('/administrators/delete',  methods=['POST'])
+@bp.route('/administrators/delete/<user_id>',  methods=['POST'])
 @login_required
-def delete_administrator():
-    return render_template("admin/administrators/administrators.html", title='Administrators')
+def delete_administrator(user_id):
+    try:
+        admin = User.query.get(user_id)
+        print(admin.id)
+        flash("Administrator removed")
+    except Exception as error: 
+        print(error)
+        flash("Something went wrong! Try again later")
+        return redirect(url_for('admin.administrators', error=1))
+    return redirect(url_for('admin.administrators'))
 
 @bp.route('/cameras')
 @login_required

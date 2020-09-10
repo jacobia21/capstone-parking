@@ -39,6 +39,10 @@ class Lot(db.Model):
     def __repr__(self):
         return '<Lot {}>'.format(self.id)
 
+    def get_available_spaces(self):
+     return self.spaces.filter(ParkingSpace.availability == SpaceAvailability.AVAILABLE).count()
+
+
 class ParkingSpace(db.Model):
     __tablename__ = 'space'
     id = db.Column(db.Integer, primary_key=True)
@@ -47,9 +51,9 @@ class ParkingSpace(db.Model):
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'), nullable=False)
     camera_id = db.Column(db.Integer, db.ForeignKey('camera.id'), nullable=False)
 
-    lot = db.relationship('Lot')
-    zone = db.relationship('Zone')
-    camera = db.relationship('Camera')
+    lot = db.relationship('Lot', backref=db.backref('spaces', lazy='dynamic'))
+    zone = db.relationship('Zone', backref=db.backref('spaces', lazy='dynamic'))
+    camera = db.relationship('Camera', backref=db.backref('spaces', lazy='dynamic'))
 
     def __repr__(self):
         return '<Space {}>'.format(self.id)
