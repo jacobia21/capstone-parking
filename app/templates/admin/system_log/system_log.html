@@ -49,25 +49,25 @@
                                     </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <?php $index = 1 ?>
-                                    <?php foreach ($adminData as $admin) : ?>
+                                    {% for log in logs%}
                                         <tr>
                                             <tr>
-                                                <th scope="row"><?= $index ?></th>
-                                                <td><?= esc($log->log_type) ?></td>
-                                                <td><?= esc($log->log_message) ?></td>
-                                                <td><?= esc($log->status) ?></td>
-                                                <td><?= esc($log->created_at) ?></td>
+                                                <th scope="row">{{loop.index}}</th>
+                                                <td>{{log.type.value}}</td>
+                                                <td>{{log.message}}</td>
+                                                <td>{{log.status.value}}</td>
+                                                <td>{{log.created_at}}</td>
                                                 
-                                               
-                                                    <td><?= $log->updated_at ?></td>
+                                                {% if log.status == "RESOLVED"%}
+                                                    <td>{{log.updated_at}}</td>
+                                                {% else %}
                                                     <td>
-                                                        <input type="checkbox" id="input-1" name="<?= $log->log_id ?>" class="checkbox-template check">
+                                                        <input type="checkbox" id="input-1" name="{{log.id}}" class="checkbox-template check">
                                                     </td>
-                                                <?php endif ?>
+                                                {% endif%}
                                             </tr>
-                                        <?php $index = $index + 1; ?>
-                                    <?php endforeach; ?>
+                                        
+                                    {% endfor %}
                                 </tbody>
                             </table>
 

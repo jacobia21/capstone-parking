@@ -1,7 +1,7 @@
 from app.admin import bp
 from flask import render_template, url_for, flash, redirect
 from flask_login import login_required
-from app.models import User, Zone, Camera, ParkingSpace, Lot
+from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog
 from app.admin.forms import AddAdminForm, EditAdminForm
 from app import db
 
@@ -63,7 +63,6 @@ def edit_administrator(user_id):
 @login_required
 def delete_administrator(user_id):
     try:
-        # FIXME fix delete functionality
         admin = User.query.get(user_id)
         db.session.delete(admin)
         db.session.commit()
@@ -167,4 +166,5 @@ def delete_space():
 @bp.route('/system_log')
 @login_required
 def system_log():
-    return render_template("admin/system_log/system_log.html", title='System Log')
+    logs = SystemLog.query.all()
+    return render_template("admin/system_log/system_log.html", title='System Log', logs=logs)
