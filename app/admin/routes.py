@@ -63,8 +63,10 @@ def edit_administrator(user_id):
 @login_required
 def delete_administrator(user_id):
     try:
+        # FIXME fix delete functionality
         admin = User.query.get(user_id)
-        print(admin.id)
+        db.session.delete(admin)
+        db.session.commit()
         flash("Administrator removed")
     except Exception as error: 
         print(error)
