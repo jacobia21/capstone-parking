@@ -38,7 +38,7 @@
                                             <td>{{zone.name}}</td>
                                             <td>{{zone.color}}</td>
                                             <td>
-                                                <a href="{{url_for('admin.edit_zone')}}">
+                                                <a href="{{url_for('admin.edit_zone', zone_id=zone.id)}}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
                                                 </a>
                                                 <a href="#" data-toggle="modal" data-target="#deleteModal">
