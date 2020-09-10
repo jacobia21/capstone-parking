@@ -5,7 +5,8 @@ from app import login
 from time import time
 import jwt
 from flask import current_app
-from app.enums import CameraStatus, SpaceAvailability
+from app.enums import CameraStatus, SpaceAvailability, LogStatus, LogType
+from datetime import datetime
 
 @login.user_loader
 def load_user(id):
@@ -67,7 +68,7 @@ class SpaceDimensions(db.Model):
     end_y = db.Column(db.Integer)
     space_id = db.Column(db.Integer, db.ForeignKey('space.id'), nullable=False)
 
-    space = db.relationship('Space', backref=db.backref('dimensions', lazy='dynamic'))
+    space = db.relationship('ParkingSpace', backref=db.backref('dimensions', lazy='dynamic'))
 
 
     def __repr__(self):
@@ -94,6 +95,22 @@ class ControlPoints(db.Model):
 
     camera = db.relationship('Camera', backref=db.backref('control', lazy='dynamic'))
 
+class AdminGroup(db.Model):
+    __tablename__ = 'admin_group'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    description = db.Column(db.String(255))
+
+class SystemLog(db.Model):
+    __tablename__ = 'logs'
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(255))
+    status = db.Column(db.Enum(LogStatus))
+    type = db.Column(db.Enum(LogType))
+    created_at = db.Column(db.DateTime, nullable=False,
+        default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -102,6 +119,11 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(255), index = True)
     middle_initial = db.Column(db.String(1), index= True)
     password_hash = db.Column(db.String(128))
+    activate_hash = db.Column(db.String(128))
+    group_id = db.Column(db.Integer, db.ForeignKey('admin_group.id'))
+    
+    group = db.relationship('AdminGroup', backref=db.backref('administrators', lazy='dynamic'))
+
 
     __table_args__ = (db.UniqueConstraint('first_name', 'last_name', 'middle_initial'),)
 
