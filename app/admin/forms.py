@@ -55,11 +55,11 @@ class EditZoneForm(FlaskForm):
     submit = SubmitField('Edit Zone')
     
     def validate_name(self, name):
-        zone = Zone.query.filter_by(name=name.data).filter(id != self.zone_id).first()
+        zone = Zone.query.filter_by(name=name.data).filter(Zone.id != self.zone_id.data).first()
         if zone is not None:
             raise ValidationError('Please use a unique zone name.')
 
     def validate_color(self, color):
-        color = Zone.query.filter_by(color=color.data).filter(id != self.zone_id).first()
+        color = Zone.query.filter_by(color=color.data).filter(Zone.id != self.zone_id.data).first()
         if color is not None:
             raise ValidationError('Please use a unique zone color.')

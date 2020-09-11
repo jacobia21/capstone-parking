@@ -9,14 +9,14 @@
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.name.label }} 
-                {{ form.name(size=32, class_="form-control") }}
+                {{ form.name(size=32, class_="form-control", value=zone.name) }}
                 {% for error in form.name.errors %}
                   <span style="color: red">[{{ error }}]</span>
                 {% endfor %}
               </div>
               <div class="form-group">
                 {{ form.color.label }} 
-                {{ form.color(size=32, class_="form-control") }}
+                {{ form.color(size=32, class_="form-control", value=zone.color) }}
                 {% for error in form.color.errors %}
                   <span style="color: red">[{{ error }}]</span>
                 {% endfor %}

@@ -147,18 +147,27 @@ def edit_zone(zone_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return redirect("admin/zones/edit_zones.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id), error=1)
+            return render_template("admin/zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id),error=1)
 
-        return render_template(url_for('admin.zones'))
+        return redirect(url_for('admin.zones'))
     
     zone = Zone.query.get(zone_id)
-    return render_template("admin/zones/edit_zone.html", title='Edit Zone', form=form)
+    return render_template("admin/zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id))
 
 
-@bp.route('/zones/delete',  methods=['POST'])
+@bp.route('/zones/delete/<zone_id>',  methods=['POST'])
 @login_required
-def delete_zone():
-    return render_template("admin/zones/zones.html", title='Zones')
+def delete_zone(zone_id):
+    try:
+        zone = Zone.query.get(zone_id)
+        db.session.delete(zone)
+        db.session.commit()
+        flash("Zone removed")
+    except Exception as error: 
+        print(error)
+        flash("Something went wrong! Try again later")
+        return render_template("admin/zones/zones.html", title='Zones', zones=Zone.query.all(), error=1)
+    return redirect(url_for('admin.zones'))
 
 
 @bp.route('/lots')

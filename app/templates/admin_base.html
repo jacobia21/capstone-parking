@@ -86,7 +86,11 @@
     <script src="{{ url_for('static' , filename='js/bootstrap.min.js')}}"></script>
     <script src="{{ url_for('static' , filename='js/jquery.cookie.js')}}"></script>
     <script src="{{ url_for('static' , filename='js/jquery.validate.min.js')}}"></script>
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
     <!-- Main File-->
     <script src="{{ url_for('static' , filename='js/front.js')}}"></script>
+   {% block script %}{% endblock script%}
   </body>
 </html>
