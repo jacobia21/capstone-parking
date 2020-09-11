@@ -12,26 +12,26 @@
     </div>
 
     <ul class="list-unstyled">
-        <li class=""><a href="{{url_for('admin.home')}}"> <i class="fa fa-tachometer"></i>
+        <li class="{{'active' if active_page == 'home' }}"><a href="{{url_for('admin.home')}}"> <i class="fa fa-tachometer"></i>
                 Command Center </a>
         </li>
        
-        <li class=""><a href="{{url_for('admin.administrators')}}"> <i class="fa fa-users"></i>
+        <li class="{{'active' if active_page == 'admin' }}"><a href="{{url_for('admin.administrators')}}"> <i class="fa fa-users"></i>
            Administrators </a>
     </li>
         
-        <li class=""><a href="{{url_for('admin.cameras')}}">
+        <li class="{{'active' if active_page == 'camera' }}"><a href="{{url_for('admin.cameras')}}">
                 <i class="fa fa-camera " aria-hidden="true"></i>Cameras </a></li>
-        <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-car " aria-hidden="true"></i>
+        <li class="{{'active' if active_page is in ['zone','lot','space'] }}"><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-car " aria-hidden="true"></i>
                 Parking</a>
-            <ul id="exampledropdownDropdown" class="collapse list-unstyled">
+            <ul id="exampledropdownDropdown" class="collapse list-unstyled {{'show' if active_page is in ['zone','lot','space'] }}">
 
-                <li class=""><a href="{{url_for('admin.zones')}}">Zones</a></li>
-                <li class=""><a href="{{url_for('admin.lots')}}">Lots</a></li>
-                <li class=""><a href="{{url_for('admin.spaces')}}">Spaces</a></li>
+                <li class="{{'active' if active_page == 'zone' }}"><a href="{{url_for('admin.zones')}}">Zones</a></li>
+                <li class="{{'active' if active_page == 'lot' }}"><a href="{{url_for('admin.lots')}}">Lots</a></li>
+                <li class="{{'active' if active_page == 'space' }}"><a href="{{url_for('admin.spaces')}}">Spaces</a></li>
 
             </ul>
         </li>
-        <li class=""><a href="{{url_for('admin.system_log')}}"> <i class="fa fa-list " aria-hidden="true"></i>
+        <li class="{{'active' if active_page == 'log' }}"><a href="{{url_for('admin.system_log')}}"> <i class="fa fa-list " aria-hidden="true"></i>
                 </i>System Log </a></li>
 </nav>
