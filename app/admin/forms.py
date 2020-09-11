@@ -1,13 +1,23 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, SelectMultipleField, widgets
 from wtforms.validators import DataRequired,Email, ValidationError
-from app.models import User, Zone
+from app.models import User, Zone, Lot
 
 
 def validate_name(form,_):
         user = User.query.filter_by(first_name=form.first_name.data).filter_by(last_name=form.last_name.data).filter_by(middle_initial= form.middle_initial.data).first()
         if user is not None:
             raise ValidationError('This person is already an administrator.')
+
+class MultiCheckboxField(SelectMultipleField):
+    """
+    A multiple-select, except displays a list of checkboxes.
+
+    Iterating the field will produce subfields, allowing custom rendering of
+    the enclosed checkbox fields.
+    """
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
 
 class AddAdminForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -63,3 +73,34 @@ class EditZoneForm(FlaskForm):
         color = Zone.query.filter_by(color=color.data).filter(Zone.id != self.zone_id.data).first()
         if color is not None:
             raise ValidationError('Please use a unique zone color.')
+
+class AddLotForm(FlaskForm):
+    name = StringField('Lot Name', validators=[DataRequired()])
+    zones = MultiCheckboxField(u'Allowed Zones', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Add Lot')
+    
+    def validate_name(self, name):
+        lot = Lot.query.filter_by(name=name.data).first()
+        if lot is not None:
+            raise ValidationError('Please use a unique lot name.')
+
+
+class AddLotForm(FlaskForm):
+    name = StringField('Lot Name', validators=[DataRequired()])
+    zones = MultiCheckboxField(u'Allowed Zones', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Add Lot')
+    
+    def validate_name(self, name):
+        lot = Lot.query.filter_by(name=name.data).first()
+        if lot is not None:
+            raise ValidationError('Please use a unique zone name.')
+
+class EditLotForm(FlaskForm):
+    name = StringField('Lot Name', validators=[DataRequired()])
+    zones = MultiCheckboxField(u'Allowed Zones', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Add Lot')
+    
+    def validate_name(self, name):
+        lot = Lot.query.filter_by(name=name.data).first()
+        if lot is not None:
+            raise ValidationError('Please use a unique zone name.')

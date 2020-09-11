@@ -2,7 +2,7 @@ from app.admin import bp
 from flask import render_template, url_for, flash, redirect
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
-from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm
+from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm
 from app.email import send_activation_email
 from app import db
 
@@ -179,18 +179,65 @@ def lots():
 @bp.route('/lots/add', methods=['GET', 'POST'])
 @login_required
 def add_lot():
-    return render_template("admin/lots/lots.html", title='Lots')
+    form = AddLotForm()
+    form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('name')]
+    form.zones.render_kw={'style': 'height: fit-content; list-style: none;'}
+    if form.validate_on_submit():
+        # try:
+        lot = Lot(name=form.name.data)
+        for z in form.zones.data:
+            zone = Zone.query.get(z)
+            lot.zones.append(zone)
 
-@bp.route('/lots/edit',  methods=['GET', 'POST'])
+        db.session.add(lot)
+        db.session.commit()
+        flash("New Lot Added")
+        return redirect(url_for('admin.lots'))
+        # except Exception as err:
+        #     print(err)
+        #     flash("Something went wrong! Try again later")
+        #     return render_template("admin/lots/add_lot.html", title='Add Lot', form=form, error=1)
+    return render_template("admin/lots/add_lot.html", title='Lots', form=form)
+
+@bp.route('/lots/edit/<lot_id>',  methods=['GET', 'POST'])
 @login_required
-def edit_lot():
-    return render_template("admin/lots/lots.html", title='Lots')
+def edit_lot(lot_id):
+    lot = Lot.query.get(lot_id)
+    form = EditLotForm(lot_id=lot_id)
+    form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('id')]
+    form.zones.render_kw={'style': 'height: fit-content; list-style: none;'}
+    form.zones.data = [zone.id for zone in lot.zones]
+    
+    if form.validate_on_submit():
+        try:
+            lot = Lot.query.get(lot_id)
+            lot.name = form.name.data
+            lot.color = form.color.data
+            db.session.commit()
+            flash('Zone updated successfully!')
+        except Exception as error:
+            print(error)
+            flash("Something went wrong! Try again later")
+            return render_template("admin/lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id),error=1)
+
+        return redirect(url_for('admin.lots'))
+    
+    return render_template("admin/lots/edit_lot.html", title='Lots',form=form, lot=Lot.query.get(lot_id))
 
 
-@bp.route('/lots/delete',  methods=['POST'])
+@bp.route('/lots/delete/<lot_id>',  methods=['POST'])
 @login_required
-def delete_lot():
-    return render_template("admin/lots/lots.html", title='Lots')
+def delete_lot(lot_id):
+    try:
+        lot = Lot.query.get(lot_id)
+        db.session.delete(lot)
+        db.session.commit()
+        flash("Lot removed")
+    except Exception as error: 
+        print(error)
+        flash("Something went wrong! Try again later")
+        return render_template("admin/lots/lots.html", title='Lots', lots=Lot.query.all(), error=1)
+    return redirect(url_for('admin.lots'))
 
 @bp.route('/spaces')
 @login_required

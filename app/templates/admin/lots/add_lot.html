@@ -1,0 +1,37 @@
+{% extends 'admin_base.html'%} {% block content %}
+<section>
+<div class="container-fluid">
+  <div class="row justify-content-md-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.name.label }} 
+                {{ form.name(size=32, class_="form-control") }}
+                {% for error in form.name.errors %}
+                  <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+              <div class="">
+                {{form.zones.label}}
+                {% for error in form.zones.errors %}
+                <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+                {{ form.zones(size=32) }} 
+                
+                
+              </div>
+            <div class="d-flex">
+              {{ form.submit(class="btn btn-primary text-white btn-md btn-block
+              ml-auto") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{% endblock %}
