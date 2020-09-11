@@ -17,3 +17,7 @@ class LogType(enum.Enum):
     WEBSITE = "WEBSITE"
     DATBASE = "DATABASE"
     HARDWARE = "HARDWARE"
+
+class Groups(enum.Enum):
+    REGULAR = "Regular"
+    SUPER = "Super"

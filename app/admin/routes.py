@@ -5,6 +5,8 @@ from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGr
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm
 from app.email import send_activation_email
 from app import db
+from app.enums import Groups
+from flask_login import current_user
 
 @bp.route('/home')
 @login_required
@@ -18,12 +20,16 @@ def home():
 @bp.route('/administrators')
 @login_required
 def administrators():
+    if current_user.group.name != Groups.SUPER.value:
+        return redirect('/')
     administrators = User.query.all()
     return render_template("admin/administrators/administrators.html", title='Administrators', administrators=administrators)
 
 @bp.route('/administrators/add', methods=['GET', 'POST'])
 @login_required
 def add_administrator():
+    if current_user.group.name != Groups.SUPER.value:
+        return redirect('/')
     form = AddAdminForm()
     form.group.choices = [(g.id, g.name) for g in AdminGroup.query.order_by('name')]
 
@@ -46,6 +52,8 @@ def add_administrator():
 @bp.route('/administrators/edit/<user_id>',  methods=['GET', 'POST'])
 @login_required
 def edit_administrator(user_id):
+    if current_user.group.name != Groups.SUPER.value:
+        return redirect('/')
     form = EditAdminForm()
     form.group.choices = [(g.id, g.name) for g in AdminGroup.query.order_by('name')]
 
@@ -74,6 +82,8 @@ def edit_administrator(user_id):
 @bp.route('/administrators/delete/<user_id>',  methods=['POST'])
 @login_required
 def delete_administrator(user_id):
+    if current_user.group.name != Groups.SUPER.value:
+        return redirect('/')
     try:
         admin = User.query.get(user_id)
         db.session.delete(admin)
