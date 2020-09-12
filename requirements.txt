@@ -9,6 +9,7 @@ certifi==2020.6.20
 chardet==3.0.4
 click==7.1.2
 commonmark==0.9.1
+coverage==5.2.1
 dnspython==2.0.0
 docutils==0.16
 email-validator==1.1.1
@@ -37,6 +38,7 @@ Pygments==2.6.1
 PyJWT==1.7.1
 pyparsing==2.4.7
 pytest==6.0.1
+pytest-cov==2.10.1
 pytest-html==2.1.1
 pytest-metadata==1.10.0
 python-dateutil==2.8.1
@@ -51,6 +53,7 @@ rinoh-typeface-dejavuserif==0.1.1
 rinoh-typeface-texgyrecursor==0.1.1
 rinoh-typeface-texgyreheros==0.1.1
 rinoh-typeface-texgyrepagella==0.1.1
+rinohtype==0.4.2
 sendgrid==6.4.6
 six==1.15.0
 snowballstemmer==2.0.0
