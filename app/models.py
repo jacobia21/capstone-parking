@@ -134,7 +134,6 @@ class User(UserMixin, db.Model):
 
 
     def check_password(self, password):
-        print (self.password_hash, password)
         return check_password_hash(self.password_hash, password)  
 
     def get_reset_password_token(self, expires_in=600):

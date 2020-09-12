@@ -11,11 +11,13 @@ from flask_login import current_user
 @bp.route('/home')
 @login_required
 def home():
+    print('admin home')
     user_count = User.query.count()
     camera_count = Camera.query.count()
     zone_count = Zone.query.count()
     lot_count = Lot.query.count()
-    return render_template("index.html", title='Command Center', users=user_count, cameras=camera_count, zones=zone_count, lots=lot_count)
+    print("System counts: ", user_count, camera_count, zone_count, lot_count)
+    return render_template("home.html", title='Command Center', users=user_count, cameras=camera_count, zones=zone_count, lots=lot_count)
 
 @bp.route('/administrators')
 @login_required

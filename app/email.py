@@ -32,7 +32,6 @@ def send_password_reset_email(user):
                                          user=user, token=token))
 
 def send_activation_email(user):
-    print(user.id)
     token = user.get_activation_token()
     send_email('[Soar High Parking] Activate User',
                sender=current_app.config['ADMIN'],
