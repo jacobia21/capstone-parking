@@ -15,7 +15,7 @@ def home():
     camera_count = Camera.query.count()
     zone_count = Zone.query.count()
     lot_count = Lot.query.count()
-    return render_template("admin/index.html", title='Command Center', users=user_count, cameras=camera_count, zones=zone_count, lots=lot_count)
+    return render_template("index.html", title='Command Center', users=user_count, cameras=camera_count, zones=zone_count, lots=lot_count)
 
 @bp.route('/administrators')
 @login_required
@@ -23,7 +23,7 @@ def administrators():
     if current_user.group.name != Groups.SUPER.value:
         return redirect('/')
     administrators = User.query.all()
-    return render_template("admin/administrators/administrators.html", title='Administrators', administrators=administrators)
+    return render_template("administrators/administrators.html", title='Administrators', administrators=administrators)
 
 @bp.route('/administrators/add', methods=['GET', 'POST'])
 @login_required
@@ -46,8 +46,8 @@ def add_administrator():
         except Exception as err:
             print(err)
             flash("Something went wrong! Try again later")
-            return render_template("admin/administrators/add_administrator.html", title='Add Administrator', form=form, error=1)
-    return render_template("admin/administrators/add_administrator.html", title='Add Administrator', form=form)
+            return render_template("administrators/add_administrator.html", title='Add Administrator', form=form, error=1)
+    return render_template("administrators/add_administrator.html", title='Add Administrator', form=form)
 
 @bp.route('/administrators/edit/<user_id>',  methods=['GET', 'POST'])
 @login_required
@@ -70,13 +70,13 @@ def edit_administrator(user_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("admin/administrators/edit_administrator.html", title='Administrators', form=form, admin=User.query.get(user_id), error=1)
+            return render_template("administrators/edit_administrator.html", title='Administrators', form=form, admin=User.query.get(user_id), error=1)
 
         return redirect(url_for('admin.administrators'))
     
     admin = User.query.get(user_id)
     form.group.data = admin.group_id
-    return render_template("admin/administrators/edit_administrator.html", title='Administrators', form=form, admin=admin)
+    return render_template("administrators/edit_administrator.html", title='Administrators', form=form, admin=admin)
 
 
 @bp.route('/administrators/delete/<user_id>',  methods=['POST'])
@@ -99,29 +99,29 @@ def delete_administrator(user_id):
 @login_required
 def cameras():
     cameras = Camera.query.all()
-    return render_template("admin/cameras/cameras.html", title='Cameras', cameras=cameras)
+    return render_template("cameras/cameras.html", title='Cameras', cameras=cameras)
 
 @bp.route('/cameras/add', methods=['GET', 'POST'])
 @login_required
 def add_camera():
-    return render_template("admin/cameras/cameras.html", title='Cameras')
+    return render_template("cameras/cameras.html", title='Cameras')
 
 @bp.route('/cameras/edit',  methods=['GET', 'POST'])
 @login_required
 def edit_camera():
-    return render_template("admin/cameras/cameras.html", title='Cameras')
+    return render_template("cameras/cameras.html", title='Cameras')
 
 
 @bp.route('/cameras/delete',  methods=['POST'])
 @login_required
 def delete_camera():
-    return render_template("admin/cameras/cameras.html", title='Cameras')
+    return render_template("cameras/cameras.html", title='Cameras')
 
 @bp.route('/zones')
 @login_required
 def zones():
     zones = Zone.query.all()
-    return render_template("admin/zones/zones.html", title='Zones', zones=zones)
+    return render_template("zones/zones.html", title='Zones', zones=zones)
 
 @bp.route('/zones/add', methods=['GET', 'POST'])
 @login_required
@@ -139,8 +139,8 @@ def add_zone():
         except Exception as err:
             print(err)
             flash("Something went wrong! Try again later")
-            return render_template("admin/zones/add_zones.html", title='Add Zone', form=form, error=1)
-    return render_template("admin/zones/add_zones.html", title='Add Zone', form=form)
+            return render_template("zones/add_zones.html", title='Add Zone', form=form, error=1)
+    return render_template("zones/add_zones.html", title='Add Zone', form=form)
 
 @bp.route('/zones/edit/<zone_id>',  methods=['GET', 'POST'])
 @login_required
@@ -157,12 +157,12 @@ def edit_zone(zone_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("admin/zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id),error=1)
+            return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id),error=1)
 
         return redirect(url_for('admin.zones'))
     
     zone = Zone.query.get(zone_id)
-    return render_template("admin/zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id))
+    return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id))
 
 
 @bp.route('/zones/delete/<zone_id>',  methods=['POST'])
@@ -176,7 +176,7 @@ def delete_zone(zone_id):
     except Exception as error: 
         print(error)
         flash("Something went wrong! Try again later")
-        return render_template("admin/zones/zones.html", title='Zones', zones=Zone.query.all(), error=1)
+        return render_template("zones/zones.html", title='Zones', zones=Zone.query.all(), error=1)
     return redirect(url_for('admin.zones'))
 
 
@@ -184,7 +184,7 @@ def delete_zone(zone_id):
 @login_required
 def lots():
     lots = Lot.query.all()
-    return render_template("admin/lots/lots.html", title='Lots', lots= lots)
+    return render_template("lots/lots.html", title='Lots', lots= lots)
 
 @bp.route('/lots/add', methods=['GET', 'POST'])
 @login_required
@@ -206,8 +206,8 @@ def add_lot():
         # except Exception as err:
         #     print(err)
         #     flash("Something went wrong! Try again later")
-        #     return render_template("admin/lots/add_lot.html", title='Add Lot', form=form, error=1)
-    return render_template("admin/lots/add_lot.html", title='Lots', form=form)
+        #     return render_template("lots/add_lot.html", title='Add Lot', form=form, error=1)
+    return render_template("lots/add_lot.html", title='Lots', form=form)
 
 @bp.route('/lots/edit/<lot_id>',  methods=['GET', 'POST'])
 @login_required
@@ -228,11 +228,11 @@ def edit_lot(lot_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("admin/lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id),error=1)
+            return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id),error=1)
 
         return redirect(url_for('admin.lots'))
     
-    return render_template("admin/lots/edit_lot.html", title='Lots',form=form, lot=Lot.query.get(lot_id))
+    return render_template("lots/edit_lot.html", title='Lots',form=form, lot=Lot.query.get(lot_id))
 
 
 @bp.route('/lots/delete/<lot_id>',  methods=['POST'])
@@ -246,34 +246,34 @@ def delete_lot(lot_id):
     except Exception as error: 
         print(error)
         flash("Something went wrong! Try again later")
-        return render_template("admin/lots/lots.html", title='Lots', lots=Lot.query.all(), error=1)
+        return render_template("lots/lots.html", title='Lots', lots=Lot.query.all(), error=1)
     return redirect(url_for('admin.lots'))
 
 @bp.route('/spaces')
 @login_required
 def spaces():
     spaces = ParkingSpace.query.all()
-    return render_template("admin/spaces/spaces.html", title='Parking Spaces',spaces=spaces)
+    return render_template("spaces/spaces.html", title='Parking Spaces',spaces=spaces)
 
 # FIXME: is this needed?
 # @bp.route('/spaces/add', methods=['GET', 'POST'])
 # @login_required
 # def add_space():
-#     return render_template("admin/spaces/spaces.html", title='Parking Spaces')
+#     return render_template("spaces/spaces.html", title='Parking Spaces')
 
 @bp.route('/spaces/edit',  methods=['GET', 'POST'])
 @login_required
 def edit_space():
-    return render_template("admin/spaces/spaces.html", title='Parking Spaces')
+    return render_template("spaces/spaces.html", title='Parking Spaces')
 
 
 @bp.route('/spaces/delete',  methods=['POST'])
 @login_required
 def delete_space():
-    return render_template("admin/spaces/spaces.html", title='Parking Spaces')
+    return render_template("spaces/spaces.html", title='Parking Spaces')
 
 @bp.route('/system_log')
 @login_required
 def system_log():
     logs = SystemLog.query.all()
-    return render_template("admin/system_log/system_log.html", title='System Log', logs=logs)
+    return render_template("system_log/system_log.html", title='System Log', logs=logs)

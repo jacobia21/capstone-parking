@@ -18,14 +18,14 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return render_template("auth/login.html",title="Login", form=form, error=1)
+            return render_template("login.html",title="Login", form=form, error=1)
         login_user(user, remember=form.remember_me.data)
         flash('Welcome back!')
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('main.index')
         return redirect(next_page)
-    return render_template("auth/login.html",title="Login", form=form)
+    return render_template("login.html",title="Login", form=form)
 
 @bp.route('/logout')
 def logout():
@@ -43,7 +43,7 @@ def forgot():
             send_password_reset_email(user)
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('auth.login'))
-    return render_template('auth/forgot.html', title='Reset Password', form=form)
+    return render_template('forgot.html', title='Reset Password', form=form)
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
@@ -58,7 +58,7 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('auth.login'))
-    return render_template('auth/reset_password.html', form=form)
+    return render_template('reset_password.html', form=form)
 
 @bp.route('/activate_account/<token>', methods=['GET', 'POST'])
 def activate_account(token):
@@ -74,4 +74,4 @@ def activate_account(token):
         db.session.commit()
         flash('You have successfully activated your account!')
         return redirect(url_for('auth.login'))
-    return render_template('auth/activate_account.html', form=form)
+    return render_template('activate_account.html', form=form)
