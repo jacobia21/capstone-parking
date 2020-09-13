@@ -63,7 +63,7 @@ body {
   
   table,
   .table {
-    font-size: 0.9em;
+    font-size: small;
     color: #666;
   }
   
@@ -3524,10 +3524,15 @@ body {
     padding: 1rem 1.25rem;
     background-color: #fff;
     border-bottom: 1px solid #eee;
+    font-size: x-large;
   }
   
   .card-header:first-child {
     border-radius: 0 0 0 0;
+  }
+
+  h1.card-header{
+    font-size: xx-large;
   }
   
   .card-header-transparent {
@@ -3653,3 +3658,7 @@ body {
     font-size: 125%;
   }
   
+
+  .back:hover {
+    color: silver !important
+  }

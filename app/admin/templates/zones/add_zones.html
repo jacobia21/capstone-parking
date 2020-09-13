@@ -1,6 +1,10 @@
 {% extends 'admin_base.html'%} 
 {% set active_page='zone' %}
 {% block content %}
+<a href="{{url_for('.zones')}}" class="text-white pl-3 pt-2 back">
+  <span><i class="fa fa-angle-double-left"></i></span>
+  Zones 
+</a>
 <section>
 <div class="container-fluid">
   <div class="row justify-content-md-center">

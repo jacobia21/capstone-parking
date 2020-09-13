@@ -27,3 +27,6 @@
       border-radius: 20px;
   }
   
+  label {
+    font-weight: bold;
+  }

@@ -71,13 +71,13 @@ def edit_administrator(user_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("administrators/edit_administrator.html", title='Administrators', form=form, admin=User.query.get(user_id), error=1)
+            return render_template("administrators/edit_administrator.html", title='Edit Adminstrator', form=form, admin=User.query.get(user_id), error=1)
 
         return redirect(url_for('admin.administrators'))
     
     admin = User.query.get(user_id)
     form.group.data = admin.group_id
-    return render_template("administrators/edit_administrator.html", title='Administrators', form=form, admin=admin)
+    return render_template("administrators/edit_administrator.html", title='Edit Administrator', form=form, admin=admin)
 
 
 @bp.route('/administrators/delete/<user_id>',  methods=['POST'])
@@ -105,12 +105,12 @@ def cameras():
 @bp.route('/cameras/add', methods=['GET', 'POST'])
 @login_required
 def add_camera():
-    return render_template("cameras/cameras.html", title='Cameras')
+    return render_template("cameras/cameras.html", title='Add Camera')
 
 @bp.route('/cameras/edit',  methods=['GET', 'POST'])
 @login_required
 def edit_camera():
-    return render_template("cameras/cameras.html", title='Cameras')
+    return render_template("cameras/cameras.html", title='Edit Camera')
 
 
 @bp.route('/cameras/delete',  methods=['POST'])
@@ -194,21 +194,21 @@ def add_lot():
     form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('name')]
     form.zones.render_kw={'style': 'height: fit-content; list-style: none;'}
     if form.validate_on_submit():
-        # try:
-        lot = Lot(name=form.name.data)
-        for z in form.zones.data:
-            zone = Zone.query.get(z)
-            lot.zones.append(zone)
+        try:
+            lot = Lot(name=form.name.data)
+            for z in form.zones.data:
+                zone = Zone.query.get(z)
+                lot.zones.append(zone)
 
-        db.session.add(lot)
-        db.session.commit()
-        flash("New Lot Added")
-        return redirect(url_for('admin.lots'))
-        # except Exception as err:
-        #     print(err)
-        #     flash("Something went wrong! Try again later")
-        #     return render_template("lots/add_lot.html", title='Add Lot', form=form, error=1)
-    return render_template("lots/add_lot.html", title='Lots', form=form)
+            db.session.add(lot)
+            db.session.commit()
+            flash("New Lot Added")
+            return redirect(url_for('admin.lots'))
+        except Exception as err:
+            print(err)
+            flash("Something went wrong! Try again later")
+            return render_template("lots/add_lot.html", title='Add Lot', form=form, error=1)
+    return render_template("lots/add_lot.html", title='Add Lot', form=form)
 
 @bp.route('/lots/edit/<lot_id>',  methods=['GET', 'POST'])
 @login_required
@@ -233,7 +233,7 @@ def edit_lot(lot_id):
 
         return redirect(url_for('admin.lots'))
     
-    return render_template("lots/edit_lot.html", title='Lots',form=form, lot=Lot.query.get(lot_id))
+    return render_template("lots/edit_lot.html", title='Edit Lot',form=form, lot=Lot.query.get(lot_id))
 
 
 @bp.route('/lots/delete/<lot_id>',  methods=['POST'])
@@ -265,7 +265,7 @@ def spaces():
 @bp.route('/spaces/edit',  methods=['GET', 'POST'])
 @login_required
 def edit_space():
-    return render_template("spaces/spaces.html", title='Parking Spaces')
+    return render_template("spaces/spaces.html", title='Edit Parking Spaces')
 
 
 @bp.route('/spaces/delete',  methods=['POST'])
