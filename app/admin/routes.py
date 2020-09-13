@@ -1,22 +1,21 @@
 from app.admin import bp
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm
 from app.email import send_activation_email
 from app import db
-from app.enums import Groups
+from app.enums import Groups, LogStatus
 from flask_login import current_user
+from datetime import datetime
 
 @bp.route('/home')
 @login_required
 def home():
-    print('admin home')
     user_count = User.query.count()
     camera_count = Camera.query.count()
     zone_count = Zone.query.count()
     lot_count = Lot.query.count()
-    print("System counts: ", user_count, camera_count, zone_count, lot_count)
     return render_template("home.html", title='Command Center', users=user_count, cameras=camera_count, zones=zone_count, lots=lot_count)
 
 @bp.route('/administrators')
@@ -279,3 +278,16 @@ def delete_space():
 def system_log():
     logs = SystemLog.query.all()
     return render_template("system_log/system_log.html", title='System Log', logs=logs)
+
+@bp.route('/resolve_log', methods=['POST'])
+@login_required
+def resolve_log():
+    logsToResolve = request.form['logs'].split(',')
+    updated_at = datetime.now()
+    for l_id in logsToResolve:
+        log = SystemLog.query.get(l_id)
+        log.updated_at = updated_at
+        log.status = LogStatus.RESOLVED
+        db.session.add(log)
+    db.session.commit()
+    return redirect(url_for('.system_log'))

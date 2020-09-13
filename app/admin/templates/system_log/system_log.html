@@ -25,7 +25,7 @@
                             <div class="ml-auto mr-5">
                                 <button id="resolveButton" type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary" disabled>Resolve
                                     Errors
-                                    (<span id="theCount">0</span>)</button>
+                                    (<span id="modalCount">0</span>)</button>
                             </div>
                             </div>
                             
@@ -57,7 +57,7 @@
                                                 <td>{{log.status.value}}</td>
                                                 <td>{{log.created_at}}</td>
                                                 
-                                                {% if log.status == "RESOLVED"%}
+                                                {% if log.status.value == "RESOLVED"%}
                                                     <td>{{log.updated_at}}</td>
                                                 {% else %}
                                                     <td>
@@ -79,8 +79,8 @@
                                             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="<?= route_to("resolve") ?>" method="POST">
-                                                <?= csrf_field() ?>
+                                            <form action="{{url_for('admin.resolve_log')}}" method="POST">
+                                               
                                                 <p>Resolve <span id="modalCount"></span> error(s)? This can not be
                                                     reversed.</p>
                                                 <br>
@@ -102,4 +102,45 @@
 
     </div>
 </section>
+{% endblock %}
+
+{% block script%}
+<script type="text/javascript">
+var logsToResolve = []
+$(document).ready(function() {
+    var counter = 0;
+    $("#myInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+    $(".check").click(function() {
+        if ($(this).is(':checked')) {
+            counter++;
+            logsToResolve.push($(this).attr("name"));
+        } else {
+            counter--;
+            var index = logsToResolve.indexOf($(this).attr("name"))
+            if (index > -1) {
+                logsToResolve.splice(index, 1);
+            }
+        }
+        if (counter === 0) {
+            $("#resolveButton").attr("disabled", "true");
+        } else {
+            $("#resolveButton").removeAttr("disabled");
+        }
+
+        $("#modalCount").text(counter);
+    });
+});
+
+
+$('#resolveButton').on('click', function(e) {
+    var resolveCount = $("#modalCount").text();
+$("#logsToResolve").val(logsToResolve);
+});
+
+</script>
 {% endblock %}
