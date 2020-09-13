@@ -3,7 +3,7 @@ from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm
-from app.email import send_activation_email
+from app.auth.email import send_activation_email
 from app import db
 from app.enums import Groups, LogStatus
 from flask_login import current_user
