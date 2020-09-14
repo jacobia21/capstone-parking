@@ -7,6 +7,7 @@ from app.enums import SpaceAvailability
 @bp.route('/')
 @bp.route('/index')
 def index():
+    4/0
     return render_template("index.html", title='Home')
 
 @bp.route('/zones')
