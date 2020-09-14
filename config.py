@@ -22,3 +22,5 @@ class Config(object):
     ADMIN = os.environ.get('ADMIN')
 
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
