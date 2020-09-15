@@ -1,0 +1,124 @@
+{% extends 'admin_base.html' %}
+{% block head%} 
+<script src="{{url_for('static', 'js/fabric.min.js')}}"></script>
+<style>
+    .controls {
+        display: inline-block;
+    }
+</style>
+{% endblock %}
+
+{% block content%}
+<button id="add" class="btn btn-secondary btn-md" onclick="Add()">Add Space</button>
+<button id="save" class="btn btn-secondary btn-md" onclick="getSpaces()">Save Spaces</button>
+
+<canvas id="c" width="800" height="600"></canvas>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var canvas = this.__canvas = new fabric.Canvas('c');
+    canvas.setBackgroundImage("{{url_for('static', filename='img/parking_deck.jpg')}}", canvas.renderAll.bind(canvas), {
+        width: canvas.width,
+        height: canvas.height,
+        // Needed to position backgroundImage at 0/0
+        originX: 'left',
+        originY: 'top'
+    });
+	// create a rect object
+  var deleteIcon = "{{url_for('static', filename='img/delete_icon.png')}}";
+
+  var cloneIcon = "{{url_for('static', filename='img/duplicate_icon.jpeg')}}";
+
+  var deleteImg = document.createElement('img');
+  deleteImg.src = deleteIcon;
+
+  var cloneImg = document.createElement('img');
+  cloneImg.src = cloneIcon;
+
+  fabric.Object.prototype.transparentCorners = false;
+  fabric.Object.prototype.cornerColor = 'black';
+  fabric.Object.prototype.cornerStyle = 'circle';
+
+  function Add() {
+    var rect = new fabric.Rect({
+      left: 100,
+      top: 50,
+      fill: 'white',
+      width: 200,
+      height: 100,
+      objectCaching: false,
+      stroke: 'black',
+      strokeWidth: 4,
+    });
+
+    canvas.add(rect);
+    canvas.setActiveObject(rect);
+  }
+
+  function renderIcon(icon) {
+    return function renderIcon(ctx, left, top, styleOverride, fabricObject) {
+      var size = this.cornerSize;
+      ctx.save();
+      ctx.translate(left, top);
+      ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+      ctx.drawImage(icon, -size/2, -size/2, size, size);
+      ctx.restore();
+    }
+  }
+
+  fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+    x: 0.5,
+    y: -0.5,
+    offsetY: -16,
+    offsetX: 16,
+    cursorStyle: 'pointer',
+    mouseUpHandler: deleteObject,
+    render: renderIcon(deleteImg),
+    cornerSize: 24
+  });
+
+  fabric.Object.prototype.controls.clone = new fabric.Control({
+    x: -0.5,
+    y: -0.5,
+    offsetY: -16,
+    offsetX: -16,
+    cursorStyle: 'pointer',
+    mouseUpHandler: cloneObject,
+    render: renderIcon(cloneImg),
+    cornerSize: 24
+  });
+
+  Add();
+
+  function deleteObject(eventData, target) {
+		var canvas = target.canvas;
+		    canvas.remove(target);
+        canvas.requestRenderAll();
+	}
+
+  function cloneObject(eventData, target) {
+    var canvas = target.canvas;
+    target.clone(function(cloned) {
+      cloned.left += 10;
+      cloned.top += 10;
+      canvas.add(cloned);
+    });
+  }
+
+    function getSpaces(){
+        var spaces = [];
+        canvas.forEachObject(function(obj){
+        var prop = {
+            left : obj.left,
+            top : obj.top,
+            width : obj.width,
+            height : obj.height
+        };
+        spaces.push(prop);
+        });
+        console.log("Spaces: ", spaces)
+    }
+
+</script>
+{% endblock %}

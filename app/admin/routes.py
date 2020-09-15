@@ -291,3 +291,10 @@ def resolve_log():
         db.session.add(log)
     db.session.commit()
     return redirect(url_for('.system_log'))
+
+
+@bp.route('/mark_spaces')
+@login_required
+def mark_spaces():
+    return render_template("spaces/mark_spaces.html", title ="Mark Spaces")
+    
