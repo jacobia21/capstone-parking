@@ -55,6 +55,7 @@ rinoh-typeface-texgyrecursor==0.1.1
 rinoh-typeface-texgyreheros==0.1.1
 rinoh-typeface-texgyrepagella==0.1.1
 rinohtype==0.4.2
+rstcheck==3.3.1
 sendgrid==6.4.6
 six==1.15.0
 snowballstemmer==2.0.0
