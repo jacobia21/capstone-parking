@@ -36,9 +36,9 @@ deleteImg.src = deleteIcon;
 var cloneImg = document.createElement('img');
 cloneImg.src = cloneIcon;
 
-fabric.Object.prototype.transparentCorners = false;
-fabric.Object.prototype.cornerColor = 'black';
-fabric.Object.prototype.cornerStyle = 'circle';
+fabric.Object.prototype.transparentCorners = true;
+// fabric.Object.prototype.cornerColor = 'black';
+// fabric.Object.prototype.cornerStyle = 'circle';
 
 function Add() {
 var rect = new fabric.Rect({
@@ -48,8 +48,6 @@ var rect = new fabric.Rect({
   width: 150,
   height: 200,
   objectCaching: false,
-  stroke: 'black',
-  strokeWidth: 4,
 });
 
 canvas.add(rect);
