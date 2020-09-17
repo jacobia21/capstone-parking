@@ -5,44 +5,27 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
-    app.admin
-    app.auth
-    app.errors
-    app.main
+   app.admin
+   app.auth
+   app.errors
+   app.main
 
 Submodules
 ----------
 
-app.email module
-----------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: app.email
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-app.enums module
-----------------
-
-.. automodule:: app.enums
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-app.models module
------------------
-
-.. automodule:: app.models
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   app.email
+   app.enums
+   app.models
 
 Module contents
 ---------------
 
 .. automodule:: app
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

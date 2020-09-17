@@ -4,19 +4,15 @@ app.errors package
 Submodules
 ----------
 
-app.errors.handlers module
---------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: app.errors.handlers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   app.errors.handlers
 
 Module contents
 ---------------
 
 .. automodule:: app.errors
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

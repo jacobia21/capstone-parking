@@ -4,19 +4,15 @@ app.main package
 Submodules
 ----------
 
-app.main.routes module
-----------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: app.main.routes
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   app.main.routes
 
 Module contents
 ---------------
 
 .. automodule:: app.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

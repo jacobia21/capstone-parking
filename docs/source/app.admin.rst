@@ -4,27 +4,16 @@ app.admin package
 Submodules
 ----------
 
-app.admin.forms module
-----------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: app.admin.forms
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-app.admin.routes module
------------------------
-
-.. automodule:: app.admin.routes
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   app.admin.forms
+   app.admin.routes
 
 Module contents
 ---------------
 
 .. automodule:: app.admin
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

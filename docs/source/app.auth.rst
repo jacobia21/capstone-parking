@@ -4,27 +4,17 @@ app.auth package
 Submodules
 ----------
 
-app.auth.forms module
----------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: app.auth.forms
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-app.auth.routes module
-----------------------
-
-.. automodule:: app.auth.routes
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   app.auth.email
+   app.auth.forms
+   app.auth.routes
 
 Module contents
 ---------------
 
 .. automodule:: app.auth
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

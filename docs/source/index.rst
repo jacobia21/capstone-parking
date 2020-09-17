@@ -13,6 +13,7 @@ Documentation for the Code
    :caption: Contents:
 
    modules
+   database
 
 Indices and tables
 ==================

@@ -1,3 +1,4 @@
+""" This module defines the models that represent the database tables and relationships. """
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -10,6 +11,7 @@ from datetime import datetime
 
 @login.user_loader
 def load_user(id):
+    """Tells  :mod:`flask_login`  how a user should be loaded. This method should not be called directly."""
     return User.query.get(int(id))
 
 class LotZone(db.Model):

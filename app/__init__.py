@@ -1,3 +1,7 @@
+"""
+This is the main app module for the Soar High Parking website. It is creates and initialized the flask app.
+
+"""
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
@@ -14,7 +18,17 @@ login = LoginManager()
 login.login_view = 'auth.login'
 toolbar = DebugToolbarExtension()
 
-def create_app(config_class=Config):
+def create_app(config_class = Config):
+    """
+    Creates and initializes flask app.
+
+    :param config_class: The Config object to use when initializing the app
+    :type config_class: Config
+
+    :returns: The configured Flask object for the app
+    :rtype: Flask
+
+    """
     app = Flask(__name__)
     app.config.from_object(Config)
 
