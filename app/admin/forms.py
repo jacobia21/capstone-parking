@@ -33,9 +33,6 @@ class AddAdminForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 class EditAdminForm(FlaskForm):
-    #BUG an error occurs if the edited information is unique to another row in the table
-    # this should be addressed by checking to see if there are any users besides the one
-    # being updated with the same information
     user_id = HiddenField(validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     first_name = StringField('First Name',validators=[DataRequired()])
