@@ -54,10 +54,10 @@
                                             <td>{{camera.location}}</td>
                                             <td>{{camera.status.value}}</td>
                                             <td>
-                                                <a href="{{url_for('admin.edit_camera')}}">
+                                                <a href="{{url_for('admin.edit_camera', camera_id=camera.id)}}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
                                                 </a>
-                                                <a href="#" data-toggle="modal" data-target="#deleteModal">
+                                                <a href="#" data-toggle="modal" data-target="#deleteModal" data-camera-id="{{camera.id}}">
                                                     <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
                                                 </a>
                                             </td>
@@ -75,8 +75,7 @@
 
                                         </div>
                                         <div class="modal-body">
-                                            <form action="{{url_for('admin.delete_camera')}}" method="post">
-                                                <?= csrf_field() ?>
+                                            <form id="delete" action="" method="post">
                                                 <input type="hidden" name="user_id" value="<?= $admin->id ?>" />
                                                 <p>Are you sure you want to delete this camera? This cannot be undone.</p>
 
@@ -98,4 +97,17 @@
 
     </div>
 </section>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    $('#deleteModal').on('show.bs.modal', function(e) {
+    //get data-id attribute of the clicked element
+    var cameraId = $(e.relatedTarget).data('camera-id');
+
+    $(e.currentTarget).find('form#delete').attr('action', "cameras/delete/" + cameraId)
+    
+    });
+</script>
+
 {% endblock %}

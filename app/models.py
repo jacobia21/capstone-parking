@@ -80,6 +80,7 @@ class Camera(db.Model):
     location = db.Column(db.Integer)
     status = db.Column(db.Enum(CameraStatus))
     lot_id = db.Column(db.Integer, db.ForeignKey("lot.id"), nullable=False)
+    #TODO: add ipAddress or macAddress field here
 
     def __repr__(self):
         return '<Camera {}>'.format(self.id)

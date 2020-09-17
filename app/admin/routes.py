@@ -2,10 +2,10 @@ from app.admin import bp
 from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
-from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm
+from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, AddCameraForm, EditCameraZone
 from app.auth.email import send_activation_email
 from app import db
-from app.enums import Groups, LogStatus
+from app.enums import Groups, LogStatus, CameraStatus
 from flask_login import current_user
 from datetime import datetime
 
@@ -105,18 +105,66 @@ def cameras():
 @bp.route('/cameras/add', methods=['GET', 'POST'])
 @login_required
 def add_camera():
-    return render_template("cameras/cameras.html", title='Add Camera')
+    form = AddCameraForm()
+    form.lot.choices = [(lot.id, lot.name) for lot in Lot.query.order_by('name')]
+    form.status.choices = [(s.name, s.name) for s in CameraStatus]
+    
+    form.lot.render_kw={'style': 'height: fit-content; list-style: none;'}
+    form.status.render_kw={'style': 'height: fit-content; list-style: none;'}
 
-@bp.route('/cameras/edit',  methods=['GET', 'POST'])
+    if form.validate_on_submit():
+        try:
+            camera = Camera(location=form.location.data, lot_id=form.lot.data, status=form.status.data)
+            db.session.add(camera)
+            db.session.commit()
+            return redirect(url_for('.mark_spaces'))
+        except Exception as err:
+            print(err)
+            flash("Something went wrong! Try again later")
+            return render_template("cameras/add_camera.html", title='Add Camera', form=form, error=1)
+    return render_template("cameras/add_camera.html", title='Add Camera', form=form)
+
+@bp.route('/cameras/edit/<camera_id>',  methods=['GET', 'POST'])
 @login_required
-def edit_camera():
-    return render_template("cameras/cameras.html", title='Edit Camera')
+def edit_camera(camera_id):
+    form = EditCameraZone(camera_id=camera_id)
+    form.lot.choices = [(lot.id, lot.name) for lot in Lot.query.order_by('name')]
+    form.status.choices = [(s.name, s.name) for s in CameraStatus]
+    
+    if form.validate_on_submit():
+        try:
+            camera = Camera.query.get(camera_id)
+            camera.location = form.location.data
+            camera.status = form.status.data
+            camera.lot = form.lot.data
+            db.session.commit()
+            flash('Camera updated successfully!')
+            # TODO either send directly to edit spaces page or ask if they would like to edit spaces
+        except Exception as error:
+            print(error)
+            flash("Something went wrong! Try again later")
+            return render_template("cameras/edit_camera/html", title='Edit Camera', form=form, camera=Camera.query.get(camera_id),error=1)
 
+        return redirect(url_for('admin.cameras'))
+        
+    camera = Camera.query.get(camera_id)
+    form.lot.data = camera.lot_id
+    form.status.data = camera.status.value
+    return render_template("cameras/edit_camera.html", title='Edit Camera', form=form, camera=Camera.query.get(camera_id))
 
-@bp.route('/cameras/delete',  methods=['POST'])
+@bp.route('/cameras/delete/<camera_id>',  methods=['POST'])
 @login_required
-def delete_camera():
-    return render_template("cameras/cameras.html", title='Cameras')
+def delete_camera(camera_id):
+    try:
+        camera = Camera.query.get(camera_id)
+        db.session.delete(camera)
+        db.session.commit()
+        flash("Camera removed")
+    except Exception as error: 
+        print(error)
+        flash("Something went wrong! Try again later")
+    return redirect(url_for('admin.cameras'))
+
 
 @bp.route('/zones')
 @login_required

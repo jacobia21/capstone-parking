@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, SelectMultipleField, widgets
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, SelectMultipleField, IntegerField, widgets
 from wtforms.validators import DataRequired,Email, ValidationError
 from app.models import User, Zone, Lot
 
@@ -104,3 +104,15 @@ class EditLotForm(FlaskForm):
         lot = Lot.query.filter_by(name=name.data).first()
         if lot is not None:
             raise ValidationError('Please use a unique zone name.')
+
+class AddCameraForm(FlaskForm):
+    location = IntegerField('Location', validators=[DataRequired()])
+    status = SelectField(u'Status', validators=[DataRequired()])
+    lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Add Camera')
+
+class EditCameraZone(FlaskForm):
+    location = IntegerField('Location', validators=[DataRequired()])
+    status = SelectField(u'Status', validators=[DataRequired()])
+    lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Edit Camera')

@@ -1,0 +1,50 @@
+{% extends 'admin_base.html'%} 
+{% set active_page='camera' %}
+{% block content %}
+<a href="{{url_for('.cameras')}}" class="text-white pl-3 pt-2 back">
+  <span><i class="fa fa-angle-double-left"></i></span>
+ Cameras
+</a>
+<section>
+<div class="container-fluid">
+  <div class="row justify-content-md-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.location.label }} 
+                {{ form.location(size=32, class_="form-control") }}
+                {% for error in form.location.errors %}
+                  <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+              <div class="form-group">
+                {{form.status.label}}
+                {{ form.status(class_="form-control", default=None) }} 
+                
+                {% for error in form.status.errors %}
+                  <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+              <div class="form-group">
+                {{form.lot.label}}
+                {{ form.lot(class_="form-control") }} 
+                
+                {% for error in form.lot.errors %}
+                  <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+            <div class="d-flex">
+              {{ form.submit(class="btn btn-primary text-white btn-md btn-block
+              ml-auto") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{% endblock %}
