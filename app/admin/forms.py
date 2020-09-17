@@ -36,12 +36,23 @@ class EditAdminForm(FlaskForm):
     #BUG an error occurs if the edited information is unique to another row in the table
     # this should be addressed by checking to see if there are any users besides the one
     # being updated with the same information
+    user_id = HiddenField(validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     first_name = StringField('First Name',validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     middle_initial = StringField('Middle Initial', validators=[DataRequired()])
     group = SelectField(u'Admin Type', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Edit Aministrator')
+
+    def validate_email(self, email):
+        admin = User.query.filter_by(email=email.data).filter(User.id != self.user_id.data).first()
+        if admin is not None:
+            raise ValidationError('Please use a unique email.')
+    
+    def validate_first_name(self, first_name):
+        admin = User.query.filter_by(first_name=first_name.data).filter_by(last_name=self.last_name.data).filter_by(middle_initial=self.middle_initial.data).filter(User.id != self.user_id.data).first()
+        if admin is not None:
+            raise ValidationError('Please use a unique email.')
 
 class AddZoneForm(FlaskForm):
     name = StringField('Zone Name', validators=[DataRequired()])

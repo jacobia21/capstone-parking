@@ -55,7 +55,7 @@ def add_administrator():
 def edit_administrator(user_id):
     if current_user.group.name != Groups.SUPER.value:
         return redirect('/')
-    form = EditAdminForm()
+    form = EditAdminForm(user_id=user_id)
     form.group.choices = [(g.id, g.name) for g in AdminGroup.query.order_by('name')]
 
     if form.validate_on_submit():
