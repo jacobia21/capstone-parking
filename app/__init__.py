@@ -73,7 +73,5 @@ def create_app(config_class=Config):
         app.logger.setLevel(logging.INFO)
         app.logger.info('Soar High Parking - startup')
 
-        # db.drop_all()
-        db.create_all()
     
     return app
