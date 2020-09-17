@@ -271,9 +271,9 @@ def edit_lot(lot_id):
         try:
             lot = Lot.query.get(lot_id)
             lot.name = form.name.data
-            lot.color = form.color.data
+            lot.zone = form.zones.data
             db.session.commit()
-            flash('Zone updated successfully!')
+            flash('Lot updated successfully!')
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")

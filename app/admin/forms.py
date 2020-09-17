@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, SelectMultipleField, IntegerField, widgets
 from wtforms.validators import DataRequired,Email, ValidationError
-from app.models import User, Zone, Lot
+from app.models import User, Zone, Lot, Camera
 
 
 def validate_name(form,_):
@@ -59,7 +59,7 @@ class AddZoneForm(FlaskForm):
             raise ValidationError('Please use a unique zone color.')
 
 class EditZoneForm(FlaskForm):
-    zone_id = HiddenField()
+    zone_id = HiddenField(validators=[DataRequired()])
     name = StringField('Zone Name', validators=[DataRequired()])
     color = StringField('Zone Color',validators=[DataRequired()])
     submit = SubmitField('Edit Zone')
@@ -82,28 +82,18 @@ class AddLotForm(FlaskForm):
     def validate_name(self, name):
         lot = Lot.query.filter_by(name=name.data).first()
         if lot is not None:
-            raise ValidationError('Please use a unique lot name.')
-
-
-class AddLotForm(FlaskForm):
-    name = StringField('Lot Name', validators=[DataRequired()])
-    zones = MultiCheckboxField(u'Allowed Zones', coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Add Lot')
-    
-    def validate_name(self, name):
-        lot = Lot.query.filter_by(name=name.data).first()
-        if lot is not None:
             raise ValidationError('Please use a unique zone name.')
 
 class EditLotForm(FlaskForm):
+    lot_id = HiddenField(validators=[DataRequired()])
     name = StringField('Lot Name', validators=[DataRequired()])
     zones = MultiCheckboxField(u'Allowed Zones', coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Add Lot')
+    submit = SubmitField('Edit Lot')
     
     def validate_name(self, name):
-        lot = Lot.query.filter_by(name=name.data).first()
+        lot = Lot.query.filter_by(name=name.data).filter(Lot.id != self.lot_id.data).first()
         if lot is not None:
-            raise ValidationError('Please use a unique zone name.')
+            raise ValidationError('Please use a unique lot name.')
 
 class AddCameraForm(FlaskForm):
     location = IntegerField('Location', validators=[DataRequired()])
@@ -111,8 +101,19 @@ class AddCameraForm(FlaskForm):
     lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add Camera')
 
+    def validate_location(self, location):
+        cameras = Camera.query.filter_by(location=location.data)
+        if cameras is not None:
+            raise ValidationError('This location is already being used by a camera in this lot')
+    
 class EditCameraZone(FlaskForm):
+    camera_id = HiddenField(validators=[DataRequired()])
     location = IntegerField('Location', validators=[DataRequired()])
     status = SelectField(u'Status', validators=[DataRequired()])
     lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Edit Camera')
+
+    def validate_location(self, location):
+        camera = Camera.query.filter_by(location=location.data).filter(Camera.id != self.camera_id.data).first()
+        if camera is not None:
+            raise ValidationError('This location is already being used by a camera in this zone')
