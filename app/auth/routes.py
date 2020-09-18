@@ -63,7 +63,7 @@ def reset_password(token):
     Resets an administrators password.
 
     :param token: The token generated for the admin when they requested to reset their password.
-    "type token: str
+    :type token: str
 
     """
     if current_user.is_authenticated:
@@ -86,7 +86,7 @@ def activate_account(token):
 
     :param token: The token generated when a super administrator creates the new administrator's account.
     :type token: str
-    
+
     """
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
