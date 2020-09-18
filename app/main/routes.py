@@ -1,4 +1,4 @@
-""" This package holds the route controllers for the main module """
+""" This module holds the route controllers for the main module """
 
 from app.main import bp
 from flask import render_template, url_for
