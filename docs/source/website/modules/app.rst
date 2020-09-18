@@ -7,10 +7,10 @@ Subpackages
 .. toctree::
    :maxdepth: 2
 
-   app.admin
-   app.auth
-   app.errors
-   app.main
+   app/app.admin
+   app/app.auth
+   app/app.errors
+   app/app.main
 
 Submodules
 ----------
@@ -18,9 +18,9 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   app.email
-   app.enums
-   app.models
+   app/app.email
+   app/app.enums
+   app/app.models
 
 Module contents
 ---------------

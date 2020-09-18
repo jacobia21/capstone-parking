@@ -12,7 +12,7 @@ Documentation for the Code
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   website
    database
 
 Indices and tables

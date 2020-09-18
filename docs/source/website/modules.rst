@@ -4,4 +4,4 @@ app
 .. toctree::
    :maxdepth: 4
 
-   app
+   modules/app
