@@ -1,3 +1,4 @@
+"""" This module holds all the route controllers for the auth package. """
 from app.auth import bp
 from flask import render_template, flash, redirect, url_for
 from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm, ActivateUserForm
@@ -11,6 +12,8 @@ from app import db
 
 @bp.route('/login', methods=["GET",'POST'])
 def login():
+    """ Logs in an administrator """
+
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = LoginForm()
@@ -29,11 +32,20 @@ def login():
 
 @bp.route('/logout')
 def logout():
+    """ Logs out an administrator. """
+
     logout_user()
     return redirect(url_for('main.index'))
 
 @bp.route('/forgot', methods=["GET", "POST"])
 def forgot():
+    """ 
+
+    Allows an administrator to state they forgot their password,
+    tiggering a email for further instructions on how to reset their password.
+
+    """
+
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RequestResetPasswordForm()
@@ -47,6 +59,13 @@ def forgot():
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    """ 
+    Resets an administrators password.
+
+    :param token: The token generated for the admin when they requested to reset their password.
+    "type token: str
+
+    """
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     user = User.verify_reset_password_token(token)
@@ -62,6 +81,13 @@ def reset_password(token):
 
 @bp.route('/activate_account/<token>', methods=['GET', 'POST'])
 def activate_account(token):
+    """
+    Allows a new administrator to set their password.
+
+    :param token: The token generated when a super administrator creates the new administrator's account.
+    :type token: str
+    
+    """
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     user = User.verify_activation_token(token)
