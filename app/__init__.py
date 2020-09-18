@@ -1,7 +1,4 @@
-"""
-This is the main app module for the Soar High Parking website. It is creates and initialized the flask app.
-
-"""
+"""This is the main app module for the Soar High Parking website. It creates and initializes the flask app."""
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
