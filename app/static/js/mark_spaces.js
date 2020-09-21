@@ -1,4 +1,14 @@
 var canvas = this.__canvas = new fabric.Canvas('c');
+
+$.get("/admin/zones/all", function(data){
+  zones = data["items"]
+  
+  zones.forEach(zone => {
+    console.log(zone)
+  }); 
+})
+.done(() => console.log("second success"))
+.fail((error) => console.log("Failed: ", error))
 fabric.Image.fromURL("/static/img/lot_map.png", function (img) {    
     canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
         scaleX: canvas.width / img.width,
@@ -44,7 +54,7 @@ function Add() {
 var rect = new fabric.Rect({
   left: 100,
   top: 50,
-  fill: 'white',
+  fill: 'blue',
   width: 150,
   height: 200,
   objectCaching: false,
@@ -139,3 +149,5 @@ function getSpaces(){
       canvas.setActiveObject(controlPoint);
       
 }
+
+

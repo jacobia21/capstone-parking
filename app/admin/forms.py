@@ -109,10 +109,11 @@ class AddCameraForm(FlaskForm):
     lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add Camera')
 
-    def validate_location(self, location):
-        cameras = Camera.query.filter_by(location=location.data)
-        if cameras is not None:
-            raise ValidationError('This location is already being used by a camera in this lot')
+    #FIXME this validation should be fixed
+    # def validate_location(self, location):
+    #     cameras = Camera.query.filter_by(location=location.data)
+    #     if cameras is not None:
+    #         raise ValidationError('This location is already being used by a camera in this lot')
     
 class EditCameraZone(FlaskForm):
     camera_id = HiddenField(validators=[DataRequired()])

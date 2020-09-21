@@ -1,5 +1,5 @@
 from app.admin import bp
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, jsonify
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, AddCameraForm, EditCameraZone
@@ -265,13 +265,17 @@ def edit_lot(lot_id):
     form = EditLotForm(lot_id=lot_id)
     form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('id')]
     form.zones.render_kw={'style': 'height: fit-content; list-style: none;'}
-    form.zones.data = [zone.id for zone in lot.zones]
     
     if form.validate_on_submit():
         try:
             lot = Lot.query.get(lot_id)
             lot.name = form.name.data
-            lot.zone = form.zones.data
+            
+            zones = []
+            for zone_id in form.zones.data:
+                zones.append(Zone.query.get(zone_id))
+            lot.zones = zones
+            
             db.session.commit()
             flash('Lot updated successfully!')
         except Exception as error:
@@ -280,7 +284,8 @@ def edit_lot(lot_id):
             return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id),error=1)
 
         return redirect(url_for('admin.lots'))
-    
+
+    form.zones.data = [zone.id for zone in lot.zones]
     return render_template("lots/edit_lot.html", title='Edit Lot',form=form, lot=Lot.query.get(lot_id))
 
 
@@ -346,3 +351,9 @@ def resolve_log():
 def mark_spaces():
     return render_template("spaces/mark_spaces.html", title ="Mark Spaces")
     
+
+@bp.route('/zones/all', methods=['GET'])
+def get_zones():
+   data = Zone.to_collection_dict(Zone.query)
+   print(jsonify(data))
+   return jsonify(data)

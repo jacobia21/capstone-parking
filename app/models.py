@@ -14,6 +14,15 @@ def load_user(id):
     """Tells  :mod:`flask_login`  how a user should be loaded. This method should not be called directly."""
     return User.query.get(int(id))
 
+class APIMixin(object):
+    @staticmethod
+    def to_collection_dict(query):
+        resources = query.paginate()
+        data = {
+            'items': [item.to_dict() for item in resources.items],
+        }
+        return data
+
 class LotZone(db.Model):
     __tablename__ = 'lotzone'
     lot_id = db.Column('lot_id', db.Integer, db.ForeignKey('lot.id'),primary_key=True)
@@ -23,7 +32,7 @@ class LotZone(db.Model):
         return '<LotZone: Lot {}, Zone{}>'.format(self.lot_id, self.zone_id)
 
    
-class Zone(db.Model):
+class Zone(APIMixin,db.Model):
     __tablename__ = 'zone'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100),index=True, unique=True)
@@ -33,6 +42,18 @@ class Zone(db.Model):
 
     def __repr__(self):
         return '<Zone {}>'.format(self.id)
+
+    def to_dict(self):
+        return {
+            "id":self.id,
+            "name": self.name,
+            "color": self.color
+        }
+
+    def from_dict(self, data):
+        for field in ['name', 'color']:
+            if field in data:
+                setattr(self, field, data[field])
 
 class Lot(db.Model):
     __tablename__ = 'lot'
