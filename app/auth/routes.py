@@ -1,4 +1,4 @@
-"""" This module holds all the route controllers for the auth package. """
+""" This module holds all the route controllers for the auth package. """
 from app.auth import bp
 from flask import render_template, flash, redirect, url_for
 from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm, ActivateUserForm
