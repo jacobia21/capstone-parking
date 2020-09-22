@@ -13,16 +13,14 @@ services: mysql
 before_script:
    - mysql -e 'CREATE DATABASE IF NOT EXISTS flask_capstone_schema;'
 
-install:
-  - pip install codecov
 
 script:
   # run tests
   - python -m pytest -v
-  
+
   # code coverage reports
   - coverage erase
-  - coverage run test_webapp.py && coverage html
+  - coverage run main.py && coverage html
 
 after_success:
   - codecov
