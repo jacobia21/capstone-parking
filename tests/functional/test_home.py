@@ -1,4 +1,4 @@
-def test_home_page(test_client):
+def test_home_page(test_client,init_database):
     """
     GIVEN a Flask application
     WHEN the '/' page is requested (GET)

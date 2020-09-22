@@ -24,3 +24,10 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
+
+class TestConfig(Config):
+    FLASK_ENV='testing'
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL_TEST')
+    WTF_CSRF_ENABLED = False
+
