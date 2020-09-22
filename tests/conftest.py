@@ -1,4 +1,5 @@
 import pytest
+import os
 from app.models import User, AdminGroup
 from app import create_app, db
 from config import TestConfig
@@ -12,6 +13,9 @@ def user():
 @pytest.fixture(scope='module')
 def test_client():
     flask_app = create_app(config_class=TestConfig)
+    is_travis = 'TRAVIS' in os.environ
+    if is_travis:
+        flask_app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://travis: @127.0.0.1:3306/flask_capstone_schema"
     
     # Flask provides a way to test your application by exposing the Werkzeug test Client
     # and handling the context locals for you.
@@ -37,7 +41,7 @@ def init_database():
     user = User(id=1,email='patkennedy79@gmail.com',first_name="Jacobia",last_name="Johnson", group_id=regular_admin_group.id,middle_initial="N")
     user.set_password('unittest')
     db.session.add(user)
-    
+
     db.session.commit()
 
     yield db  # this is where the testing happens!

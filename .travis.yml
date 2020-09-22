@@ -5,5 +5,12 @@ dist: xenial
 
 language: python
 
+python:
+  - "3.8"
+
+services: mysql
+
+before_script:
+   - mysql -e 'CREATE DATABASE IF NOT EXISTS flask_capstone_schema;'
 script:
   - python -m pytest -v
