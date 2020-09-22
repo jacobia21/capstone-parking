@@ -15,7 +15,7 @@ def test_client():
     flask_app = create_app(config_class=TestConfig)
     is_travis = 'TRAVIS' in os.environ
     if is_travis:
-        flask_app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://travis: @127.0.0.1:3306/flask_capstone_schema"
+        flask_app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:@127.0.0.1:3306/flask_capstone_schema"
     
     # Flask provides a way to test your application by exposing the Werkzeug test Client
     # and handling the context locals for you.
