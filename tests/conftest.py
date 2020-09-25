@@ -2,7 +2,7 @@ import pytest
 import os
 from app.models import User, AdminGroup
 from app import create_app, db
-from config import TestConfig
+from config import TestingConfig
  
 @pytest.fixture(scope='module')
 def user():
@@ -12,7 +12,7 @@ def user():
 
 @pytest.fixture(scope='module')
 def test_client():
-    flask_app = create_app(config_class=TestConfig)
+    flask_app = create_app(config_class=TestingConfig)
     is_travis = 'TRAVIS' in os.environ
     if is_travis:
         flask_app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:@127.0.0.1:3306/flask_capstone_schema"
