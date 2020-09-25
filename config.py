@@ -5,10 +5,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
 
-class Config(object):
+class BaseConfig(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DATABASE_URL') or os.environ.get('CLEARDB_DATABASE_URL')
+   
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True,
@@ -23,13 +22,19 @@ class Config(object):
 
     ADMIN = os.environ.get('ADMIN')
 
+    
+ 
+class DevelopmentConfig(BaseConfig):
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DATABASE_URL')
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
-    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
-
-
-class TestConfig(Config):
-    FLASK_ENV = 'testing'
+class TestingConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL_TEST')
     WTF_CSRF_ENABLED = False
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+class ProductionConfig(BaseConfig):
+    SQLALCHEMY_DATABASE_URI = os.environ.get('CLEARDB_DATABASE_URL')
+    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
