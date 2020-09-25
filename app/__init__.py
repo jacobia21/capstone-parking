@@ -40,7 +40,7 @@ def create_app(config_class=None):
     elif environment == 'production':
         app.config.from_object('config.ProductionConfig')
     else:
-        raise Exception("No configuration object was passed and could not determin from environment")
+        raise Exception("No configuration object was passed and could not determine from environment")
 
     db.init_app(app)
     migrate.init_app(app, db)
