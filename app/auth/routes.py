@@ -10,7 +10,7 @@ from app.auth.email import send_password_reset_email
 from app import db
 
 
-@bp.route('/login', methods=["GET",'POST'])
+@bp.route('/login', methods=["GET", 'POST'])
 def login():
     """ Logs in an administrator """
 
@@ -21,14 +21,15 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return render_template("login.html",title="Login", form=form, error=1)
+            return render_template("login.html", title="Login", form=form, error=1)
         login_user(user, remember=form.remember_me.data)
         flash('Welcome back!')
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('admin.home')
         return redirect(next_page)
-    return render_template("login.html",title="Login", form=form)
+    return render_template("login.html", title="Login", form=form)
+
 
 @bp.route('/logout')
 def logout():
@@ -36,6 +37,7 @@ def logout():
 
     logout_user()
     return redirect(url_for('main.index'))
+
 
 @bp.route('/forgot', methods=["GET", "POST"])
 def forgot():
@@ -56,6 +58,7 @@ def forgot():
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('auth.login'))
     return render_template('forgot.html', title='Reset Password', form=form)
+
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
@@ -79,6 +82,7 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
     return render_template('reset_password.html', form=form)
 
+
 @bp.route('/activate_account/<token>', methods=['GET', 'POST'])
 def activate_account(token):
     """
@@ -91,7 +95,7 @@ def activate_account(token):
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     user = User.verify_activation_token(token)
-    print(user)
+
     if not user:
         return redirect(url_for('main.index'))
     form = ActivateUserForm()

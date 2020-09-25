@@ -22,7 +22,8 @@ def send_async_email(app, msg):
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         response = sg.send(msg)
         sg.send(msg)
-        
+
+
 def send_email(subject, sender, recipients, html_body):
     """
     Prepares a new SendGrid Mail object from inputs and calls :func:`~send_async_email` to send the asynchronous message.
@@ -44,7 +45,7 @@ def send_email(subject, sender, recipients, html_body):
         html_content=html_body)
     try:
         Thread(target=send_async_email,
-           args=(current_app._get_current_object(), message)).start()
-        
+               args=(current_app._get_current_object(), message)).start()
+
     except Exception as e:
         print(e)

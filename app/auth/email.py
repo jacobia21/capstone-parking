@@ -21,13 +21,14 @@ def send_password_reset_email(user):
                html_body=render_template('email/reset_password.html',
                                          user=user, token=token))
 
+
 def send_activation_email(user):
     """
     Sends an email to a newly added administrator to set their password.
 
     :param user: The user who will receive the email.
     :type user: User
-    
+
     """
     token = user.get_activation_token()
     send_email('[Soar High Parking] Activate User',

@@ -1,5 +1,6 @@
 from app.models import User
- 
+
+
 def test_user(user):
     """
     GIVEN a User model
@@ -13,4 +14,3 @@ def test_user(user):
     assert user.last_name == "Johnson"
     assert user.middle_initial == "N"
     assert user.group_id == 1
-    

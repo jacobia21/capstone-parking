@@ -6,6 +6,7 @@ from app.models import Zone, Lot, ParkingSpace
 from sqlalchemy import func
 from app.enums import SpaceAvailability
 
+
 @bp.route('/')
 @bp.route('/index')
 def index():
@@ -13,11 +14,13 @@ def index():
 
     return render_template("index.html", title='Home')
 
+
 @bp.route('/zones')
 def zones():
     """ Retrieves all parking zone and displays them on the zones page. """
     zones = Zone.query.all()
     return render_template("zones.html", title='Zones', zones=zones)
+
 
 @bp.route('/lots/<zone_id>')
 def lots(zone_id):
@@ -26,7 +29,7 @@ def lots(zone_id):
 
     :param zone_id: The id of the selected zone to look for lots in.
     :type zone_id: int
-    
+
     """
 
     lots = Zone.query.get(zone_id).lots
