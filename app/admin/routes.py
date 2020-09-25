@@ -8,6 +8,7 @@ from app import db
 from app.enums import Groups, LogStatus, CameraStatus
 from flask_login import current_user
 from datetime import datetime
+from sqlalchemy import func
 
 @bp.route('/home')
 @login_required
@@ -100,6 +101,8 @@ def delete_administrator(user_id):
 @login_required
 def cameras():
     cameras = Camera.query.all()
+    cameras = Camera.query.with_entities(Camera.id,Camera.lot_id,func.lpad(Camera.location, 4, 0).label("location"), Camera.status).all()
+    print(cameras)
     return render_template("cameras/cameras.html", title='Cameras', cameras=cameras)
 
 @bp.route('/cameras/add', methods=['GET', 'POST'])
@@ -147,9 +150,10 @@ def edit_camera(camera_id):
 
         return redirect(url_for('admin.cameras'))
         
-    camera = Camera.query.get(camera_id)
+    camera = Camera.query.with_entities(Camera.id,Camera.lot_id,func.lpad(Camera.location, 4, 0).label("location"), Camera.status).filter_by(id=camera_id).first()
     form.lot.data = camera.lot_id
     form.status.data = camera.status.value
+    form.location.data = camera.location
     return render_template("cameras/edit_camera.html", title='Edit Camera', form=form, camera=Camera.query.get(camera_id))
 
 @bp.route('/cameras/delete/<camera_id>',  methods=['POST'])
