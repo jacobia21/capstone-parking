@@ -60,8 +60,6 @@ def create_app(config_class=None):
     from app.admin import bp as admin_bp
     app.register_blueprint(admin_bp, url_prefix='/admin')
 
-    # TODO issue with sending emails with SMTPHandler,
-    # but logging to a file and stdout is working properly
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
             auth = None
@@ -73,9 +71,9 @@ def create_app(config_class=None):
                 secure = ()
             mail_handler = SMTPHandler(
                 mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
-                fromaddr='no-reply@' + app.config['MAIL_SERVER'],
+                fromaddr=app.config['ADMIN'],
                 toaddrs=app.config['ADMIN'], subject='[Soar High Parking] System Failure',
-                credentials=auth, secure=secure)
+                credentials=auth, secure=secure,timeout=10.0)         
             mail_handler.setLevel(logging.ERROR)
             app.logger.addHandler(mail_handler)
 
