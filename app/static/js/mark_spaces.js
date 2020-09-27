@@ -181,6 +181,7 @@ const saveSpaces = () => {
     });
     canvas.add(controlPoint);
     canvas.setActiveObject(controlPoint);
+    saveAll();
   }
 };
 
@@ -286,3 +287,20 @@ fabric.ControlPoint = fabric.util.createClass(fabric.Rect, {
 fabric.ControlPoint.fromObject = function (object, callback) {
   return fabric.Object._fromObject("ControlPoint", object, callback);
 };
+
+function saveAll() {
+  objects = JSON.stringify(canvas);
+  console.log(typeof objects);
+  $.ajax({
+    url: "/admin/spaces/add",
+    type: "post",
+    data: objects,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    dataType: "json",
+    success: function (data) {
+      console.info(data);
+    },
+  });
+}

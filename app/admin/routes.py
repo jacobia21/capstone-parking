@@ -1,5 +1,5 @@
 from app.admin import bp
-from flask import render_template, url_for, flash, redirect, request, jsonify
+from flask import render_template, url_for, flash, redirect, request, jsonify, current_app
 from flask_login import login_required
 from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, AddCameraForm, EditCameraZone
@@ -333,11 +333,12 @@ def spaces():
     spaces = ParkingSpace.query.all()
     return render_template("spaces/spaces.html", title='Parking Spaces', spaces=spaces)
 
-# FIXME: is this needed?
-# @bp.route('/spaces/add', methods=['GET', 'POST'])
-# @login_required
-# def add_space():
-#     return render_template("spaces/spaces.html", title='Parking Spaces')
+
+@bp.route('/spaces/add', methods=['POST'])
+@login_required
+def add_space():
+    print(request.json)
+    return request.json
 
 
 @bp.route('/spaces/edit',  methods=['GET', 'POST'])
