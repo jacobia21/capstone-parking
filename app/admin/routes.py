@@ -376,10 +376,5 @@ def resolve_log():
 @bp.route('/mark_spaces')
 @login_required
 def mark_spaces():
-    return render_template("spaces/mark_spaces.html", title="Mark Spaces")
-
-
-@bp.route('/zones/all', methods=['GET'])
-def get_zones():
-    data = Zone.to_collection_dict(Zone.query)
-    return jsonify(data)
+    zones = Zone.query.all()
+    return render_template("spaces/mark_spaces.html", title="Mark Spaces", zones=zones)
