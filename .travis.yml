@@ -20,7 +20,7 @@ script:
 
   # code coverage reports
   - coverage erase
-  - coverage run main.py && coverage html
+  - coverage run --branch main.py && coverage html
 
 after_success:
   - codecov
