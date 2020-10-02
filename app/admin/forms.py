@@ -1,3 +1,4 @@
+from enum import unique
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, SelectMultipleField, IntegerField, widgets
 from wtforms.validators import DataRequired, Email, ValidationError
@@ -123,10 +124,16 @@ class EditLotForm(FlaskForm):
 
 
 class AddCameraForm(FlaskForm):
+    mac_address = StringField('Mac Address', validators=[DataRequired()])
     location = IntegerField('Location', validators=[DataRequired()])
     status = SelectField(u'Status', validators=[DataRequired()])
     lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add Camera')
+
+    def validate_mac_address(self, mac_address):
+        cameras = Camera.query.filter_by(mac_address=mac_address.data).all()
+        if cameras:
+            raise ValidationError('Please enter a unique mac address.')
 
     # FIXME this validation should be fixed
     def validate_location(self, location):
