@@ -1,11 +1,12 @@
+from flask import json
 from app.admin import bp
 from flask import render_template, url_for, flash, redirect, request, jsonify, current_app
 from flask_login import login_required
-from app.models import User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
+from app.models import ControlPoints, SpaceDimensions, User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, AddCameraForm, EditCameraZone
 from app.auth.email import send_activation_email
 from app import db
-from app.enums import Groups, LogStatus, CameraStatus
+from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability
 from flask_login import current_user
 from datetime import datetime
 from sqlalchemy import func
@@ -110,7 +111,7 @@ def delete_administrator(user_id):
 def cameras():
     cameras = Camera.query.all()
     cameras = Camera.query.with_entities(Camera.id, Camera.lot_id, func.lpad(
-        Camera.location, 4, 0).label("location"), Camera.status).all()
+        Camera.location, 4, 0).label("location"), Camera.status, Camera.mac_address).all()
     return render_template("cameras/cameras.html", title='Cameras', cameras=cameras)
 
 
@@ -128,10 +129,10 @@ def add_camera():
     if form.validate_on_submit():
         try:
             camera = Camera(location=form.location.data,
-                            lot_id=form.lot.data, status=form.status.data)
+                            lot_id=form.lot.data, status=form.status.data, mac_address= form.mac_address.data)
             db.session.add(camera)
             db.session.commit()
-            return redirect(url_for('.mark_spaces'))
+            return redirect(url_for('.mark_spaces', lot_id=camera.lot_id, camera_id=camera.id))
         except Exception as err:
             print(err)
             flash("Something went wrong! Try again later")
@@ -337,8 +338,37 @@ def spaces():
 @bp.route('/spaces/add', methods=['POST'])
 @login_required
 def add_space():
-    print(request.json)
-    return request.json
+    data = request.json
+    camera = json.loads(data.get("camera"))
+    canvas = json.loads(data.get("canvas"))
+    objects = canvas.get("objects")
+
+    for object in objects:
+        if object.get("type") == "ParkingSpace":
+            parkingSpace = ParkingSpace(
+                availability=SpaceAvailability.NOT_AVAILABLE, lot_id=camera["lot_id"], zone_id=object["zones"][0], camera_id=camera["id"])
+
+            db.session.add(parkingSpace)
+            db.session.commit()
+
+            parkingSpaceCoordinates = SpaceDimensions(
+                start_x=object["left"], start_y=object["top"], width=object["width"], height=object["height"], space_id=parkingSpace.id)
+            db.session.add(parkingSpaceCoordinates)
+            db.session.commit()
+
+            print("Parking Space: ", parkingSpace.__dict__)
+            print("Coordinates: ", parkingSpaceCoordinates.__dict__)
+
+        if object.get("type") == "ControlPoint":
+            controlPoint = ControlPoints(start_x=object["left"], start_y=object["top"],
+                                         width=object["width"], height=object["height"], camera_id=camera["id"])
+            db.session.add(controlPoint)
+            db.session.commit()
+
+            print("Control Point: ", controlPoint.__dict__)
+
+    flash("Spaces and control point added successfully!")
+    return {"result": "success"}
 
 
 @bp.route('/spaces/edit',  methods=['GET', 'POST'])
@@ -374,8 +404,10 @@ def resolve_log():
     return redirect(url_for('.system_log'))
 
 
-@bp.route('/mark_spaces')
+@bp.route('/mark_spaces/<lot_id>/<camera_id>')
 @login_required
-def mark_spaces():
-    zones = Zone.query.all()
-    return render_template("spaces/mark_spaces.html", title="Mark Spaces", zones=zones)
+def mark_spaces(lot_id, camera_id):
+    lot = Lot.query.get(lot_id)
+    zones = lot.zones.all()
+    camera = (Camera.query.get_or_404(camera_id)).to_dict()
+    return render_template("spaces/mark_spaces.html", title="Mark Spaces", zones=zones, data=camera)

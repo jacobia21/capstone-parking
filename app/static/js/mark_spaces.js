@@ -16,6 +16,12 @@ var cloneIcon = "/static/img/duplicate_icon.png";
 var cloneImg = document.createElement("img");
 cloneImg.src = cloneIcon;
 
+var cameraInfo = null;
+function getCameraInfo(info) {
+  cameraInfo = info;
+  return info;
+}
+
 fabric.Image.fromURL("/static/img/lot_map.png", function (img) {
   canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
     scaleX: canvas.width / img.width,
@@ -158,30 +164,42 @@ const saveSpaces = () => {
   parkingSpaces = canvas.getObjects("ParkingSpace");
   allZonesSet = true;
   unsetSpaces = [];
-  parkingSpaces.forEach((space) => {
-    if (space.zones.length < 1) {
-      allZonesSet = false;
-      unsetSpaces.push(space.id);
-    }
-  });
 
-  if (!allZonesSet) {
-    alert(
-      "Must add at least one zone to the following spaces: " +
-        unsetSpaces.toString()
-    );
+  if (parkingSpaces.length < 1) {
+    $("#unsetZonesText")[0].innerText = "No spaces have been added";
+    $("#unsetZonesModal").modal("show");
   } else {
-    /* TODO: this is where setting control point should be initiated */
-    controlPoint = new fabric.ControlPoint({
-      width: 100,
-      height: 100,
-      left: 100,
-      top: 100,
-      fill: "blue",
+    parkingSpaces.forEach((space) => {
+      if (space.zones.length < 1) {
+        allZonesSet = false;
+        unsetSpaces.push(space.id);
+      }
     });
-    canvas.add(controlPoint);
-    canvas.setActiveObject(controlPoint);
-    saveAll();
+
+    if (!allZonesSet) {
+      $("#unsetZonesText")[0].innerText =
+        "Must add at least one zone to the following space(s): \n" +
+        unsetSpaces.toString();
+      $("#unsetZonesModal").modal("show");
+    } else {
+      /* TODO: this is where setting control point should be initiated */
+
+      canvas.getObjects("ParkingSpace").forEach((object) => {
+        object.selectable = false;
+      });
+
+      controlPoint = new fabric.ControlPoint({
+        width: 75,
+        height: 75,
+        left: 100,
+        top: 100,
+        fill: "lightblue",
+      });
+      canvas.add(controlPoint);
+      canvas.setActiveObject(controlPoint);
+      $(".mark-spaces").addClass("d-none");
+      $(".mark-control-point").removeClass("d-none");
+    }
   }
 };
 
@@ -261,8 +279,9 @@ fabric.ParkingSpace.prototype.controls.clone = new fabric.Control({
 fabric.ControlPoint = fabric.util.createClass(fabric.Rect, {
   type: "ControlPoint",
   objectCaching: false,
-  label: "Control Point",
+  label: "CP",
   hasControls: false,
+  hasBorders: false,
 
   initialize: function (options) {
     options || (options = {});
@@ -280,7 +299,7 @@ fabric.ControlPoint = fabric.util.createClass(fabric.Rect, {
 
     ctx.font = "15px Helvetica";
     ctx.fillStyle = "#333";
-    ctx.fillText(this.label, -this.width / 2, -this.height / 2 + 20);
+    ctx.fillText(this.label, -this.width / 2 + 10, -this.height / 2 + 20);
   },
 });
 
@@ -289,18 +308,21 @@ fabric.ControlPoint.fromObject = function (object, callback) {
 };
 
 function saveAll() {
-  objects = JSON.stringify(canvas);
-  console.log(typeof objects);
+  canvasObjects = JSON.stringify(canvas);
+  camera = JSON.stringify(cameraInfo);
+  data = { camera: camera, canvas: canvasObjects };
+
   $.ajax({
     url: "/admin/spaces/add",
     type: "post",
-    data: objects,
+    data: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
     },
     dataType: "json",
     success: function (data) {
-      console.info(data);
+      console.log(data["result"]);
+      location.href = "/admin/cameras";
     },
   });
 }
