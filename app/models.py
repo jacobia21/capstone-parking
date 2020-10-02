@@ -98,15 +98,15 @@ class SpaceDimensions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     start_x = db.Column(db.Integer)
     start_y = db.Column(db.Integer)
-    end_x = db.Column(db.Integer)
-    end_y = db.Column(db.Integer)
+    width = db.Column(db.Integer)
+    height = db.Column(db.Integer)
     space_id = db.Column(db.Integer, db.ForeignKey('space.id'), nullable=False)
 
     space = db.relationship(
         'ParkingSpace', backref=db.backref('dimensions', lazy='dynamic'))
 
     def __repr__(self):
-        return '<Space {}>'.format(self.id)
+        return '<Space Coordinates {}>'.format(self.id)
 
 
 class Camera(db.Model):
@@ -114,11 +114,24 @@ class Camera(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location = db.Column(db.Integer)
     status = db.Column(db.Enum(CameraStatus))
+    mac_address = db.Column(db.String(20))
     lot_id = db.Column(db.Integer, db.ForeignKey("lot.id"), nullable=False)
-    # TODO: add ipAddress or macAddress field here
-
+    
     def __repr__(self):
         return '<Camera {}>'.format(self.id)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "location": self.location,
+            "status": self.status.value,
+            "lot_id": self.lot_id
+        }
+
+    def from_dict(self, data):
+        for field in ['location', 'status', "lot_id"]:
+            if field in data:
+                setattr(self, field, data[field])
 
 
 class ControlPoints(db.Model):
@@ -126,8 +139,8 @@ class ControlPoints(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     start_x = db.Column(db.Integer)
     start_y = db.Column(db.Integer)
-    end_x = db.Column(db.Integer)
-    end_y = db.Column(db.Integer)
+    width = db.Column(db.Integer)
+    height = db.Column(db.Integer)
     camera_id = db.Column(db.Integer, db.ForeignKey(
         'camera.id'), nullable=False)
 
