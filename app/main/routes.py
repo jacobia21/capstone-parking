@@ -32,5 +32,5 @@ def lots(zone_id):
 
     """
 
-    lots = Zone.query.get(zone_id).lots
+    lots = Zone.query.get_or_404(zone_id).lots
     return render_template("lots.html", title='Lots', lots=lots)
