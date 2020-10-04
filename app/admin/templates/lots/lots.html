@@ -38,7 +38,7 @@
                                             <td>{{lot.name}}</td>
                                             <td>
                                                 {% for zone in lot.zones.all()%}
-                                                    {{zone.name}},
+                                                    {{zone.name}}{{ ", " if not loop.last }}
                                                 {% endfor %}
                                             </td>
                                             <td>
