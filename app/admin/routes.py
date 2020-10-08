@@ -109,9 +109,8 @@ def delete_administrator(user_id):
 @bp.route('/cameras')
 @login_required
 def cameras():
+    # cameras = Camera.query.all()
     cameras = Camera.query.all()
-    cameras = Camera.query.with_entities(Camera.id, Camera.lot_id, func.lpad(
-        Camera.location, 4, 0).label("location"), Camera.status, Camera.mac_address).all()
     return render_template("cameras/cameras.html", title='Cameras', cameras=cameras)
 
 

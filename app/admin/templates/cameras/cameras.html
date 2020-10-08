@@ -50,8 +50,8 @@
                                         <tr>
                                             <th scope="row">{{loop.index}}</th>
                                             <td>{{camera.mac_address}}</td>
-                                            <td>{{camera.lot_id}}</td>
-                                            <td>{{camera.location}}</td>
+                                            <td>{{camera.lot.name}}</td>
+                                            <td>{{ '%04d' % (camera.location)}}</td>
                                             <td>{{camera.status.value}}</td>
                                             <td>
                                                 <a href="{{url_for('admin.edit_camera', camera_id=camera.id)}}">

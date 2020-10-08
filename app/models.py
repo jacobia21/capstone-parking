@@ -116,6 +116,9 @@ class Camera(db.Model):
     status = db.Column(db.Enum(CameraStatus))
     mac_address = db.Column(db.String(20))
     lot_id = db.Column(db.Integer, db.ForeignKey("lot.id"), nullable=False)
+
+    lot = db.relationship(
+        'Lot', backref=db.backref('cameras', lazy='dynamic'))
     
     def __repr__(self):
         return '<Camera {}>'.format(self.id)
