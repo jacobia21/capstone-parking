@@ -27,6 +27,7 @@ class BaseConfig(object):
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL')
+    DEBUG = True
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
 class TestingConfig(BaseConfig):
