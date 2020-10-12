@@ -33,6 +33,7 @@ def test_client():
 
 @pytest.fixture(scope='module')
 def init_database():
+    db.drop_all()
     # Create the database and the database table
     db.create_all()
 
