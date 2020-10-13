@@ -124,16 +124,16 @@ class EditLotForm(FlaskForm):
 
 
 class AddCameraForm(FlaskForm):
-    mac_address = StringField('Mac Address', validators=[DataRequired()])
+    ip_address = StringField('IP Address', validators=[DataRequired()])
     location = IntegerField('Location', validators=[DataRequired()])
     status = SelectField(u'Status', validators=[DataRequired()])
     lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add Camera')
 
-    def validate_mac_address(self, mac_address):
-        cameras = Camera.query.filter_by(mac_address=mac_address.data).all()
+    def validate_ip_address(self, ip_address):
+        cameras = Camera.query.filter_by(ip_address=ip_address.data).all()
         if cameras:
-            raise ValidationError('Please enter a unique mac address.')
+            raise ValidationError('Please enter a unique IP address.')
 
     # FIXME this validation should be fixed
     def validate_location(self, location):

@@ -128,7 +128,7 @@ def add_camera():
     if form.validate_on_submit():
         try:
             camera = Camera(location=form.location.data,
-                            lot_id=form.lot.data, status=form.status.data, mac_address= form.mac_address.data)
+                            lot_id=form.lot.data, status=form.status.data, ip_address= form.ip_address.data)
             db.session.add(camera)
             db.session.commit()
             return redirect(url_for('.mark_spaces', lot_id=camera.lot_id, camera_id=camera.id))

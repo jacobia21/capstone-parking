@@ -114,7 +114,7 @@ class Camera(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location = db.Column(db.Integer)
     status = db.Column(db.Enum(CameraStatus))
-    mac_address = db.Column(db.String(20))
+    ip_address = db.Column(db.String(20))
     lot_id = db.Column(db.Integer, db.ForeignKey("lot.id"), nullable=False)
 
     lot = db.relationship(
