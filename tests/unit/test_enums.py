@@ -6,7 +6,7 @@ def test_camera_status():
     assert CameraStatus.OFF.value == "OFF"
 
 
-def test_space_availablity():
+def test_space_availability():
     assert SpaceAvailability.AVAILABLE.value == "Available"
     assert SpaceAvailability.NOT_AVAILABLE.value == "Not Available"
     assert SpaceAvailability.RESERVED.value == "Reserved"
@@ -19,7 +19,7 @@ def test_log_status():
 
 def test_log_type():
     assert LogType.HARDWARE.value == "HARDWARE"
-    assert LogType.DATBASE.value == "DATABASE"
+    assert LogType.DATABASE.value == "DATABASE"
     assert LogType.WEBSITE.value == "WEBSITE"
 
 
