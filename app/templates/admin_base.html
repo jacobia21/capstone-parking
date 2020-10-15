@@ -94,6 +94,16 @@
 </script>
 <!-- Main File-->
 <script src="{{ url_for('static' , filename='js/front.js') }}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+                $("#myInput").on("keyup", function() {
+                    var value = $(this).val().toLowerCase();
+                    $("#myTable tr").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+            });
+</script>
 {% block script %}{% endblock script %}
 </body>
 </html>
