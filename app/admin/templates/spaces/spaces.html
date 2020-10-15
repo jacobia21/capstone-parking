@@ -1,7 +1,7 @@
-{% extends "admin_base.html" %} 
+{% extends "admin_base.html" %}
 {% set active_page='space' %}
 {% block content %}
-    
+
 <section class="table">
     <div class="container-fluid">
         <div class="row">
@@ -12,55 +12,58 @@
                             <div class="row pt-3"><span style="font-size:smaller; color:darkgrey">Filter by
                                 Lot</span>
 
-                        </div>
+                            </div>
 
-                        <div class="row ">
-                            <div class="filter">
-                                <span class="badge badge-pill badge-secondary active" type="radio" name="options" autocomplete="off" data-filter="all">
+                            <div class="row ">
+                                <div class="filter">
+                                <span class="badge badge-pill badge-secondary active" type="radio" name="options"
+                                      autocomplete="off" data-filter="all">
                                     Show
                                     All</span>
-                                <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options" id="option2" autocomplete="off" data-filter="Regular">Lot Name 1</span>
-                                <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options" id="option2" autocomplete="off" data-filter="Super">Lot Name 2</span>
-                            </div>
+                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options"
+                                          id="option2" autocomplete="off" data-filter="Regular">Lot Name 1</span>
+                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options"
+                                          id="option2" autocomplete="off" data-filter="Super">Lot Name 2</span>
+                                </div>
                             </div>
                         </div>
 
-                        
+
                     </div>
                     <div class="card-body">
                         <input class="form-control" id="myInput" type="text" placeholder="Search..">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover text-center">
                                 <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Space ID</th>
-                                        <th>Space Available?</th>
-                                        <th>Zone</th>
-                                        <th>Lot</th>
-                                        <th>Camera ID</th>
-                                        <th></th>
-                                    </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Space ID</th>
+                                    <th>Space Available?</th>
+                                    <th>Zone</th>
+                                    <th>Lot</th>
+                                    <th>Camera ID</th>
+                                    <th></th>
+                                </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    {% for space in spaces %}
-                                        <tr>
-                                            <th scope="row">{{loop.index}}</th>
-                                            <td>{{space.id}}</td>
-                                            <td>{{space.availability.value}}</td>
-                                            <td>{{space.zone.name}}</td>
-                                            <td>{{space.lot.name}}</td>
-                                            <td>{{space.camera.id}}</td>
-                                            <td>
-                                                <a href="{{url_for('admin.edit_space')}}">
-                                                    <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
-                                                </a>
-                                                <a href="#" data-toggle="modal" data-target="#deleteModal">
-                                                    <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                       {% endfor %}
+                                {% for space in spaces %}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{space.id}}</td>
+                                    <td>{{space.availability.value}}</td>
+                                    <td>{{space.zone.name}}</td>
+                                    <td>{{space.lot.name}}</td>
+                                    <td>{{space.camera.id}}</td>
+                                    <td>
+                                        <a href="{{url_for('admin.edit_space')}}">
+                                            <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="#" data-toggle="modal" data-target="#deleteModal">
+                                            <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
 
@@ -69,14 +72,17 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="modal-title">Delete Space</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                &times;
+                                            </button>
 
                                         </div>
                                         <div class="modal-body">
                                             <form action="{{url_for('admin.delete_space')}}" method="post">
-                                               
-                                                <input type="hidden" name="user_id" value="<?= $admin->id ?>" />
-                                                <p>Are you sure you want to delete this space? This cannot be undone.</p>
+
+                                                <input type="hidden" name="user_id" value="<?= $admin->id ?>"/>
+                                                <p>Are you sure you want to delete this space? This cannot be
+                                                    undone.</p>
 
                                                 <button type="submit" class="btn btn-primary btn-block">Delete</button>
                                             </form>
@@ -85,14 +91,14 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
-
         </div>
+
+    </div>
 
     </div>
 </section>

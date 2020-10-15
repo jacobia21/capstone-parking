@@ -2,35 +2,46 @@
 <nav class="side-navbar">
     <!-- Sidebar Header-->
     <div class="sidebar-header d-flex align-items-center">
-        <div class="avatar"><img src="{{url_for('static', filename='img/avatar.jpg') }}" alt=" ..." class="img-fluid rounded-circle"></div>
+        <div class="avatar"><img src="{{ url_for('static', filename='img/avatar.jpg') }}" alt=" ..."
+                                 class="img-fluid rounded-circle"></div>
         <div class="title">
             <a href="">
-                <h1 class="h4">{{current_user.first_name}} {{current_user.last_name}}</h1>
+                <h1 class="h4">{{ current_user.first_name }} {{ current_user.last_name }}</h1>
             </a>
             <p>Administrator</p>
         </div>
     </div>
     <ul class="list-unstyled">
-        <li class="{{'active' if active_page == 'home' }}"><a href="{{url_for('admin.home')}}"> <i class="fa fa-tachometer"></i>
-                Command Center </a>
+        <li class="{{ 'active' if active_page == 'home' }}"><a href="{{ url_for('admin.home') }}"> <i
+                class="fa fa-tachometer"></i>
+            Command Center </a>
         </li>
         {% if current_user.group.name == 'Super' %}
-            <li class="{{'active' if active_page == 'admin' }}"><a href="{{url_for('admin.administrators')}}"> <i class="fa fa-users"></i>
-            Administrators </a>
+            <li class="{{ 'active' if active_page == 'admin' }}"><a href="{{ url_for('admin.administrators') }}"> <i
+                    class="fa fa-users"></i>
+                Administrators </a>
             </li>
         {% endif %}
-        <li class="{{'active' if active_page == 'camera' }}"><a href="{{url_for('admin.cameras')}}">
-                <i class="fa fa-camera " aria-hidden="true"></i>Cameras </a></li>
-        <li class="{{'active' if active_page is in ['zone','lot','space'] }}"><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-car " aria-hidden="true"></i>
-                Parking</a>
-            <ul id="exampledropdownDropdown" class="collapse list-unstyled {{'show' if active_page is in ['zone','lot','space'] }}">
+        <li class="{{ 'active' if active_page == 'camera' }}"><a href="{{ url_for('admin.cameras') }}">
+            <i class="fa fa-camera " aria-hidden="true"></i>Cameras </a></li>
+        <li class="{{ 'active' if active_page in ['zone','lot','space'] }}"><a href="#exampledropdownDropdown"
+                                                                                  aria-expanded="false"
+                                                                                  data-toggle="collapse"> <i
+                class="fa fa-car " aria-hidden="true"></i>
+            Parking</a>
+            <ul id="exampledropdownDropdown"
+                class="collapse list-unstyled {{ 'show' if active_page  in ['zone','lot','space'] }}">
 
-                <li class="{{'active' if active_page == 'zone' }}"><a href="{{url_for('admin.zones')}}">Zones</a></li>
-                <li class="{{'active' if active_page == 'lot' }}"><a href="{{url_for('admin.lots')}}">Lots</a></li>
-                <li class="{{'active' if active_page == 'space' }}"><a href="{{url_for('admin.spaces')}}">Spaces</a></li>
+                <li class="{{ 'active' if active_page == 'zone' }}"><a href="{{ url_for('admin.zones') }}">Zones</a>
+                </li>
+                <li class="{{ 'active' if active_page == 'lot' }}"><a href="{{ url_for('admin.lots') }}">Lots</a></li>
+                <li class="{{ 'active' if active_page == 'space' }}"><a href="{{ url_for('admin.spaces') }}">Spaces</a>
+                </li>
 
             </ul>
         </li>
-        <li class="{{'active' if active_page == 'log' }}"><a href="{{url_for('admin.system_log')}}"> <i class="fa fa-list " aria-hidden="true"></i>
-                </i>System Log </a></li>
+        <li class="{{ 'active' if active_page == 'log' }}"><a href="{{ url_for('admin.system_log') }}"> <i
+                class="fa fa-list " aria-hidden="true"></i>
+            </a>System Log </li>
+    </ul>
 </nav>

@@ -44,7 +44,7 @@ def forgot():
     """ 
 
     Allows an administrator to state they forgot their password,
-    tiggering a email for further instructions on how to reset their password.
+    triggering a email for further instructions on how to reset their password.
 
     """
 

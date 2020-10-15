@@ -1,49 +1,49 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
 {% block content %}
 <div class="container my-5 py-5 z-depth-5 bg-light animated fadeInRight">
-  <section class="px-md-5 mx-md-5 text-center dark-grey-text">
-    <!--Grid row-->
-    <div class="row d-flex align-items-center">
-      <!--Grid column-->
-      <div class="col-md-12 mb-4 mb-md-0">
-        <h3 class="font-weight-bold">Parking Lots</h3>
-        <p class="text-muted">
-          Based on the parking zone you selected, these are the number of
-          available spaces in the lots you may park in.
-        </p>
+    <section class="px-md-5 mx-md-5 text-center dark-grey-text">
+        <!--Grid row-->
+        <div class="row d-flex align-items-center">
+            <!--Grid column-->
+            <div class="col-md-12 mb-4 mb-md-0">
+                <h3 class="font-weight-bold">Parking Lots</h3>
+                <p class="text-muted">
+                    Based on the parking zone you selected, these are the number of
+                    available spaces in the lots you may park in.
+                </p>
 
-        <table class="table table-borderless table-hover table-striped">
-          <thead>
-            <tr>
-              <th scope="col" class="font-weight-bold text-center">#</th>
-              <th scope="col" class="font-weight-bold text-center">
-                Parking Lot
-              </th>
-              <th scope="col" class="font-weight-bold text-center">
-                Available Spaces
-              </th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for lot in lots%}
-            <tr>
-              <th scope="row" class="align-middle font-weight-bold">
-                {{loop.index}}
-              </th>
-              <td class="align-middle">{{lot.name}}</td>
-              <td class="align-middle">
-                {{lot.get_available_spaces()}}
-              </td>
-            </tr>
-           {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      <!--Grid column-->
-    </div>
-    <!--Grid row-->
-  </section>
+                <table class="table table-borderless table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="font-weight-bold text-center">#</th>
+                        <th scope="col" class="font-weight-bold text-center">
+                            Parking Lot
+                        </th>
+                        <th scope="col" class="font-weight-bold text-center">
+                            Available Spaces
+                        </th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for lot in lots%}
+                    <tr>
+                        <th scope="row" class="align-middle font-weight-bold">
+                            {{loop.index}}
+                        </th>
+                        <td class="align-middle">{{lot.name}}</td>
+                        <td class="align-middle">
+                            {{lot.get_available_spaces()}}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!--Grid column-->
+        </div>
+        <!--Grid row-->
+    </section>
 </div>
 {% endblock %}

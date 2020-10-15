@@ -2,62 +2,62 @@
 {% set active_page='admin' %}
 {% block content %}
 <a href="{{url_for('.administrators')}}" class="text-white pl-3 pt-2 back">
-  <span><i class="fa fa-angle-double-left"></i></span>
-  Administrators 
+    <span><i class="fa fa-angle-double-left"></i></span>
+    Administrators
 </a>
 <section>
-<div class="container-fluid">
-  <div class="row justify-content-md-center">
-    <div class="col-lg-8">
-      <div class="card">
-        <div class="card-body">
-          <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-              {{ form.email.label }} 
-              {{ form.email(size=32, class_="form-control") }}
-              {% for error in form.email.errors %}
-                <span style="color: red">[{{ error }}]</span>
-              {% endfor %}
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="" method="post" novalidate>
+                            {{ form.hidden_tag() }}
+                            <div class="form-group">
+                                {{ form.email.label }}
+                                {{ form.email(size=32, class_="form-control") }}
+                                {% for error in form.email.errors %}
+                                <span style="color: red">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.first_name.label }}
+                                {{ form.first_name(size=32, class_="form-control") }}
+                                {% for error in form.first_name.errors %}
+                                <span style="color: red">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.last_name.label }}
+                                {{ form.last_name(size=32, class_="form-control") }}
+                                {% for error in form.last_name.errors %}
+                                <span style="color: red">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.middle_initial.label }}
+                                {{ form.middle_initial(size=32, class_="form-control") }}
+                                {% for error in form.middle_initial.errors %}
+                                <span style="color: red">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{form.group.label}}
+                                {{ form.group(class_="form-control") }}
+
+                                {% for error in form.group.errors %}
+                                <span style="color: red">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                            <div class="d-flex">
+                                {{ form.submit(class="btn btn-primary text-white btn-md btn-block
+                                ml-auto") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                {{ form.first_name.label }} 
-                {{ form.first_name(size=32, class_="form-control") }}
-                {% for error in form.first_name.errors %}
-                  <span style="color: red">[{{ error }}]</span>
-                {% endfor %}
-              </div>
-              <div class="form-group">
-                {{ form.last_name.label }} 
-                {{ form.last_name(size=32, class_="form-control") }}
-                {% for error in form.last_name.errors %}
-                  <span style="color: red">[{{ error }}]</span>
-                {% endfor %}
-              </div>
-              <div class="form-group">
-                {{ form.middle_initial.label }} 
-                {{ form.middle_initial(size=32, class_="form-control") }}
-                {% for error in form.middle_initial.errors %}
-                  <span style="color: red">[{{ error }}]</span>
-                {% endfor %}
-              </div>
-             <div class="form-group">
-                {{form.group.label}}
-                {{ form.group(class_="form-control") }} 
-                
-                {% for error in form.group.errors %}
-                  <span style="color: red">[{{ error }}]</span>
-                {% endfor %}
-              </div>
-            <div class="d-flex">
-              {{ form.submit(class="btn btn-primary text-white btn-md btn-block
-              ml-auto") }}
-            </div>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
-</div>
 </section>
 {% endblock %}

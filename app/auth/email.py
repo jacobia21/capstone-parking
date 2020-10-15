@@ -9,7 +9,7 @@ def send_password_reset_email(user):
     """
     Sends a email to an administrator with instructions on resetting their password.
 
-    :param user: The user who will recieve the email.
+    :param user: The user who will receive the email.
     :type user: User
 
     """

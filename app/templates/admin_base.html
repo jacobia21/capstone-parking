@@ -1,97 +1,99 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <!-- Fav icon -->
     <link
-      rel="icon"
-      href="{{url_for('static', filename='img/logo.png') }}"
-      type="image/png"
+            rel="icon"
+            href="{{ url_for('static', filename='img/logo.png') }}"
+            type="image/png"
     />
 
     <!-- Bootstrap CSS-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/bootstrap.min.css')}}"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/bootstrap.min.css') }}"
     />
     <!-- Font Awesome CSS-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/font-awesome.min.css')}}"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/font-awesome.min.css') }}"
     />
     <!-- Fontastic Custom icon font-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/fontastic.css')}}"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/fontastic.css') }}"
     />
     <!-- theme stylesheet-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/admin.css')}}"
-      id="theme-stylesheet"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/admin.css') }}"
+            id="theme-stylesheet"
     />
     <!-- Custom stylesheet - for your changes-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/style.css')}}"
-      id="theme-stylesheet"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/style.css') }}"
+            id="theme-stylesheet"
     />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="{{url_for('static', filename='js/fabric.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/fabric.min.js') }}"></script>
 
     {% if title %}
-    <title>{{ title }} | Soar High Parking</title>
+        <title>{{ title }} | Soar High Parking</title>
     {% else %}
-    <title>Admin | Soar High Parking</title>
+        <title>Admin | Soar High Parking</title>
     {% endif %}
-  </head>
+</head>
 
-  <body class="maroon">
-    <main>
-      <div class="page">
+<body class="maroon">
+<main>
+    <div class="page">
         {% include "partials/header.html" %}
         <div class="page-content d-flex align-items-stretch min-vh-100">
-          {% include "partials/sidebar.html" %}
-          <div class="content-inner">
-            <!-- Page Header-->
-            <header class="page-header">
-              <div class="container-fluid">
-                <div class="row">
-                <a id="toggle-btn" href="#"
-            class="menu-btn active"><span></span><span></span><span></span></a>
-                <h2 class="no-margin-bottom">{{ title }}</h2>
-              </div>
+            {% include "partials/sidebar.html" %}
+            <div class="content-inner">
+                <!-- Page Header-->
+                <header class="page-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <a id="toggle-btn" href="#"
+                               class="menu-btn active"><span></span><span></span><span></span></a>
+                            <h2 class="no-margin-bottom">{{ title }}</h2>
+                        </div>
+                    </div>
+                </header>
+                <div class="container-fluid">
+                    {% include "partials/message_block.html" %}
+                </div>
+                {% block content %} {% endblock content %}
             </div>
-            </header>
-            <div class="container-fluid">
-                {% include "partials/message_block.html" %}
-            </div>
-            {% block content %} {% endblock content %}
-          </div>
         </div>
-      </div>
-    </main>
-       
-    {% include "partials/footer.html" %}
-    <!-- JavaScript files-->
+    </div>
+</main>
 
-    <script src="{{ url_for('static' , filename='js/jquery.min.js')}}"></script>
-    <script src="{{ url_for('static' , filename='js/popper.min.js')}}"></script>
-    <script src="{{ url_for('static' , filename='js/bootstrap.min.js')}}"></script>
-    <script src="{{ url_for('static' , filename='js/jquery.cookie.js')}}"></script>
-    <script src="{{ url_for('static' , filename='js/jquery.validate.min.js')}}"></script>
-    <script type=text/javascript>
-      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    </script>
-    <!-- Main File-->
-    <script src="{{ url_for('static' , filename='js/front.js')}}"></script>
-   {% block script %}{% endblock script%}
-  </body>
+{% include "partials/footer.html" %}
+<!-- JavaScript files-->
+
+<script src="{{ url_for('static' , filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/jquery.cookie.js') }}"></script>
+<script src="{{ url_for('static' , filename='js/jquery.validate.min.js') }}"></script>
+<script type=text/javascript>
+    $SCRIPT_ROOT =
+    {{ request.script_root | tojson | safe}}
+
+</script>
+<!-- Main File-->
+<script src="{{ url_for('static' , filename='js/front.js') }}"></script>
+{% block script %}{% endblock script %}
+</body>
 </html>

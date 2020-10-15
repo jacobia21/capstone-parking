@@ -1,7 +1,8 @@
-from enum import unique
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, SelectMultipleField, IntegerField, widgets
+from wtforms import StringField, SubmitField, SelectField, HiddenField, \
+    SelectMultipleField, IntegerField, widgets
 from wtforms.validators import DataRequired, Email, ValidationError
+
 from app.models import User, Zone, Lot, Camera
 
 
@@ -26,13 +27,13 @@ class MultiCheckboxField(SelectMultipleField):
 class AddAdminForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     first_name = StringField('First Name', validators=[
-                             DataRequired(), validate_name])
+        DataRequired(), validate_name])
     last_name = StringField('Last Name', validators=[
-                            DataRequired(), validate_name])
+        DataRequired(), validate_name])
     middle_initial = StringField('Middle Initial', validators=[
-                                 DataRequired(), validate_name])
+        DataRequired(), validate_name])
     group = SelectField(u'Admin Type', coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Add Aministrator')
+    submit = SubmitField('Add Administrator')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
@@ -47,7 +48,7 @@ class EditAdminForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     middle_initial = StringField('Middle Initial', validators=[DataRequired()])
     group = SelectField(u'Admin Type', coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Edit Aministrator')
+    submit = SubmitField('Edit Administrator')
 
     def validate_email(self, email):
         admin = User.query.filter_by(email=email.data).filter(

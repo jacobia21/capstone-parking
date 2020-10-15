@@ -1,7 +1,7 @@
-{% extends "admin_base.html" %} 
+{% extends "admin_base.html" %}
 {% set active_page='zone' %}
 {% block content %}
-    
+
 <section class="table">
     <div class="container-fluid">
         <div class="row">
@@ -11,42 +11,43 @@
                         <div class="container">
                             <div class="row">
                                 <div class="ml-auto mr-5">
-                                    
+
                                     <a href="{{url_for('admin.add_zone')}}" class="btn btn-primary">Add Zone</a>
                                 </div>
                             </div>
                         </div>
 
-                        
+
                     </div>
                     <div class="card-body">
                         <input class="form-control" id="myInput" type="text" placeholder="Search..">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover text-center">
                                 <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Color</th>
-                                        <th></th>
-                                    </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Color</th>
+                                    <th></th>
+                                </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                   {% for zone in zones%}
-                                        <tr>
-                                            <th scope="row">{{loop.index}}</th>
-                                            <td>{{zone.name}}</td>
-                                            <td>{{zone.color}}</td>
-                                            <td>
-                                                <a href="{{url_for('admin.edit_zone', zone_id=zone.id)}}">
-                                                    <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
-                                                </a>
-                                                <a data-zone-id="{{zone.id}}" href="#" data-toggle="modal" data-target="#deleteModal">
-                                                    <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
+                                {% for zone in zones%}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{zone.name}}</td>
+                                    <td>{{zone.color}}</td>
+                                    <td>
+                                        <a href="{{url_for('admin.edit_zone', zone_id=zone.id)}}">
+                                            <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
+                                        </a>
+                                        <a data-zone-id="{{zone.id}}" href="#" data-toggle="modal"
+                                           data-target="#deleteModal">
+                                            <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
 
@@ -55,7 +56,9 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="modal-title">Delete Zone</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                &times;
+                                            </button>
 
                                         </div>
                                         <div class="modal-body">
@@ -69,14 +72,14 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
-
         </div>
+
+    </div>
 
     </div>
 </section>
@@ -84,12 +87,12 @@
 
 {% block script %}
 <script type="text/javascript">
-    $('#deleteModal').on('show.bs.modal', function(e) {
-    //get data-id attribute of the clicked element
-    var zoneId = $(e.relatedTarget).data('zone-id');
+    $('#deleteModal').on('show.bs.modal', function (e) {
+        //get data-id attribute of the clicked element
+        var zoneId = $(e.relatedTarget).data('zone-id');
 
-    $(e.currentTarget).find('form#delete').attr('action', "zones/delete/" + zoneId)
-    
+        $(e.currentTarget).find('form#delete').attr('action', "zones/delete/" + zoneId)
+
     });
 </script>
 

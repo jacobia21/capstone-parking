@@ -1,10 +1,9 @@
 """ This module holds the route controllers for the main package """
 
+from flask import render_template
+
 from app.main import bp
-from flask import render_template, url_for
-from app.models import Zone, Lot, ParkingSpace
-from sqlalchemy import func
-from app.enums import SpaceAvailability
+from app.models import Zone
 
 
 @bp.route('/')

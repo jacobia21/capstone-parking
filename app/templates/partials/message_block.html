@@ -1,10 +1,10 @@
-{% with messages = get_flashed_messages() %} 
-    {% if messages %} 
-        {% for message in messages%}
-            <div class="alert {% if error%} alert-danger {% else %} alert-success {% endif %} alert-dismissible">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if error %} alert-danger {% else %} alert-success {% endif %} alert-dismissible">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    {{ message}}
+                {{ message }}
             </div>
-        {% endfor %} 
-    {% endif %} 
+        {% endfor %}
+    {% endif %}
 {% endwith %}

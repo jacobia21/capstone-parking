@@ -9,4 +9,3 @@ class TestAuthRoutes:
 
         assert b"Welcome back" in response.data
         assert response.status_code == 200
-

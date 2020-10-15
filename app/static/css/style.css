@@ -1,36 +1,41 @@
 .maroon {
     background: #5a1807;
-  }
-  .silver {
+}
+
+.silver {
     background-color: #4b515d;
-  }
-  .vh-65 {
+}
+
+.vh-65 {
     min-height: 65vh;
-  }
-  .import {
+}
+
+.import {
     position: fixed;
     /* left: 0; */
     bottom: 0;
     width: 100%;
-  }
-  td {
+}
+
+td {
     text-align: center;
-  }
-  .btn-primary {
+}
+
+.btn-primary {
     color: #fff;
     background-color: #5a1807 !important;
-  }
-  
-  .pagination a.nav-link.active{
-    color: white;
-      background-color: maroon;
-      border-radius: 20px;
-  }
-  
-  label {
-    font-weight: bold;
-  }
+}
 
-  .navbar{
+.pagination a.nav-link.active {
+    color: white;
+    background-color: maroon;
+    border-radius: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.navbar {
     font-weight: 400;
-  }
+}

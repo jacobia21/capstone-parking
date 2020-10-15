@@ -10,7 +10,7 @@ class CameraStatus(enum.Enum):
 
 
 class SpaceAvailability(enum.Enum):
-    """Defines all possible options for a spaces's availability."""
+    """Defines all possible options for a space's availability."""
 
     AVAILABLE = "Available"
     NOT_AVAILABLE = "Not Available"
@@ -28,7 +28,7 @@ class LogType(enum.Enum):
     """Defines all possible options for an error log's type."""
 
     WEBSITE = "WEBSITE"
-    DATBASE = "DATABASE"
+    DATABASE = "DATABASE"
     HARDWARE = "HARDWARE"
 
 

@@ -1,7 +1,7 @@
-{% extends "admin_base.html" %} 
+{% extends "admin_base.html" %}
 {% set active_page='admin' %}
 {% block content %}
-    
+
 <section class="table">
     <div class="container-fluid">
         <div class="row">
@@ -16,55 +16,60 @@
 
                             <div class="row ">
                                 <div class="filter">
-                                    <span class="badge badge-pill badge-secondary active" type="radio" name="options" autocomplete="off" data-filter="all">
+                                    <span class="badge badge-pill badge-secondary active" type="radio" name="options"
+                                          autocomplete="off" data-filter="all">
                                         Show
                                         All</span>
-                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options" id="option2" autocomplete="off" data-filter="Regular">Regular</span>
-                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options" id="option2" autocomplete="off" data-filter="Super">Super</span>
+                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options"
+                                          id="option2" autocomplete="off" data-filter="Regular">Regular</span>
+                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options"
+                                          id="option2" autocomplete="off" data-filter="Super">Super</span>
                                 </div>
                                 <div class="ml-auto mr-5">
-                                    
-                                    <a href="{{url_for('admin.add_administrator')}}" class="btn btn-primary">Add Administrator</a>
+
+                                    <a href="{{url_for('admin.add_administrator')}}" class="btn btn-primary">Add
+                                        Administrator</a>
                                 </div>
                             </div>
                         </div>
 
-                        
+
                     </div>
                     <div class="card-body">
                         <input class="form-control" id="myInput" type="text" placeholder="Search..">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover text-center">
                                 <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>MI</th>
-                                        <th>Email</th>
-                                        <th>Admin Type</th>
-                                        <th></th>
-                                    </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>MI</th>
+                                    <th>Email</th>
+                                    <th>Admin Type</th>
+                                    <th></th>
+                                </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    {% for admin in administrators%}
-                                        <tr>
-                                            <th scope="row">{{loop.index}}</th>
-                                            <td>{{admin.first_name}}</td>
-                                            <td>{{admin.last_name}}</td>
-                                            <td>{{admin.middle_initial}}</td>
-                                            <td>{{admin.email}}</td>
-                                            <td>{{admin.group.name}}</td>
-                                            <td>
-                                                <a href="{{url_for('admin.edit_administrator', user_id=admin.id)}}">
-                                                    <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
-                                                </a>
-                                                <a href="#" data-toggle="modal" data-admin-id="{{admin.id}}" data-target="#deleteModal">
-                                                    <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
+                                {% for admin in administrators%}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{admin.first_name}}</td>
+                                    <td>{{admin.last_name}}</td>
+                                    <td>{{admin.middle_initial}}</td>
+                                    <td>{{admin.email}}</td>
+                                    <td>{{admin.group.name}}</td>
+                                    <td>
+                                        <a href="{{url_for('admin.edit_administrator', user_id=admin.id)}}">
+                                            <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="#" data-toggle="modal" data-admin-id="{{admin.id}}"
+                                           data-target="#deleteModal">
+                                            <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
 
@@ -73,27 +78,29 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="modal-title">Delete Administrator</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                &times;
+                                            </button>
 
                                         </div>
                                         <div class="modal-body">
                                             <form id="delete" action="" method="post">
                                                 <p>Are you sure you want to delete this user? This cannot be undone.</p>
-                                                    <button type="submit" class="btn btn-primary btn-block">Delete</button>
+                                                <button type="submit" class="btn btn-primary btn-block">Delete</button>
                                             </form>
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
-
         </div>
+
+    </div>
 
     </div>
 </section>
@@ -101,12 +108,12 @@
 
 {% block script %}
 <script type="text/javascript">
-    $('#deleteModal').on('show.bs.modal', function(e) {
-    //get data-id attribute of the clicked element
-    var adminId = $(e.relatedTarget).data('admin-id');
+    $('#deleteModal').on('show.bs.modal', function (e) {
+        //get data-id attribute of the clicked element
+        var adminId = $(e.relatedTarget).data('admin-id');
 
-    $(e.currentTarget).find('form#delete').attr('action', "administrators/delete/" + adminId)
-    
+        $(e.currentTarget).find('form#delete').attr('action', "administrators/delete/" + adminId)
+
     });
 </script>
 {% endblock%}

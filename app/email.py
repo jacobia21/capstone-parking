@@ -1,11 +1,11 @@
 """This module allows for sending asynchronous emails."""
 
-from flask import current_app, render_template
 import os
+from threading import Thread
+
+from flask import current_app
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from app import db
-from threading import Thread
 
 
 def send_async_email(app, msg):
@@ -20,13 +20,13 @@ def send_async_email(app, msg):
     """
     with app.app_context():
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-        response = sg.send(msg)
         sg.send(msg)
 
 
 def send_email(subject, sender, recipients, html_body):
     """
-    Prepares a new SendGrid Mail object from inputs and calls :func:`~send_async_email` to send the asynchronous message.
+    Prepares a new SendGrid Mail object from inputs and calls
+    :func:`send_async_email` to send the asynchronous message.
 
     :param subject: The subject line of the email
     :type subject: str

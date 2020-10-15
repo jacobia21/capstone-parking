@@ -29,7 +29,6 @@ def create_app(config_class=None):
     """
     app = Flask(__name__)
 
-    
     environment = os.environ.get('FLASK_ENV')
     if config_class is not None:
         app.config.from_object(config_class)
@@ -73,7 +72,7 @@ def create_app(config_class=None):
                 mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
                 fromaddr=app.config['ADMIN'],
                 toaddrs=app.config['ADMIN'], subject='[Soar High Parking] System Failure',
-                credentials=auth, secure=secure,timeout=10.0)         
+                credentials=auth, secure=secure, timeout=10.0)
             mail_handler.setLevel(logging.ERROR)
             app.logger.addHandler(mail_handler)
 

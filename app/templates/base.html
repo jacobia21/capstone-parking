@@ -1,101 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
 
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <!-- Fav icon -->
     <link
-      rel="icon"
-      href="{{url_for('static', filename='img/logo.png') }}"
-      type="image/png"
+            rel="icon"
+            href="{{ url_for('static', filename='img/logo.png') }}"
+            type="image/png"
     />
-    
+
     <!-- Material Design Bootstrap -->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/mdb.min.css')}}"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/mdb.min.css') }}"
     />
 
     <!-- Bootstrap CSS-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/bootstrap.min.css')}}"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/bootstrap.min.css') }}"
     />
     <!-- Font Awesome CSS-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/font-awesome.min.css')}}"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/font-awesome.min.css') }}"
     />
     <!-- Fontastic Custom icon font-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/fontastic.css')}}"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/fontastic.css') }}"
     />
     <!-- theme stylesheet-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/admin.css')}}"
-      id="theme-stylesheet"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/admin.css') }}"
+            id="theme-stylesheet"
     />
     <!-- Custom stylesheet - for your changes-->
     <link
-      rel="stylesheet"
-      href="{{ url_for('static' , filename='css/style.css')}}"
-      id="theme-stylesheet"
+            rel="stylesheet"
+            href="{{ url_for('static' , filename='css/style.css') }}"
+            id="theme-stylesheet"
     />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     {% if title %}
-    <title>{{ title }} | Soar High Parking</title>
+        <title>{{ title }} | Soar High Parking</title>
     {% else %}
-    <title>Soar High Parking</title>
+        <title>Soar High Parking</title>
     {% endif %} {% block head %}{% endblock %}
-  </head>
-  <body class="maroon">
-    <!-- Start your project here-->
-    <!--Navbar-->
-    
-        <div class="page">
+</head>
+<body class="maroon">
+<!-- Start your project here-->
+<!--Navbar-->
+
+<div class="page">
     {% include "partials/header.html" %}
     {% include "partials/message_block.html" %}
     <main style="padding-bottom: 100px">
-      {% block content %} {% endblock content %}
+        {% block content %} {% endblock content %}
     </main>
-        </div>
-    {% include "partials/footer.html" %}
+</div>
+{% include "partials/footer.html" %}
 
-    <!-- jQuery -->
-    <script
-      type="text/javascript"
-      src="{{ url_for('static' , filename='js/jquery.min.js')}}"
-    ></script>
-    <!-- Bootstrap tooltips -->
-    <script
-      type="text/javascript"
-      src="{{ url_for('static' , filename='js/popper.min.js')}}"
-    ></script>
-    <!-- Bootstrap core JavaScript -->
-    <script
-      type="text/javascript"
-      src="{{ url_for('static' , filename='js/bootstrap.min.js')}}"
-    ></script>
-    <!-- MDB core JavaScript -->
-    <script
-      type="text/javascript"
-      src="{{ url_for('static' , filename='js/mdb.min.js')}}"
-    ></script>
-  </body>
+<!-- jQuery -->
+<script
+        type="text/javascript"
+        src="{{ url_for('static' , filename='js/jquery.min.js') }}"
+></script>
+<!-- Bootstrap tooltips -->
+<script
+        type="text/javascript"
+        src="{{ url_for('static' , filename='js/popper.min.js') }}"
+></script>
+<!-- Bootstrap core JavaScript -->
+<script
+        type="text/javascript"
+        src="{{ url_for('static' , filename='js/bootstrap.min.js') }}"
+></script>
+<!-- MDB core JavaScript -->
+<script
+        type="text/javascript"
+        src="{{ url_for('static' , filename='js/mdb.min.js') }}"
+></script>
+</body>
 </html>

@@ -1,15 +1,18 @@
-from flask import json
-from app.admin import bp
-from flask import render_template, url_for, flash, redirect, request, jsonify, current_app
-from flask_login import login_required
-from app.models import ControlPoints, SpaceDimensions, User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
-from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, AddCameraForm, EditCameraZone
-from app.auth.email import send_activation_email
-from app import db
-from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability
-from flask_login import current_user
 from datetime import datetime
+
+from flask import json
+from flask import render_template, url_for, flash, redirect, request
+from flask_login import current_user
+from flask_login import login_required
 from sqlalchemy import func
+
+from app import db
+from app.admin import bp
+from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, \
+    AddCameraForm, EditCameraZone
+from app.auth.email import send_activation_email
+from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability
+from app.models import ControlPoints, SpaceDimensions, User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
 
 
 @bp.route('/home')
@@ -19,7 +22,8 @@ def home():
     camera_count = Camera.query.count()
     zone_count = Zone.query.count()
     lot_count = Lot.query.count()
-    return render_template("home.html", title='Command Center', users=user_count, cameras=camera_count, zones=zone_count, lots=lot_count)
+    return render_template("home.html", title='Command Center', users=user_count, cameras=camera_count,
+                           zones=zone_count, lots=lot_count)
 
 
 @bp.route('/administrators')
@@ -27,8 +31,8 @@ def home():
 def administrators():
     if current_user.group.name != Groups.SUPER.value:
         return redirect('/')
-    administrators = User.query.all()
-    return render_template("administrators/administrators.html", title='Administrators', administrators=administrators)
+    admin = User.query.all()
+    return render_template("administrators/administrators.html", title='Administrators', administrators=admin)
 
 
 @bp.route('/administrators/add', methods=['GET', 'POST'])
@@ -54,11 +58,12 @@ def add_administrator():
         except Exception as err:
             print(err)
             flash("Something went wrong! Try again later")
-            return render_template("administrators/add_administrator.html", title='Add Administrator', form=form, error=1)
+            return render_template("administrators/add_administrator.html", title='Add Administrator', form=form,
+                                   error=1)
     return render_template("administrators/add_administrator.html", title='Add Administrator', form=form)
 
 
-@bp.route('/administrators/edit/<user_id>',  methods=['GET', 'POST'])
+@bp.route('/administrators/edit/<user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_administrator(user_id):
     if current_user.group.name != Groups.SUPER.value:
@@ -80,7 +85,8 @@ def edit_administrator(user_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("administrators/edit_administrator.html", title='Edit Adminstrator', form=form, admin=User.query.get(user_id), error=1)
+            return render_template("administrators/edit_administrator.html", title='Edit Administrator', form=form,
+                                   admin=User.query.get(user_id), error=1)
 
         return redirect(url_for('admin.administrators'))
 
@@ -89,7 +95,7 @@ def edit_administrator(user_id):
     return render_template("administrators/edit_administrator.html", title='Edit Administrator', form=form, admin=admin)
 
 
-@bp.route('/administrators/delete/<user_id>',  methods=['POST'])
+@bp.route('/administrators/delete/<user_id>', methods=['POST'])
 @login_required
 def delete_administrator(user_id):
     if current_user.group.name != Groups.SUPER.value:
@@ -128,7 +134,7 @@ def add_camera():
     if form.validate_on_submit():
         try:
             camera = Camera(location=form.location.data,
-                            lot_id=form.lot.data, status=form.status.data, ip_address= form.ip_address.data)
+                            lot_id=form.lot.data, status=form.status.data, ip_address=form.ip_address.data)
             db.session.add(camera)
             db.session.commit()
             return redirect(url_for('.mark_spaces', lot_id=camera.lot_id, camera_id=camera.id))
@@ -139,7 +145,7 @@ def add_camera():
     return render_template("cameras/add_camera.html", title='Add Camera', form=form)
 
 
-@bp.route('/cameras/edit/<camera_id>',  methods=['GET', 'POST'])
+@bp.route('/cameras/edit/<camera_id>', methods=['GET', 'POST'])
 @login_required
 def edit_camera(camera_id):
     form = EditCameraZone(camera_id=camera_id)
@@ -159,7 +165,8 @@ def edit_camera(camera_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("cameras/edit_camera/html", title='Edit Camera', form=form, camera=Camera.query.get(camera_id), error=1)
+            return render_template("cameras/edit_camera.html", title='Edit Camera', form=form,
+                                   camera=Camera.query.get(camera_id), error=1)
 
         return redirect(url_for('admin.cameras'))
 
@@ -168,10 +175,11 @@ def edit_camera(camera_id):
     form.lot.data = camera.lot_id
     form.status.data = camera.status.value
     form.location.data = camera.location
-    return render_template("cameras/edit_camera.html", title='Edit Camera', form=form, camera=Camera.query.get(camera_id))
+    return render_template("cameras/edit_camera.html", title='Edit Camera', form=form,
+                           camera=Camera.query.get(camera_id))
 
 
-@bp.route('/cameras/delete/<camera_id>',  methods=['POST'])
+@bp.route('/cameras/delete/<camera_id>', methods=['POST'])
 @login_required
 def delete_camera(camera_id):
     try:
@@ -212,7 +220,7 @@ def add_zone():
     return render_template("zones/add_zones.html", title='Add Zone', form=form)
 
 
-@bp.route('/zones/edit/<zone_id>',  methods=['GET', 'POST'])
+@bp.route('/zones/edit/<zone_id>', methods=['GET', 'POST'])
 @login_required
 def edit_zone(zone_id):
     form = EditZoneForm(zone_id=zone_id)
@@ -227,7 +235,8 @@ def edit_zone(zone_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id), error=1)
+            return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id),
+                                   error=1)
 
         return redirect(url_for('admin.zones'))
 
@@ -235,7 +244,7 @@ def edit_zone(zone_id):
     return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id))
 
 
-@bp.route('/zones/delete/<zone_id>',  methods=['POST'])
+@bp.route('/zones/delete/<zone_id>', methods=['POST'])
 @login_required
 def delete_zone(zone_id):
     try:
@@ -281,7 +290,7 @@ def add_lot():
     return render_template("lots/add_lot.html", title='Add Lot', form=form)
 
 
-@bp.route('/lots/edit/<lot_id>',  methods=['GET', 'POST'])
+@bp.route('/lots/edit/<lot_id>', methods=['GET', 'POST'])
 @login_required
 def edit_lot(lot_id):
     lot = Lot.query.get(lot_id)
@@ -304,7 +313,8 @@ def edit_lot(lot_id):
         except Exception as error:
             print(error)
             flash("Something went wrong! Try again later")
-            return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id), error=1)
+            return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id),
+                                   error=1)
 
         return redirect(url_for('admin.lots'))
 
@@ -312,7 +322,7 @@ def edit_lot(lot_id):
     return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id))
 
 
-@bp.route('/lots/delete/<lot_id>',  methods=['POST'])
+@bp.route('/lots/delete/<lot_id>', methods=['POST'])
 @login_required
 def delete_lot(lot_id):
     try:
@@ -344,19 +354,21 @@ def add_space():
 
     for object in objects:
         if object.get("type") == "ParkingSpace":
-            parkingSpace = ParkingSpace(
-                availability=SpaceAvailability.NOT_AVAILABLE, lot_id=camera["lot_id"], zone_id=object["zones"][0], camera_id=camera["id"])
+            parking_space = ParkingSpace(
+                availability=SpaceAvailability.NOT_AVAILABLE, lot_id=camera["lot_id"], zone_id=object["zones"][0],
+                camera_id=camera["id"])
 
-            db.session.add(parkingSpace)
+            db.session.add(parking_space)
             db.session.commit()
 
-            parkingSpaceCoordinates = SpaceDimensions(
-                start_x=object["left"], start_y=object["top"], width=object["width"], height=object["height"], space_id=parkingSpace.id)
-            db.session.add(parkingSpaceCoordinates)
+            parking_space_coordinates = SpaceDimensions(
+                start_x=object["left"], start_y=object["top"], width=object["width"], height=object["height"],
+                space_id=parking_space.id)
+            db.session.add(parking_space_coordinates)
             db.session.commit()
 
-            print("Parking Space: ", parkingSpace.__dict__)
-            print("Coordinates: ", parkingSpaceCoordinates.__dict__)
+            print("Parking Space: ", parking_space.__dict__)
+            print("Coordinates: ", parking_space_coordinates.__dict__)
 
         if object.get("type") == "ControlPoint":
             controlPoint = ControlPoints(start_x=object["left"], start_y=object["top"],
@@ -370,13 +382,13 @@ def add_space():
     return {"result": "success"}
 
 
-@bp.route('/spaces/edit',  methods=['GET', 'POST'])
+@bp.route('/spaces/edit', methods=['GET', 'POST'])
 @login_required
 def edit_space():
     return render_template("spaces/spaces.html", title='Edit Parking Spaces')
 
 
-@bp.route('/spaces/delete',  methods=['POST'])
+@bp.route('/spaces/delete', methods=['POST'])
 @login_required
 def delete_space():
     return render_template("spaces/spaces.html", title='Parking Spaces')

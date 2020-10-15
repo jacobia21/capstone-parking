@@ -1,13 +1,15 @@
 """ This module defines the models that represent the database tables and relationships. """
-from app import db
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
-from app import login
+from datetime import datetime
 from time import time
+
 import jwt
 from flask import current_app
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from app import db
+from app import login
 from app.enums import CameraStatus, SpaceAvailability, LogStatus, LogType
-from datetime import datetime
 
 
 @login.user_loader
@@ -119,7 +121,7 @@ class Camera(db.Model):
 
     lot = db.relationship(
         'Lot', backref=db.backref('cameras', lazy='dynamic'))
-    
+
     def __repr__(self):
         return '<Camera {}>'.format(self.id)
 
