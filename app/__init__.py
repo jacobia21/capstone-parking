@@ -1,13 +1,14 @@
 """ This is the main app package for the Soar High Parking website. It creates and initializes the flask app. """
 
 import logging
-from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
+from logging.handlers import SMTPHandler, RotatingFileHandler
+
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -15,7 +16,7 @@ login = LoginManager()
 login.login_view = 'auth.login'
 toolbar = DebugToolbarExtension()
 
-
+import app.event_listeners
 def create_app(config_class=None):
     """
     Creates and initializes flask app.
