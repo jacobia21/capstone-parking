@@ -218,6 +218,8 @@ fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
         this.callSuper("initialize", options);
         this.set("id", options.id || 0);
         this.set("zones", options.zones || []);
+        this.set("height", options.height || 150)
+        this.set("width", options.width || 100)
     },
 
     toObject: function () {
@@ -326,4 +328,26 @@ function saveAll() {
             location.href = "/admin/cameras";
         },
     });
+}
+
+
+
+let information;
+function getInfo(info) {
+    information = info
+    console.log(information)
+
+    spaces = information["spaces"]
+    for (space in spaces){
+        var parkingSpace = new fabric.ParkingSpace({
+            width: spaces[space].width,
+            height: spaces[space].height,
+            left: spaces[space].left,
+            top: spaces[space].top,
+            id: spaces[space].id,
+            fill: "white",
+        });
+        canvas.add(parkingSpace);
+    spaceCount = spaces.length;
+    }
 }

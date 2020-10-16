@@ -393,10 +393,25 @@ def add_space():
     return {"result": "success"}
 
 
-@bp.route('/spaces/edit', methods=['GET', 'POST'])
+@bp.route('/spaces/edit/<camera_id>', methods=['GET', 'POST'])
 @login_required
-def edit_space():
-    return render_template("spaces/spaces.html", title='Edit Parking Spaces')
+def edit_space(camera_id):
+    camera = Camera.query.get_or_404(camera_id)
+    spaces = []
+
+    for space in camera.spaces.all():
+        space_dimensions = space.dimensions.first()
+
+        spaces.append({
+            "id": space.id,
+            "zones": [space.zone.name],
+            "width": space_dimensions.width,
+            "height": space_dimensions.height,
+            "left": space_dimensions.start_x,
+            "top": space_dimensions.start_y
+        })
+
+    return render_template("spaces/view_spaces.html", title='Edit Parking Spaces', data={"spaces": spaces})
 
 
 @bp.route('/spaces/delete', methods=['POST'])
