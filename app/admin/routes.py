@@ -117,7 +117,9 @@ def delete_administrator(user_id):
 def cameras():
     # cameras = Camera.query.all()
     cameras = Camera.query.all()
-    return render_template("cameras/cameras.html", title='Cameras', cameras=cameras)
+    lots = Lot.query.with_entities(Lot.name).all()
+    print(lots)
+    return render_template("cameras/cameras.html", title='Cameras', cameras=cameras, lots=lots)
 
 
 @bp.route('/cameras/add', methods=['GET', 'POST'])

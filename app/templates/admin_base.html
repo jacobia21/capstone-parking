@@ -95,14 +95,31 @@
 <!-- Main File-->
 <script src="{{ url_for('static' , filename='js/front.js') }}"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-                $("#myInput").on("keyup", function() {
-                    var value = $(this).val().toLowerCase();
-                    $("#myTable tr").filter(function() {
-                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                    });
-                });
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
+        });
+    });
+</script>
+<script type="text/javascript">
+    $('.filter').on('click', 'span', function (e) {
+        e.preventDefault();
+
+        //Get filter data from active link
+        let filterValue = $(this).attr('data-filter');
+
+        if (filterValue === 'all') {
+            $("#myTable").find("tr").show();
+        } else {
+            let rows = $("#myTable").find("tr").hide();
+            rows.filter(":contains(" + filterValue + ")").show();
+        }
+        $('.filter span').removeClass('active');
+        $(this).closest('span').addClass('active');
+    });
 </script>
 {% block script %}{% endblock script %}
 </body>

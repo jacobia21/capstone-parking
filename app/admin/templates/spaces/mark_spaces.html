@@ -80,7 +80,7 @@
 
 
                         <input type="checkbox" class="form-check-input" name="zone"
-                               value="{{zone.id}}">{{zone.name}}</input>
+                               value="{{zone.id}}">{{zone.name}}
                         <br/>
 
                         {% endfor %}
@@ -135,11 +135,7 @@
 </div>
 {% endblock %} {% block script %}
 <script src="{{url_for('static', filename='js/mark_spaces.js')}}"></script>
-<script type="text/javascript">
-    cameraInfo = getCameraInfo({
-    {
-        data | tojson
-    }
-    })
+<script>
+    cameraInfo = getCameraInfo({{ data | tojson}})
 </script>
 {% endblock %}

@@ -165,7 +165,7 @@ class SystemLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.String(255))
     status = db.Column(db.Enum(LogStatus))
-    type = db.Column(db.Enum(LogType))
+    type = db.Column(db.Enum(LogType), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
     updated_at = db.Column(db.DateTime)

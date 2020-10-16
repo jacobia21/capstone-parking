@@ -85,7 +85,6 @@
 
     </div>
 
-    </div>
 </section>
 {% endblock %}
 
@@ -93,7 +92,7 @@
 <script type="text/javascript">
     $('#deleteModal').on('show.bs.modal', function (e) {
         //get data-id attribute of the clicked element
-        var lotId = $(e.relatedTarget).data('lot-id');
+         let lotId = $(e.relatedTarget).data('lot-id');
 
         $(e.currentTarget).find('form#delete').attr('action', "lots/delete/" + lotId)
 

@@ -16,16 +16,16 @@
 
                             <div class="row ">
                                 <div class="filter">
-                                <span class="badge badge-pill badge-secondary active" type="radio" name="options"
-                                      autocomplete="off" data-filter="all">
+                                <span class="badge badge-pill badge-secondary active" type="radio"
+                                       data-filter="all">
                                     Show
                                     All</span>
-                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options"
-                                          id="option2" autocomplete="off" data-filter="Regular">Website</span>
-                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options"
-                                          id="option2" autocomplete="off" data-filter="Super">Database</span>
-                                    <span class="badge badge-pill badge-secondary ml-2" type="radio" name="options"
-                                          id="option2" autocomplete="off" data-filter="Super">Hardware</span>
+                                    <span class="badge badge-pill badge-secondary ml-2" type="radio"
+                                          id="option2"  data-filter="Website">Website</span>
+                                    <span class="badge badge-pill badge-secondary ml-2" type="radio"
+                                          id="option2"  data-filter="Database">Database</span>
+                                    <span class="badge badge-pill badge-secondary ml-2" type="radio"
+                                          id="option2"  data-filter="Hardware">Hardware</span>
                                 </div>
                                 <div class="ml-auto mr-5">
                                     <button id="resolveButton" type="button" data-toggle="modal" data-target="#myModal"
@@ -50,7 +50,7 @@
                                     <th>Error Type</th>
                                     <th>Error</th>
                                     <th>Status</th>
-                                    <th>Occured</th>
+                                    <th>Occurred</th>
                                     <th>Resolved</th>
                                 </tr>
                                 </thead>
@@ -59,7 +59,7 @@
                                 <tr>
                                 <tr>
                                     <th scope="row">{{loop.index}}</th>
-                                    <td>{{log.type.value}}</td>
+                                    <td>{{log.type.value |capitalize }}</td>
                                     <td>{{log.message}}</td>
                                     <td>{{log.status.value}}</td>
                                     <td>{{log.created_at}}</td>
@@ -109,18 +109,16 @@
         </div>
 
     </div>
-
-    </div>
 </section>
 {% endblock %}
 
 {% block script%}
 <script type="text/javascript">
-    var logsToResolve = []
+     logsToResolve = []
     $(document).ready(function () {
-        var counter = 0;
+         let counter = 0;
         $("#myInput").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
+             let value = $(this).val().toLowerCase();
             $("#myTable tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
@@ -131,7 +129,7 @@
                 logsToResolve.push($(this).attr("name"));
             } else {
                 counter--;
-                var index = logsToResolve.indexOf($(this).attr("name"))
+                 let index = logsToResolve.indexOf($(this).attr("name"))
                 if (index > -1) {
                     logsToResolve.splice(index, 1);
                 }
@@ -147,8 +145,7 @@
     });
 
 
-    $('#resolveButton').on('click', function (e) {
-        var resolveCount = $("#modalCount").text();
+    $('#resolveButton').on('click', function (_) {
         $("#logsToResolve").val(logsToResolve);
     });
 
