@@ -31,9 +31,9 @@ class APIMixin(object):
 class LotZone(db.Model):
     __tablename__ = 'lotzone'
     lot_id = db.Column('lot_id', db.Integer,
-                       db.ForeignKey('lot.id'), primary_key=True)
+                       db.ForeignKey('lot.id', ondelete="cascade"), primary_key=True)
     zone_id = db.Column('zone_id', db.Integer,
-                        db.ForeignKey('zone.id'), primary_key=True)
+                        db.ForeignKey('zone.id', ondelete="cascade"), primary_key=True)
 
     def __repr__(self):
         return '<LotZone: Lot {}, Zone{}>'.format(self.lot_id, self.zone_id)
@@ -83,7 +83,7 @@ class ParkingSpace(db.Model):
     lot_id = db.Column(db.Integer, db.ForeignKey('lot.id'), nullable=False)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'), nullable=False)
     camera_id = db.Column(db.Integer, db.ForeignKey(
-        'camera.id'), nullable=False)
+        'camera.id', ondelete="cascade"), nullable=False)
 
     lot = db.relationship('Lot', backref=db.backref('spaces', lazy='dynamic'))
     zone = db.relationship(
@@ -102,7 +102,7 @@ class SpaceDimensions(db.Model):
     start_y = db.Column(db.Integer)
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
-    space_id = db.Column(db.Integer, db.ForeignKey('space.id'), nullable=False)
+    space_id = db.Column(db.Integer, db.ForeignKey('space.id', ondelete="cascade"), nullable=False)
 
     space = db.relationship(
         'ParkingSpace', backref=db.backref('dimensions', lazy='dynamic'))
@@ -117,7 +117,7 @@ class Camera(db.Model):
     location = db.Column(db.Integer)
     status = db.Column(db.Enum(CameraStatus))
     ip_address = db.Column(db.String(20))
-    lot_id = db.Column(db.Integer, db.ForeignKey("lot.id"), nullable=False)
+    lot_id = db.Column(db.Integer, db.ForeignKey("lot.id", ondelete="cascade"), nullable=False)
 
     lot = db.relationship(
         'Lot', backref=db.backref('cameras', lazy='dynamic'))
@@ -147,10 +147,10 @@ class ControlPoints(db.Model):
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
     camera_id = db.Column(db.Integer, db.ForeignKey(
-        'camera.id'), nullable=False)
+        'camera.id', ondelete="cascade"), nullable=False)
 
     camera = db.relationship(
-        'Camera', backref=db.backref('control', lazy='dynamic'))
+        'Camera', backref=db.backref('control', lazy='dynamic', cascade="all, delete-orphan"))
 
 
 class AdminGroup(db.Model):

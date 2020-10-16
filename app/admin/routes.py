@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import json
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, current_app
 from flask_login import current_user
 from flask_login import login_required
 from sqlalchemy import func
@@ -45,7 +45,6 @@ def add_administrator():
                           for g in AdminGroup.query.order_by('name')]
 
     if form.validate_on_submit():
-        # form.validate_name(form.first_name.data, form.last_name.data,form.middle_initial.data)
         try:
             user = User(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data,
                         middle_initial=form.middle_initial.data, group_id=form.group.data)
@@ -55,8 +54,9 @@ def add_administrator():
             send_activation_email(user)
             flash("New Admin Added")
             return redirect(url_for('admin.administrators'))
-        except Exception as err:
-            print(err)
+        except Exception as error:
+            current_app.logger.error(error)
+            db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("administrators/add_administrator.html", title='Add Administrator', form=form,
                                    error=1)
@@ -83,7 +83,8 @@ def edit_administrator(user_id):
             db.session.commit()
             flash('Administrator updated successfully!')
         except Exception as error:
-            print(error)
+            current_app.logger.error(error)
+            db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("administrators/edit_administrator.html", title='Edit Administrator', form=form,
                                    admin=User.query.get(user_id), error=1)
@@ -106,7 +107,8 @@ def delete_administrator(user_id):
         db.session.commit()
         flash("Administrator removed")
     except Exception as error:
-        print(error)
+        current_app.logger.error(error)
+        db.session.rollback()
         flash("Something went wrong! Try again later")
         return redirect(url_for('admin.administrators', error=1))
     return redirect(url_for('admin.administrators'))
@@ -118,7 +120,6 @@ def cameras():
     # cameras = Camera.query.all()
     cameras = Camera.query.all()
     lots = Lot.query.with_entities(Lot.name).all()
-    print(lots)
     return render_template("cameras/cameras.html", title='Cameras', cameras=cameras, lots=lots)
 
 
@@ -140,8 +141,9 @@ def add_camera():
             db.session.add(camera)
             db.session.commit()
             return redirect(url_for('.mark_spaces', lot_id=camera.lot_id, camera_id=camera.id))
-        except Exception as err:
-            print(err)
+        except Exception as error:
+            current_app.logger.error(error)
+            db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("cameras/add_camera.html", title='Add Camera', form=form, error=1)
     return render_template("cameras/add_camera.html", title='Add Camera', form=form)
@@ -165,7 +167,8 @@ def edit_camera(camera_id):
             flash('Camera updated successfully!')
             # TODO either send directly to edit spaces page or ask if they would like to edit spaces
         except Exception as error:
-            print(error)
+            current_app.logger.error(error)
+            db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("cameras/edit_camera.html", title='Edit Camera', form=form,
                                    camera=Camera.query.get(camera_id), error=1)
@@ -184,13 +187,15 @@ def edit_camera(camera_id):
 @bp.route('/cameras/delete/<camera_id>', methods=['POST'])
 @login_required
 def delete_camera(camera_id):
+    print(camera_id)
     try:
-        camera = Camera.query.get(camera_id)
-        db.session.delete(camera)
+        Camera.query.filter(Camera.id == camera_id).delete()
         db.session.commit()
         flash("Camera removed")
     except Exception as error:
-        print(error)
+        current_app.logger.error(error)
+        db.session.rollback()
+        db.session.rollback()
         flash("Something went wrong! Try again later")
     return redirect(url_for('admin.cameras'))
 
@@ -215,8 +220,9 @@ def add_zone():
             db.session.commit()
             flash("New Zone Added")
             return redirect(url_for('admin.zones'))
-        except Exception as err:
-            print(err)
+        except Exception as error:
+            current_app.logger.error(error)
+            db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("zones/add_zones.html", title='Add Zone', form=form, error=1)
     return render_template("zones/add_zones.html", title='Add Zone', form=form)
@@ -235,7 +241,8 @@ def edit_zone(zone_id):
             db.session.commit()
             flash('Zone updated successfully!')
         except Exception as error:
-            print(error)
+            current_app.logger.error(error)
+            db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id),
                                    error=1)
@@ -255,7 +262,8 @@ def delete_zone(zone_id):
         db.session.commit()
         flash("Zone removed")
     except Exception as error:
-        print(error)
+        current_app.logger.error(error)
+        db.session.rollback()
         flash("Something went wrong! Try again later")
         return render_template("zones/zones.html", title='Zones', zones=Zone.query.all(), error=1)
     return redirect(url_for('admin.zones'))
@@ -285,8 +293,9 @@ def add_lot():
             db.session.commit()
             flash("New Lot Added")
             return redirect(url_for('admin.lots'))
-        except Exception as err:
-            print(err)
+        except Exception as error:
+            current_app.logger.error(error)
+            db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("lots/add_lot.html", title='Add Lot', form=form, error=1)
     return render_template("lots/add_lot.html", title='Add Lot', form=form)
@@ -328,12 +337,12 @@ def edit_lot(lot_id):
 @login_required
 def delete_lot(lot_id):
     try:
-        lot = Lot.query.get(lot_id)
-        db.session.delete(lot)
+        Lot.query.filter(Lot.id == lot_id).delete()
         db.session.commit()
         flash("Lot removed")
     except Exception as error:
-        print(error)
+        current_app.logger.error(error)
+        db.session.rollback()
         flash("Something went wrong! Try again later")
         return render_template("lots/lots.html", title='Lots', lots=Lot.query.all(), error=1)
     return redirect(url_for('admin.lots'))
