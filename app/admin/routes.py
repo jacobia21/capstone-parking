@@ -1,3 +1,4 @@
+from app.admin.utils import get_pi_image
 from datetime import datetime
 
 from flask import json
@@ -140,6 +141,8 @@ def add_camera():
                             lot_id=form.lot.data, status=form.status.data, ip_address=form.ip_address.data)
             db.session.add(camera)
             db.session.commit()
+
+            get_pi_image(form.ip_address.data, form.username.data, form.password.data)
             return redirect(url_for('.mark_spaces', lot_id=camera.lot_id, camera_id=camera.id))
         except Exception as error:
             current_app.logger.error(error)
