@@ -1,3 +1,4 @@
+from flask import current_app
 import paramiko
 from scp import SCPClient
 
@@ -18,4 +19,5 @@ def get_pi_image(ip_address, username, password, port=22):
 
         scp.close()
     except Exception as error:
-        print(error)
+        current_app.logger.info(type(error.__name__))
+        current_app.logger.info(error)
