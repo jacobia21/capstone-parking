@@ -1,6 +1,8 @@
 """ This module holds all the route controllers for the auth package. """
+from dropbox import DropboxOAuth2Flow
+from dropbox.oauth import BadRequestException, BadStateException, CsrfException, NotApprovedException, ProviderException
 from app.auth import bp
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, abort, current_app, session
 from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm, ActivateUserForm
 from flask_login import current_user, login_user, logout_user
 from app.models import User
@@ -105,3 +107,40 @@ def activate_account(token):
         flash('You have successfully activated your account!')
         return redirect(url_for('auth.login'))
     return render_template('activate_account.html', form=form)
+
+
+def get_dropbox_auth_flow():
+    APP_KEY = current_app.config['DROPBOX_APP_KEY']
+    APP_SECRET = current_app.config['DROPBOX_APP_SECRET']
+    flask_session = session
+    redirect_uri = "{}{}".format((request.url_root).rstrip(
+        '/'), url_for("auth.dropbox_auth_finish"))
+    return DropboxOAuth2Flow(
+        APP_KEY, redirect_uri, flask_session,
+        "dropbox-auth-csrf-token-{}".format(current_app.secret_key), consumer_secret=APP_SECRET)
+
+
+@bp.route('/dropbox_auth_start')
+def dropbox_auth_start():
+    authorize_url = get_dropbox_auth_flow().start()
+    return redirect(authorize_url)
+
+# URL handler for /dropbox-auth-finish
+@bp.route('/dropbox_auth_finish')
+def dropbox_auth_finish():
+    try:
+        oauth_result = \
+            get_dropbox_auth_flow().finish(
+                request.args)
+        return redirect(url_for('admin.cameras'))
+    except BadRequestException as e:
+        abort(400)
+    except BadStateException as e:
+        # Start the auth flow again.
+        abort("/dropbox-auth-start")
+    except CsrfException as e:
+        abort(403)
+    except NotApprovedException as e:
+        return redirect("/")
+    except ProviderException as e:
+        abort(403)

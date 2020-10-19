@@ -1,4 +1,3 @@
-from app.admin.utils import get_pi_image
 from datetime import datetime
 
 from flask import json
@@ -142,7 +141,6 @@ def add_camera():
             db.session.add(camera)
             db.session.commit()
 
-            get_pi_image(form.ip_address.data, form.username.data, form.password.data)
             return redirect(url_for('.mark_spaces', lot_id=camera.lot_id, camera_id=camera.id))
         except Exception as error:
             current_app.logger.error(error)
@@ -190,7 +188,6 @@ def edit_camera(camera_id):
 @bp.route('/cameras/delete/<camera_id>', methods=['POST'])
 @login_required
 def delete_camera(camera_id):
-    print(camera_id)
     try:
         Camera.query.filter(Camera.id == camera_id).delete()
         db.session.commit()
@@ -325,7 +322,6 @@ def edit_lot(lot_id):
             db.session.commit()
             flash('Lot updated successfully!')
         except Exception as error:
-            print(error)
             flash("Something went wrong! Try again later")
             return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id),
                                    error=1)
@@ -381,16 +377,12 @@ def add_space():
             db.session.add(parking_space_coordinates)
             db.session.commit()
 
-            print("Parking Space: ", parking_space.__dict__)
-            print("Coordinates: ", parking_space_coordinates.__dict__)
 
         if object.get("type") == "ControlPoint":
             controlPoint = ControlPoints(start_x=object["left"], start_y=object["top"],
                                          width=object["width"], height=object["height"], camera_id=camera["id"])
             db.session.add(controlPoint)
             db.session.commit()
-
-            print("Control Point: ", controlPoint.__dict__)
 
     flash("Spaces and control point added successfully!")
     return {"result": "success"}
@@ -447,6 +439,7 @@ def resolve_log():
 @bp.route('/mark_spaces/<lot_id>/<camera_id>')
 @login_required
 def mark_spaces(lot_id, camera_id):
+
     lot = Lot.query.get(lot_id)
     zones = lot.zones.all()
     camera = (Camera.query.get_or_404(camera_id)).to_dict()
