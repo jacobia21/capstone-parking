@@ -5,12 +5,12 @@ from datetime import datetime
 import dropbox
 
 from flask import json
-from flask import render_template, url_for, flash, redirect, request, current_app,session
+from flask import render_template, url_for, flash, redirect, request, current_app
 from flask_login import current_user
 from flask_login import login_required
 from sqlalchemy import func
 
-from app import db, redis_client
+from app import db
 from app.admin import bp
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, \
     AddCameraForm, EditCameraZone
@@ -443,13 +443,9 @@ def resolve_log():
 @bp.route('/mark_spaces/<lot_id>/<camera_id>')
 @login_required
 def mark_spaces(lot_id, camera_id):
-    session['camera_id'] = camera_id
-    session['lot_id'] = lot_id
-    dropbox_access_token = redis_client.get('dropbox_token')
-    if dropbox_access_token is None:
-        return redirect(url_for('auth.dropbox_auth_start'))
-    session.pop('camera_id')
-    session.pop('lot_id')
+    
+    dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
+    
     # TODO: error handling needed here
     dbx = dropbox.Dropbox(dropbox_access_token)
     download_result = download(dbx, "", "", "photo.jpg")
