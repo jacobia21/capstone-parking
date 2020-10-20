@@ -137,5 +137,6 @@
 <script src="{{url_for('static', filename='js/spaces/mark_spaces.js')}}"></script>
 <script>
     cameraInfo = getCameraInfo({{ data | tojson}})
+    canvasCreation()
 </script>
 {% endblock %}

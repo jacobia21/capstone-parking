@@ -9,12 +9,14 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_redis import FlaskRedis
 
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 login.login_view = 'auth.login'
 toolbar = DebugToolbarExtension()
+redis_client = FlaskRedis()
 
 import app.event_listeners
 def create_app(config_class=None):
@@ -45,6 +47,9 @@ def create_app(config_class=None):
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
+    redis_client.init_app(app,  charset="utf-8",
+                          decode_responses=True)
+
     if app.debug and not app.testing:
         toolbar.init_app(app)
 

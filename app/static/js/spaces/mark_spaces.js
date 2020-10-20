@@ -17,17 +17,20 @@ var cloneImg = document.createElement("img");
 cloneImg.src = cloneIcon;
 
 var cameraInfo = null;
+var canvasImageData = null;
 
 function getCameraInfo(info) {
-    cameraInfo = info;
+    cameraInfo = info['cameraInfo'];
+    canvasImageData = info['canvasImage']
     return info;
 }
+function canvasCreation(){
 
-fabric.Image.fromURL("/static/img/lot_map.png", function (img) {
-    canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-        scaleX: canvas.width / img.width,
-        scaleY: canvas.height / img.height,
-    });
+fabric.Image.fromURL("data:image/jpg;base64," + canvasImageData, function (img) {
+  canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+    scaleX: canvas.width / img.width,
+    scaleY: canvas.height / img.height,
+  });
 });
 
 canvas.on("object:moving", function (e) {
@@ -67,6 +70,7 @@ canvas.on("object:moving", function (e) {
         );
     }
 });
+}
 
 /**********************************************
  * Render Icon

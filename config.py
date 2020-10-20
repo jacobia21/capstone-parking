@@ -25,6 +25,8 @@ class BaseConfig(object):
     DROPBOX_APP_KEY = os.environ.get('DROPBOX_APP_KEY')
     DROPBOX_APP_SECRET = os.environ.get('DROPBOX_APP_SECRET')
 
+    REDIS_URL = os.environ.get('REDIS_URL')
+
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL')

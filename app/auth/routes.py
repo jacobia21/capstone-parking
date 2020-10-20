@@ -9,7 +9,7 @@ from app.models import User
 from flask import request
 from werkzeug.urls import url_parse
 from app.auth.email import send_password_reset_email
-from app import db
+from app import db, redis_client
 
 
 @bp.route('/login', methods=["GET", 'POST'])
@@ -126,13 +126,16 @@ def dropbox_auth_start():
     return redirect(authorize_url)
 
 # URL handler for /dropbox-auth-finish
+
+
 @bp.route('/dropbox_auth_finish')
 def dropbox_auth_finish():
     try:
         oauth_result = \
             get_dropbox_auth_flow().finish(
                 request.args)
-        return redirect(url_for('admin.cameras'))
+        redis_client.set('dropbox_token', oauth_result.access_token)
+        return redirect(url_for('admin.mark_spaces', lot_id=session['lot_id'], camera_id=session['camera_id']))
     except BadRequestException as e:
         abort(400)
     except BadStateException as e:
