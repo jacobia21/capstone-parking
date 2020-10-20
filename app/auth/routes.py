@@ -1,13 +1,14 @@
 """ This module holds all the route controllers for the auth package. """
-from app.auth import bp
 from flask import render_template, flash, redirect, url_for
-from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm, ActivateUserForm
-from flask_login import current_user, login_user, logout_user
-from app.models import User
 from flask import request
+from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
-from app.auth.email import send_password_reset_email
+
 from app import db
+from app.auth import bp
+from app.auth.email import send_password_reset_email
+from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm, ActivateUserForm
+from app.models import User
 
 
 @bp.route('/login', methods=["GET", 'POST'])

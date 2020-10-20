@@ -1,5 +1,7 @@
-import dropbox
 import os
+
+import dropbox
+
 
 def download(dbx, folder, subfolder, name):
     """Download a file.

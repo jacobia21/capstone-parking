@@ -1,8 +1,9 @@
 """ This module includes the logic for emails sent from the auth package """
 
-from app.email import send_email
-from app import db
 from flask import current_app, render_template
+
+from app import db
+from app.email import send_email
 
 
 def send_password_reset_email(user):

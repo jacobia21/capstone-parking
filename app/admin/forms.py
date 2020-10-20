@@ -125,7 +125,8 @@ class EditLotForm(FlaskForm):
 
 
 class AddCameraForm(FlaskForm):
-    ip_address = StringField('IP Address', validators=[DataRequired(), IPAddress(message="Please enter a valid IP Address")])
+    ip_address = StringField('IP Address',
+                             validators=[DataRequired(), IPAddress(message="Please enter a valid IP Address")])
     location = IntegerField('Location', validators=[DataRequired()])
     status = SelectField(u'Status', validators=[DataRequired()])
     lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
@@ -136,7 +137,6 @@ class AddCameraForm(FlaskForm):
         if cameras:
             raise ValidationError('Please enter a unique IP address.')
 
-    # FIXME this validation should be fixed
     def validate_location(self, location):
         cameras = Camera.query.filter_by(
             location=location.data).filter_by(lot_id=self.lot.data).all()

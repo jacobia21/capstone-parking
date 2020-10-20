@@ -132,7 +132,6 @@ const deleteSpaceHandler = (_, target) => {
  ***********************************************/
 const cloneSpaceHandler = (_, target) => {
     var canvas = target.canvas;
-    // FIXME the cloned object does not currently take the fill color of its original
     target.clone(function (cloned) {
         cloned.left += 10;
         cloned.top += 10;
@@ -187,8 +186,6 @@ const saveSpaces = () => {
                 unsetSpaces.toString();
             $("#unsetZonesModal").modal("show");
         } else {
-            /* TODO: this is where setting control point should be initiated */
-
             canvas.getObjects("ParkingSpace").forEach((object) => {
                 object.selectable = false;
             });

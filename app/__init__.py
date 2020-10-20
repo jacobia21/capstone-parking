@@ -10,7 +10,6 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
@@ -18,6 +17,8 @@ login.login_view = 'auth.login'
 toolbar = DebugToolbarExtension()
 
 import app.event_listeners
+
+
 def create_app(config_class=None):
     """
     Creates and initializes flask app.

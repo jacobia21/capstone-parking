@@ -1,7 +1,8 @@
 """This module holds all error handlers."""
-from app.errors import bp
 from flask import render_template
+
 from app import db
+from app.errors import bp
 
 
 @bp.app_errorhandler(404)

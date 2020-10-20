@@ -1,9 +1,7 @@
 import base64
-
-from app.admin.utils import download
 from datetime import datetime
-import dropbox
 
+import dropbox
 from flask import json
 from flask import render_template, url_for, flash, redirect, request, current_app
 from flask_login import current_user
@@ -14,6 +12,7 @@ from app import db
 from app.admin import bp
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, \
     AddCameraForm, EditCameraZone
+from app.admin.utils import download
 from app.auth.email import send_activation_email
 from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability
 from app.models import ControlPoints, SpaceDimensions, User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
