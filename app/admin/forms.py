@@ -1,7 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, HiddenField, \
     SelectMultipleField, IntegerField, widgets
-from wtforms.fields.simple import PasswordField
 from wtforms.validators import DataRequired, Email, IPAddress, ValidationError
 
 from app.models import User, Zone, Lot, Camera
@@ -127,8 +126,6 @@ class EditLotForm(FlaskForm):
 
 class AddCameraForm(FlaskForm):
     ip_address = StringField('IP Address', validators=[DataRequired(), IPAddress(message="Please enter a valid IP Address")])
-    username = StringField('Camera Username', validators=[DataRequired()])
-    password = PasswordField('Camera Password', validators=[DataRequired(),]) 
     location = IntegerField('Location', validators=[DataRequired()])
     status = SelectField(u'Status', validators=[DataRequired()])
     lot = SelectField(u'Lot', coerce=int, validators=[DataRequired()])
