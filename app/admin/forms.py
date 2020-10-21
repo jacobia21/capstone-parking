@@ -100,8 +100,6 @@ class EditZoneForm(FlaskForm):
 
 class AddLotForm(FlaskForm):
     name = StringField('Lot Name', validators=[DataRequired()])
-    zones = MultiCheckboxField(
-        u'Allowed Zones', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add Lot')
 
     def validate_name(self, name):
@@ -113,8 +111,6 @@ class AddLotForm(FlaskForm):
 class EditLotForm(FlaskForm):
     lot_id = HiddenField(validators=[DataRequired()])
     name = StringField('Lot Name', validators=[DataRequired()])
-    zones = MultiCheckboxField(
-        u'Allowed Zones', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Edit Lot')
 
     def validate_name(self, name):

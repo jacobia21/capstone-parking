@@ -207,7 +207,7 @@ def delete_camera(camera_id):
 @login_required
 def zones():
     zones = Zone.query.all()
-    return render_template("zones/zones.html", title='Zones', zones=zones)
+    return render_template("zones/zones.html", title='Parking Zones', zones=zones)
 
 
 @bp.route('/zones/add', methods=['GET', 'POST'])
@@ -276,21 +276,21 @@ def delete_zone(zone_id):
 @login_required
 def lots():
     lots = Lot.query.all()
-    return render_template("lots/lots.html", title='Lots', lots=lots)
+    return render_template("lots/lots.html", title='Parking Lots', lots=lots)
 
 
 @bp.route('/lots/add', methods=['GET', 'POST'])
 @login_required
 def add_lot():
     form = AddLotForm()
-    form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('name')]
-    form.zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
+    # form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('name')]
+    # form.zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
     if form.validate_on_submit():
         try:
             lot = Lot(name=form.name.data)
-            for z in form.zones.data:
-                zone = Zone.query.get(z)
-                lot.zones.append(zone)
+            # for z in form.zones.data:
+            #     zone = Zone.query.get(z)
+            #     lot.zones.append(zone)
 
             db.session.add(lot)
             db.session.commit()
@@ -309,18 +309,18 @@ def add_lot():
 def edit_lot(lot_id):
     lot = Lot.query.get(lot_id)
     form = EditLotForm(lot_id=lot_id)
-    form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('id')]
-    form.zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
+    # form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('id')]
+    # form.zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
 
     if form.validate_on_submit():
         try:
             lot = Lot.query.get(lot_id)
             lot.name = form.name.data
 
-            zones = []
-            for zone_id in form.zones.data:
-                zones.append(Zone.query.get(zone_id))
-            lot.zones = zones
+            # zones = []
+            # for zone_id in form.zones.data:
+            #     zones.append(Zone.query.get(zone_id))
+            # lot.zones = zones
 
             db.session.commit()
             flash('Lot updated successfully!')
@@ -331,7 +331,7 @@ def edit_lot(lot_id):
 
         return redirect(url_for('admin.lots'))
 
-    form.zones.data = [zone.id for zone in lot.zones]
+    # form.zones.data = [zone.id for zone in lot.zones]
     return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id))
 
 

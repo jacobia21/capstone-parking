@@ -27,7 +27,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <th>Allowed Zones</th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -36,11 +35,6 @@
                                 <tr>
                                     <th scope="row">{{loop.index}}</th>
                                     <td>{{lot.name}}</td>
-                                    <td>
-                                        {% for zone in lot.zones.all()%}
-                                        {{zone.name}}{{ ", " if not loop.last }}
-                                        {% endfor %}
-                                    </td>
                                     <td>
                                         <a href="{{url_for('admin.edit_lot', lot_id=lot.id)}}">
                                             <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
