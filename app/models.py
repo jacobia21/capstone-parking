@@ -171,6 +171,15 @@ class SystemLog(db.Model):
     updated_at = db.Column(db.DateTime)
 
 
+class Notifications(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, nullable=False,
+                          default=datetime.utcnow)
+    title = db.Column(db.String(255), nullable=False)
+    message = db.Column(db.String(255), nullable=False)
+    updates = db.Column(db.String(255), default="", nullable=False)
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)

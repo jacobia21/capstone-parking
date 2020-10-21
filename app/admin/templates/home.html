@@ -42,10 +42,9 @@
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6" onclick="window.location.href='{{ url_for('admin.zones') }}'">
                     <div class="item d-flex align-items-center dashboard-item">
-                        <div class="icon"><img src="{{ url_for('static', filename='img/cone_icon.png') }}" alt=""
-                                               style="width: 50px; height:50px; vertical-align:unset"></div>
+                        <div class="icon"><i class="fa-3x fa fa-car"></i></div>
                         <div class="title"><span>
-                                <div class="number"><strong>{{ zones }}</strong></div>Zones
+                                <div class="number"><strong>{{ zones }}</strong></div>Parking Zones
                             </span>
 
                         </div>
@@ -56,10 +55,9 @@
                 <!-- Item -->
                 <div class="col-xl-3 col-sm-6" onclick="window.location.href='{{ url_for('admin.lots') }}'">
                     <div class="item d-flex align-items-center dashboard-item">
-                        <div class="icon"><img src="{{ url_for('static', filename='img/lot_icon.png') }}" alt=""
-                                               style="width: 45px; height:45px; vertical-align:unset"></div>
+                        <div class="icon"><i class="fa-3x fa fa-product-hunt"></i></div>
                         <div class="title"><span>
-                                <div class="number"><strong>{{ lots }}</strong></div>Lots
+                                <div class="number"><strong>{{ lots }}</strong></div>Parking Lots
                             </span>
 
                         </div>
@@ -81,39 +79,31 @@
                             <h3 class="h4">Recent Updates</h3>
                         </div>
                         <div class="card-body no-padding">
+                        {% if notifications|length == 0 %}
+                            <div class="container text-center p-5">
+                               <p> No recent updates found!</p>
+                            </div>
+                        {% else %}
+                            {% for notification in notifications %}
                             <!-- Item-->
                             <div class="item d-flex justify-content-between">
                                 <div class="info d-flex">
-                                    <div class="icon"><i class="icon-rss-feed"></i></div>
+                                    <div class="icon"><i class="fa fa-envelope"></i></div>
                                     <div class="title">
-                                        <h5>New Camera</h5>
-                                        <p>Camera 232145029 was added to the Mary Townes Lot.</p>
+                                        <h5>{{ notification['title'] }}</h5>
+                                        <p>{{ notification['message'] }}
+                                        {%   if 'updates' in notification %}
+                                            {% for update in notification['updates'] %}
+                                                <br> &bull; {{ update }}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </p>
                                     </div>
                                 </div>
-                                <div class="date text-right"><strong>24</strong><span>May</span></div>
+                                <div class="date text-right"><strong>{{ notification['day'] }}</strong><span>{{ notification['month'] }}</span></div>
                             </div>
-                            <!-- Item-->
-                            <div class="item d-flex justify-content-between">
-                                <div class="info d-flex">
-                                    <div class="icon"><i class="icon-rss-feed"></i></div>
-                                    <div class="title">
-                                        <h5>Regular Administrator Added</h5>
-                                        <p>Megan Anderson was added as a Regular Administrator</p>
-                                    </div>
-                                </div>
-                                <div class="date text-right"><strong>12</strong><span>Feb</span></div>
-                            </div>
-                            <!-- Item        -->
-                            <div class="item d-flex justify-content-between">
-                                <div class="info d-flex">
-                                    <div class="icon"><i class="icon-rss-feed"></i></div>
-                                    <div class="title">
-                                        <h5>New Zone</h5>
-                                        <p>Residential (Blue) Zone was added to the system.</p>
-                                    </div>
-                                </div>
-                                <div class="date text-right"><strong>8</strong><span>Jan</span></div>
-                            </div>
+                            {% endfor %}
+                        {% endif %}
                         </div>
                     </div>
 

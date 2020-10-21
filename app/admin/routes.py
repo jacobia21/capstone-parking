@@ -1,6 +1,6 @@
 import base64
 from datetime import datetime
-
+import calendar
 import dropbox
 from flask import json
 from flask import render_template, url_for, flash, redirect, request, current_app
@@ -15,7 +15,8 @@ from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneFo
 from app.admin.utils import download
 from app.auth.email import send_activation_email
 from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability
-from app.models import ControlPoints, SpaceDimensions, User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup
+from app.models import ControlPoints, SpaceDimensions, User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup, \
+    Notifications
 
 
 @bp.route('/home')
@@ -25,8 +26,30 @@ def home():
     camera_count = Camera.query.count()
     zone_count = Zone.query.count()
     lot_count = Lot.query.count()
+
+    notifications_query = Notifications.query.order_by(Notifications.timestamp.desc()).limit(3).all()
+    notifications = []
+    for notification in notifications_query:
+        title = notification.title
+        month = calendar.month_abbr[notification.timestamp.month]
+        day = notification.timestamp.day
+        message = notification.message
+        updates = notification.updates if notification.updates != "" else None
+
+        notification = {
+            'title': title,
+            'month': month,
+            'day': day,
+            'message': message,
+        }
+        if updates:
+            updates_list = updates.split(",")
+            notification['updates'] = updates_list
+
+        notifications.append(notification)
+
     return render_template("home.html", title='Command Center', users=user_count, cameras=camera_count,
-                           zones=zone_count, lots=lot_count)
+                           zones=zone_count, lots=lot_count, notifications=notifications)
 
 
 @bp.route('/administrators')
@@ -86,6 +109,7 @@ def edit_administrator(user_id):
             db.session.commit()
             flash('Administrator updated successfully!')
         except Exception as error:
+            print(error)
             current_app.logger.error(error)
             db.session.rollback()
             flash("Something went wrong! Try again later")
@@ -192,7 +216,8 @@ def edit_camera(camera_id):
 @login_required
 def delete_camera(camera_id):
     try:
-        Camera.query.filter(Camera.id == camera_id).delete()
+        camera = Camera.query.get(camera_id)
+        db.session.delete(camera)
         db.session.commit()
         flash("Camera removed")
     except Exception as error:
@@ -339,7 +364,8 @@ def edit_lot(lot_id):
 @login_required
 def delete_lot(lot_id):
     try:
-        Lot.query.filter(Lot.id == lot_id).delete()
+        lot = Lot.query.get(lot_id)
+        db.session.delete(lot)
         db.session.commit()
         flash("Lot removed")
     except Exception as error:
