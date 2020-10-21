@@ -2,8 +2,6 @@
 <nav class="side-navbar">
     <!-- Sidebar Header-->
     <div class="sidebar-header d-flex align-items-center">
-        <div class="avatar"><img src="{{ url_for('static', filename='img/avatar.jpg') }}" alt=" ..."
-                                 class="img-fluid rounded-circle"></div>
         <div class="title">
             <a href="">
                 <h1 class="h4">{{ current_user.first_name }} {{ current_user.last_name }}</h1>
@@ -24,22 +22,10 @@
         {% endif %}
         <li class="{{ 'active' if active_page == 'camera' }}"><a href="{{ url_for('admin.cameras') }}">
             <i class="fa fa-camera " aria-hidden="true"></i>Cameras </a></li>
-        <li class="{{ 'active' if active_page in ['zone','lot','space'] }}"><a href="#exampledropdownDropdown"
-                                                                                  aria-expanded="false"
-                                                                                  data-toggle="collapse"> <i
-                class="fa fa-car " aria-hidden="true"></i>
-            Parking</a>
-            <ul id="exampledropdownDropdown"
-                class="collapse list-unstyled {{ 'show' if active_page  in ['zone','lot','space'] }}">
-
-                <li class="{{ 'active' if active_page == 'zone' }}"><a href="{{ url_for('admin.zones') }}">Zones</a>
-                </li>
-                <li class="{{ 'active' if active_page == 'lot' }}"><a href="{{ url_for('admin.lots') }}">Lots</a></li>
-                <li class="{{ 'active' if active_page == 'space' }}"><a href="{{ url_for('admin.spaces') }}">Spaces</a>
-                </li>
-
-            </ul>
-        </li>
+     <li class="{{ 'active' if active_page == 'zone' }}"><a href="{{ url_for('admin.zones') }}">
+            <i class="fa fa-car " aria-hidden="true"></i>Parking Zones </a></li>
+     <li class="{{ 'active' if active_page == 'lot' }}"><a href="{{ url_for('admin.lots') }}">
+            <i class="fa fa-product-hunt " aria-hidden="true"></i>Parking Lots </a></li>
 
         <li class="{{ 'active' if active_page == 'log' }}"><a href="{{ url_for('admin.system_log') }}"> <i
                 class="fa fa-list " aria-hidden="true"></i>
