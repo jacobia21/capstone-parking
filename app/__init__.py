@@ -16,8 +16,6 @@ login = LoginManager()
 login.login_view = 'auth.login'
 toolbar = DebugToolbarExtension()
 
-import app.event_listeners
-
 
 def create_app(config_class=None):
     """
@@ -50,6 +48,9 @@ def create_app(config_class=None):
 
     if app.debug and not app.testing:
         toolbar.init_app(app)
+
+    if not app.testing:
+        import app.event_listeners
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
