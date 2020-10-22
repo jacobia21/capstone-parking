@@ -40,14 +40,15 @@ def lots(zone_id):
         available_spaces[lot.name] = lot.get_available_spaces(zone_id)
 
     children = zone.children.split(',') if zone.children != '' else None
-
+    child_zones = []
     if children is not None:
         for child in children:
             zone = Zone.query.get_or_404(int(child))
+            child_zones.append(zone.name)
             for lot in zone.lots:
                 if lot.name in available_spaces:
                     available_spaces[lot.name] = available_spaces[lot.name] + lot.get_available_spaces(zone.id)
                 else:
                     available_spaces[lot.name] = lot.get_available_spaces(zone.id)
 
-    return render_template("lots.html", title='Lots', available_spaces=available_spaces)
+    return render_template("lots.html", title='Lots', available_spaces=available_spaces, zone=zone, child_zones=child_zones)

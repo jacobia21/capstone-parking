@@ -2,15 +2,17 @@
 
 {% block content %}
 <div class="container my-5 py-5 z-depth-5 bg-light animated fadeInRight">
-    <section class="px-md-5 mx-md-5 text-center dark-grey-text">
+    <section class="mx-md-5 text-center dark-grey-text">
         <!--Grid row-->
         <div class="row d-flex align-items-center">
             <!--Grid column-->
             <div class="col-md-12 mb-4 mb-md-0">
-                <h3 class="font-weight-bold">Parking Lots</h3>
+                <h3 class="font-weight-bold">Parking Lots - {{ zone.name|title }}</h3>
                 <p class="text-muted">
                     Based on the parking zone you selected, these are the number of
-                    available spaces in the lots you may park in.
+                    available spaces in the lots you may park in. This includes available spaces
+                    in the following zones which you are allowed to park in if all {{ zone.name | title }} spaces are
+                    taken: {% for child in child_zones %}{{ child }}{% if not loop.last %}, {% endif %}{% endfor %}.
                 </p>
 
                 <table class="table table-borderless table-hover table-striped">
@@ -28,15 +30,15 @@
                     </thead>
                     <tbody>
                     {% for lot_name, number_of_available_spaces in available_spaces.items() %}
-                    <tr>
-                        <th scope="row" class="align-middle font-weight-bold">
-                            {{loop.index}}
-                        </th>
-                        <td class="align-middle">{{lot_name}}</td>
-                        <td class="align-middle">
-                            {{ number_of_available_spaces }}
-                        </td>
-                    </tr>
+                        <tr>
+                            <th scope="row" class="align-middle font-weight-bold">
+                                {{ loop.index }}
+                            </th>
+                            <td class="align-middle">{{ lot_name }}</td>
+                            <td class="align-middle">
+                                {{ number_of_available_spaces }}
+                            </td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>
