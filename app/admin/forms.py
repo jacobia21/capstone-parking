@@ -66,7 +66,7 @@ class EditAdminForm(FlaskForm):
 class AddZoneForm(FlaskForm):
     name = StringField('Zone Name', validators=[DataRequired()])
     color = StringField('Zone Color', validators=[DataRequired()])
-    additional_zones = MultiCheckboxField('Additional Zones', coerce=int, validators=[DataRequired()],
+    additional_zones = MultiCheckboxField('Additional Zones', coerce=int,
                                           description="Select any zones that drivers with this parking pass can also park in, if any.")
     lots = MultiCheckboxField(
         u'Allowed Lots', coerce=int, description="Select the lots that have specific spaces for this zone.")
@@ -87,7 +87,7 @@ class EditZoneForm(FlaskForm):
     zone_id = HiddenField(validators=[DataRequired()])
     name = StringField('Zone Name', validators=[DataRequired()])
     color = StringField('Zone Color', validators=[DataRequired()])
-    additional_zones = MultiCheckboxField('Additional Zones', coerce=int, validators=[DataRequired()])
+    additional_zones = MultiCheckboxField('Additional Zones', coerce=int)
     lots = MultiCheckboxField(
         u'Allowed Lots', coerce=int,
         description="Select the lots that have specific spaces for this zone.")
