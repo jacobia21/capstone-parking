@@ -7,9 +7,9 @@ def test_camera_status():
 
 
 def test_space_availability():
-    assert SpaceAvailability.AVAILABLE.value == "Available"
-    assert SpaceAvailability.NOT_AVAILABLE.value == "Not Available"
-    assert SpaceAvailability.RESERVED.value == "Reserved"
+    assert SpaceAvailability.AVAILABLE.value == "AVAILABLE"
+    assert SpaceAvailability.NOT_AVAILABLE.value == "NOT_AVAILABLE"
+    assert SpaceAvailability.RESERVED.value == "RESERVED"
 
 
 def test_log_status():
