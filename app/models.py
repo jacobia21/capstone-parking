@@ -86,11 +86,10 @@ class ParkingSpace(db.Model):
     camera_id = db.Column(db.Integer, db.ForeignKey(
         'camera.id', ondelete="cascade"), nullable=False)
 
-    lot = db.relationship('Lot', backref=db.backref('spaces', lazy='dynamic'))
+    lot = db.relationship('Lot', backref=db.backref('spaces', lazy='dynamic', cascade="all"))
     zone = db.relationship(
-        'Zone', backref=db.backref('spaces', lazy='dynamic'))
-    camera = db.relationship(
-        'Camera', backref=db.backref('spaces', lazy='dynamic'))
+        'Zone', backref=db.backref('spaces', lazy='dynamic', cascade="all"))
+
 
     def __repr__(self):
         return '<Space {}>'.format(self.id)
@@ -106,7 +105,7 @@ class SpaceDimensions(db.Model):
     space_id = db.Column(db.Integer, db.ForeignKey('space.id', ondelete="cascade"), nullable=False)
 
     space = db.relationship(
-        'ParkingSpace', backref=db.backref('dimensions', lazy='dynamic'))
+        'ParkingSpace', backref=db.backref('dimensions', uselist=False, cascade="all, delete"))
 
     def __repr__(self):
         return '<Space Coordinates {}>'.format(self.id)
@@ -122,6 +121,7 @@ class Camera(db.Model):
 
     lot = db.relationship(
         'Lot', backref=db.backref('cameras', lazy='dynamic'))
+    spaces = db.relationship('ParkingSpace', cascade="all, delete")
 
     def __repr__(self):
         return '<Camera {}>'.format(self.id)

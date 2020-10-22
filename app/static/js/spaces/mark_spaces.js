@@ -108,8 +108,10 @@ const addSpace = () => {
  ***********************************************/
 const setZonesHandler = (_, object) => {
     var zones = document.getElementsByName("zone");
+    console.log(object.zoneId)
+    console.log()
     for (var zone of zones) {
-        if (object.zones.includes(zone.value)) {
+        if (object.zoneId === zone.value) {
             zone.checked = true;
         } else {
             zone.checked = false;
@@ -150,14 +152,13 @@ const cloneSpaceHandler = (_, target) => {
 const setZones = () => {
     let activeObject = canvas.getActiveObject();
 
-    var zonesToSet = [];
     var zones = document.getElementsByName("zone");
     for (var zone of zones) {
         if (zone.checked) {
-            zonesToSet.push(zone.value);
+           activeObject.zoneId = `${zone.value}`
+            break
         }
     }
-    activeObject.zones = zonesToSet;
     $("#setZonesModal").modal("hide");
 };
 
@@ -174,7 +175,7 @@ const saveSpaces = () => {
         $("#unsetZonesModal").modal("show");
     } else {
         parkingSpaces.forEach((space) => {
-            if (space.zones.length < 1) {
+            if (space.zoneId === "") {
                 allZonesSet = false;
                 unsetSpaces.push(space.id);
             }
@@ -182,7 +183,7 @@ const saveSpaces = () => {
 
         if (!allZonesSet) {
             $("#unsetZonesText")[0].innerText =
-                "Must add at least one zone to the following space(s): \n" +
+                "Must select a zone for the following space(s): \n" +
                 unsetSpaces.toString();
             $("#unsetZonesModal").modal("show");
         } else {
@@ -209,7 +210,7 @@ const saveSpaces = () => {
  *
  * ParkingSpace Object Creation
  *
- ***********************************************/
+ * *******************************************/
 fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
     type: "ParkingSpace",
     objectCaching: false,
@@ -218,7 +219,7 @@ fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
         options || (options = {});
         this.callSuper("initialize", options);
         this.set("id", options.id || 0);
-        this.set("zones", options.zones || []);
+        this.set("zoneId", options.zones || "");
         this.set("height", options.height || 150)
         this.set("width", options.width || 100)
     },
@@ -226,7 +227,7 @@ fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
     toObject: function () {
         return fabric.util.object.extend(this.callSuper("toObject"), {
             id: this.get("id"),
-            zones: this.get("zones"),
+            zones: this.get("zoneId"),
         });
     },
 
@@ -315,6 +316,7 @@ function saveAll() {
     canvasObjects = JSON.stringify(canvas);
     camera = JSON.stringify(cameraInfo);
     data = {camera: camera, canvas: canvasObjects};
+    console.log(data)
 
     $.ajax({
         url: "/admin/spaces/add",

@@ -27,6 +27,7 @@
                                         <span style="color: red">[{{ error }}]</span>
                                     {% endfor %}
                                 </div>
+                            {% if form.additional_zones.choices | length > 0 %}
                                 <div class="">
                                     {{ form.additional_zones.label }}
                                     <br>
@@ -36,6 +37,8 @@
                                     {% endfor %}
                                     {{ form.additional_zones(size=32) }}
                                 </div>
+                            {% endif %}
+                            {% if form.lots.choices | length > 0 %}
                                 <div class="">
                                     {{ form.lots.label }}
                                     <br>
@@ -47,6 +50,7 @@
 
 
                                 </div>
+                            {% endif %}
                                 <div class="d-flex">
                                     {{ form.submit(class="btn btn-primary text-white btn-md btn-block
                                 ml-auto") }}

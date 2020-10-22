@@ -12,9 +12,9 @@ class CameraStatus(enum.Enum):
 class SpaceAvailability(enum.Enum):
     """Defines all possible options for a space's availability."""
 
-    AVAILABLE = "Available"
-    NOT_AVAILABLE = "Not Available"
-    RESERVED = "Reserved"
+    AVAILABLE = "AVAILABLE"
+    NOT_AVAILABLE = "NOT_AVAILABLE"
+    RESERVED = "RESERVED"
 
 
 class LogStatus(enum.Enum):

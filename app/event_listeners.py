@@ -94,7 +94,7 @@ def on_insert_camera(mapper, connection, target):
 
 @db.event.listens_for(Camera, "after_delete")
 def on_delete_camera(mapper, connection, target):
-    send_remove_notification("Camera", target, target.id)
+    send_remove_notification("Camera", target, target.ip_address)
 
 
 @db.event.listens_for(Camera, "after_update")

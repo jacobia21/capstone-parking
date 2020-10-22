@@ -109,7 +109,6 @@ def edit_administrator(user_id):
             db.session.commit()
             flash('Administrator updated successfully!')
         except Exception as error:
-            print(error)
             current_app.logger.error(error)
             db.session.rollback()
             flash("Something went wrong! Try again later")
@@ -217,14 +216,16 @@ def edit_camera(camera_id):
 def delete_camera(camera_id):
     try:
         camera = Camera.query.get(camera_id)
+        # Camera.query.delete(camera_id)
         db.session.delete(camera)
         db.session.commit()
         flash("Camera removed")
     except Exception as error:
         current_app.logger.error(error)
         db.session.rollback()
-        db.session.rollback()
         flash("Something went wrong! Try again later")
+        return render_template('cameras/cameras.html', error=1)
+
     return redirect(url_for('admin.cameras'))
 
 
@@ -310,7 +311,7 @@ def edit_zone(zone_id):
         return redirect(url_for('admin.zones'))
 
     zone = Zone.query.get(zone_id)
-    form.additional_zones.data = [int(s) for s in zone.children.split(',')] if zone.children is not None else []
+    form.additional_zones.data = [int(s) for s in zone.children.split(',')] if zone.children != "" else []
     form.lots.data = [int(l.id) for l in zone.lots]
     return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=zone)
 
@@ -409,14 +410,20 @@ def spaces():
 def add_space():
     data = request.json
     camera = json.loads(data.get("camera"))
+    camera = camera.get("cameraInfo")
     canvas = json.loads(data.get("canvas"))
     objects = canvas.get("objects")
 
     for object in objects:
         if object.get("type") == "ParkingSpace":
-            parking_space = ParkingSpace(
-                availability=SpaceAvailability.NOT_AVAILABLE, lot_id=camera["lot_id"], zone_id=object["zones"][0],
+            parking_space = ParkingSpace(lot_id=camera["lot_id"], zone_id=object["zones"],
                 camera_id=camera["id"])
+
+            zone = Zone.query.get(parking_space.zone_id)
+            if zone.name == "Reserved":
+                parking_space.availability = SpaceAvailability.RESERVED.value
+            else:
+                parking_space.availability = SpaceAvailability.NOT_AVAILABLE.value
 
             db.session.add(parking_space)
             db.session.commit()
