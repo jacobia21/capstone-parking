@@ -27,14 +27,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for lot in lots%}
+                    {% for lot_name, number_of_available_spaces in available_spaces.items() %}
                     <tr>
                         <th scope="row" class="align-middle font-weight-bold">
                             {{loop.index}}
                         </th>
-                        <td class="align-middle">{{lot.name}}</td>
+                        <td class="align-middle">{{lot_name}}</td>
                         <td class="align-middle">
-                            {{lot.get_available_spaces()}}
+                            {{ number_of_available_spaces }}
                         </td>
                     </tr>
                     {% endfor %}

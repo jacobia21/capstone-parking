@@ -73,8 +73,8 @@ class Lot(db.Model):
     def __repr__(self):
         return '<Lot {}>'.format(self.id)
 
-    def get_available_spaces(self):
-        return self.spaces.filter(ParkingSpace.availability == SpaceAvailability.AVAILABLE).count()
+    def get_available_spaces(self, zone_id):
+        return self.spaces.filter(ParkingSpace.zone_id == zone_id).filter(ParkingSpace.availability == SpaceAvailability.AVAILABLE).count()
 
 
 class ParkingSpace(db.Model):

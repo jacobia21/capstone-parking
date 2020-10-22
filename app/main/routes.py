@@ -31,5 +31,23 @@ def lots(zone_id):
 
     """
 
-    lots = Zone.query.get_or_404(zone_id).lots
-    return render_template("lots.html", title='Lots', lots=lots)
+    zone = Zone.query.get_or_404(zone_id)
+    lots = zone.lots
+
+    available_spaces = {}
+
+    for lot in lots:
+        available_spaces[lot.name] = lot.get_available_spaces(zone_id)
+
+    children = zone.children.split(',') if zone.children != '' else None
+
+    if children is not None:
+        for child in children:
+            zone = Zone.query.get_or_404(int(child))
+            for lot in zone.lots:
+                if lot.name in available_spaces:
+                    available_spaces[lot.name] = available_spaces[lot.name] + lot.get_available_spaces(zone.id)
+                else:
+                    available_spaces[lot.name] = lot.get_available_spaces(zone.id)
+
+    return render_template("lots.html", title='Lots', available_spaces=available_spaces)
