@@ -44,6 +44,7 @@ class Zone(APIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), index=True, unique=True)
     color = db.Column(db.String(100), index=True, unique=True)
+    children = db.Column(db.String(100))
 
     lots = db.relationship('Lot', secondary='lotzone',
                            backref=db.backref('zones', lazy='dynamic'))

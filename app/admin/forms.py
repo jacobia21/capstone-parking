@@ -66,6 +66,10 @@ class EditAdminForm(FlaskForm):
 class AddZoneForm(FlaskForm):
     name = StringField('Zone Name', validators=[DataRequired()])
     color = StringField('Zone Color', validators=[DataRequired()])
+    additional_zones = MultiCheckboxField('Additional Zones', coerce=int, validators=[DataRequired()],
+                                          description="Select any zones that drivers with this parking pass can also park in, if any.")
+    lots = MultiCheckboxField(
+        u'Allowed Lots', coerce=int, description="Select the lots that have specific spaces for this zone.")
     submit = SubmitField('Add Zone')
 
     def validate_name(self, name):
@@ -83,6 +87,10 @@ class EditZoneForm(FlaskForm):
     zone_id = HiddenField(validators=[DataRequired()])
     name = StringField('Zone Name', validators=[DataRequired()])
     color = StringField('Zone Color', validators=[DataRequired()])
+    additional_zones = MultiCheckboxField('Additional Zones', coerce=int, validators=[DataRequired()])
+    lots = MultiCheckboxField(
+        u'Allowed Lots', coerce=int,
+        description="Select the lots that have specific spaces for this zone.")
     submit = SubmitField('Edit Zone')
 
     def validate_name(self, name):

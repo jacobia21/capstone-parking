@@ -1,41 +1,59 @@
-{% extends 'admin_base.html'%}
+{% extends 'admin_base.html' %}
 {% set active_page='zone' %}
 {% block content %}
-<a href="{{url_for('.zones')}}" class="text-white pl-3 pt-2 back">
-    <span><i class="fa fa-angle-double-left"></i></span>
-    Zones
-</a>
-<section>
-    <div class="container-fluid">
-        <div class="row justify-content-md-center">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="" method="post" novalidate>
-                            {{ form.hidden_tag() }}
-                            <div class="form-group">
-                                {{ form.name.label }}
-                                {{ form.name(size=32, class_="form-control", value=zone.name) }}
-                                {% for error in form.name.errors %}
-                                <span style="color: red">[{{ error }}]</span>
-                                {% endfor %}
-                            </div>
-                            <div class="form-group">
-                                {{ form.color.label }}
-                                {{ form.color(size=32, class_="form-control", value=zone.color) }}
-                                {% for error in form.color.errors %}
-                                <span style="color: red">[{{ error }}]</span>
-                                {% endfor %}
-                            </div>
-                            <div class="d-flex">
-                                {{ form.submit(class="btn btn-primary text-white btn-md btn-block
+    <a href="{{ url_for('.zones') }}" class="text-white pl-3 pt-2 back">
+        <span><i class="fa fa-angle-double-left"></i></span>
+        Zones
+    </a>
+    <section>
+        <div class="container-fluid">
+            <div class="row justify-content-md-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="" method="post" novalidate>
+                                {{ form.hidden_tag() }}
+                                <div class="form-group">
+                                    {{ form.name.label }}
+                                    {{ form.name(size=32, class_="form-control", value=zone.name) }}
+                                    {% for error in form.name.errors %}
+                                        <span style="color: red">[{{ error }}]</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.color.label }}
+                                    {{ form.color(size=32, class_="form-control", value=zone.color) }}
+                                    {% for error in form.color.errors %}
+                                        <span style="color: red">[{{ error }}]</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="">
+                                    {{ form.additional_zones.label }}
+                                    {% for error in form.additional_zones.errors %}
+                                        <span style="color: red">[{{ error }}]</span>
+                                    {% endfor %}
+                                    {{ form.additional_zones(size=32) }}
+                                </div>
+                                <div class="">
+                                    {{ form.lots.label }}
+                                    <br>
+                                    <p>{{ form.lots.description }}</p>
+                                    {% for error in form.lots.errors %}
+                                        <span style="color: red">[{{ error }}]</span>
+                                    {% endfor %}
+                                    {{ form.lots(size=32) }}
+
+
+                                </div>
+                                <div class="d-flex">
+                                    {{ form.submit(class="btn btn-primary text-white btn-md btn-block
                                 ml-auto") }}
-                            </div>
-                        </form>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endblock %}

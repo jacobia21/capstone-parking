@@ -239,12 +239,27 @@ def zones():
 @login_required
 def add_zone():
     form = AddZoneForm()
+    form.additional_zones.choices = [(z.id, z.name) for z in Zone.query.order_by('name')]
+    form.additional_zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
 
+    form.lots.choices = [(l.id, l.name) for l in Lot.query.order_by('name')]
+    form.lots.render_kw = {'style': 'height: fit-content; list-style: none;'}
     if form.validate_on_submit():
         try:
-            zone = Zone(name=form.name.data, color=form.color.data)
+            new_zone = Zone(name=form.name.data, color=form.color.data)
+            children = []
+            for z in form.additional_zones.data:
+                children.append(z)
 
-            db.session.add(zone)
+            converted_list = [str(child) for child in children]
+            children_csv = ",".join(converted_list)
+            new_zone.children = children_csv
+
+            for lot_id in form.lots.data:
+                lot = Lot.query.get(lot_id)
+                new_zone.lots.append(lot)
+
+            db.session.add(new_zone)
             db.session.commit()
             flash("New Zone Added")
             return redirect(url_for('admin.zones'))
@@ -260,12 +275,29 @@ def add_zone():
 @login_required
 def edit_zone(zone_id):
     form = EditZoneForm(zone_id=zone_id)
+    form.additional_zones.choices = [(z.id, z.name) for z in Zone.query.order_by('id').filter(Zone.id != zone_id)]
+    form.additional_zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
 
+    form.lots.choices = [(l.id, l.name) for l in Lot.query.order_by('id')]
+    form.lots.render_kw = {'style': 'height: fit-content; list-style: none;'}
     if form.validate_on_submit():
         try:
             zone = Zone.query.get(zone_id)
             zone.name = form.name.data
             zone.color = form.color.data
+
+            children = []
+            for z in form.additional_zones.data:
+                children.append(z)
+            converted_list = [str(child) for child in children]
+            children_csv = ",".join(converted_list)
+            zone.children = children_csv
+
+            lots = []
+            for lot_id in form.lots.data:
+                lots.append(Lot.query.get(lot_id))
+            zone.lots = lots
+
             db.session.commit()
             flash('Zone updated successfully!')
         except Exception as error:
@@ -278,7 +310,9 @@ def edit_zone(zone_id):
         return redirect(url_for('admin.zones'))
 
     zone = Zone.query.get(zone_id)
-    return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id))
+    form.additional_zones.data = [int(s) for s in zone.children.split(',')] if zone.children is not None else []
+    form.lots.data = [int(l.id) for l in zone.lots]
+    return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=zone)
 
 
 @bp.route('/zones/delete/<zone_id>', methods=['POST'])
@@ -308,14 +342,9 @@ def lots():
 @login_required
 def add_lot():
     form = AddLotForm()
-    # form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('name')]
-    # form.zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
     if form.validate_on_submit():
         try:
             lot = Lot(name=form.name.data)
-            # for z in form.zones.data:
-            #     zone = Zone.query.get(z)
-            #     lot.zones.append(zone)
 
             db.session.add(lot)
             db.session.commit()
@@ -334,18 +363,11 @@ def add_lot():
 def edit_lot(lot_id):
     lot = Lot.query.get(lot_id)
     form = EditLotForm(lot_id=lot_id)
-    # form.zones.choices = [(z.id, z.name) for z in Zone.query.order_by('id')]
-    # form.zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
 
     if form.validate_on_submit():
         try:
             lot = Lot.query.get(lot_id)
             lot.name = form.name.data
-
-            # zones = []
-            # for zone_id in form.zones.data:
-            #     zones.append(Zone.query.get(zone_id))
-            # lot.zones = zones
 
             db.session.commit()
             flash('Lot updated successfully!')
@@ -356,7 +378,6 @@ def edit_lot(lot_id):
 
         return redirect(url_for('admin.lots'))
 
-    # form.zones.data = [zone.id for zone in lot.zones]
     return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id))
 
 
