@@ -10,9 +10,9 @@
                 <h3 class="font-weight-bold">Parking Lots - {{ zone.name|title }}</h3>
                 <p class="text-muted">
                     Based on the parking zone you selected, these are the number of
-                    available spaces in the lots you may park in. This includes available spaces
+                    available spaces in the lots you may park in. {% if child_zones | length != 0 %}This includes available spaces
                     in the following zones which you are allowed to park in if all {{ zone.name | title }} spaces are
-                    taken: {% for child in child_zones %}{{ child }}{% if not loop.last %}, {% endif %}{% endfor %}.
+                    taken: {% for child in child_zones %}{{ child }}{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}
                 </p>
 
                 <table class="table table-borderless table-hover table-striped">
