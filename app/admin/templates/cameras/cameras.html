@@ -46,6 +46,7 @@
                                         <th>Parking Lot</th>
                                         <th>Location ID</th>
                                         <th>Camera Status</th>
+                                        <th>Total Spaces</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -57,6 +58,7 @@
                                             <td>{{ camera.lot.name }}</td>
                                             <td>{{ '%04d' % (camera.location) }}</td>
                                             <td>{{ camera.status.value }}</td>
+                                            <td>{{ camera.spaces | length }}</td>
                                             <td>
                                                 <a href="{{ url_for('admin.edit_camera', camera_id=camera.id) }}">
                                                     <i class="fa fa-pencil-square-o px-2 fa-lg" aria-hidden="true"></i>
