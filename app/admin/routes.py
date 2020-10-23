@@ -398,16 +398,9 @@ def delete_lot(lot_id):
     return redirect(url_for('admin.lots'))
 
 
-@bp.route('/spaces')
-@login_required
-def spaces():
-    spaces = ParkingSpace.query.all()
-    return render_template("spaces/spaces.html", title='Parking Spaces', spaces=spaces)
-
-
 @bp.route('/spaces/add', methods=['POST'])
 @login_required
-def add_space():
+def add_spaces():
     data = request.json
     camera = json.loads(data.get("camera"))
     camera = camera.get("cameraInfo")
@@ -416,7 +409,7 @@ def add_space():
 
     for object in objects:
         if object.get("type") == "ParkingSpace":
-            parking_space = ParkingSpace(lot_id=camera["lot_id"], zone_id=object["zones"],
+            parking_space = ParkingSpace(lot_id=camera["lot_id"], zone_id=object["zoneId"],
                 camera_id=camera["id"])
 
             zone = Zone.query.get(parking_space.zone_id)
@@ -429,7 +422,7 @@ def add_space():
             db.session.commit()
 
             parking_space_coordinates = SpaceDimensions(
-                start_x=object["left"], start_y=object["top"], width=object["width"], height=object["height"],
+                start_x=object["left"], start_y=object["top"], width=(object["width"] * object["scaleX"]), height=(object["height"] * object["scaleY"]),
                 space_id=parking_space.id)
             db.session.add(parking_space_coordinates)
             db.session.commit()
@@ -447,29 +440,41 @@ def add_space():
 
 @bp.route('/spaces/edit/<camera_id>', methods=['GET', 'POST'])
 @login_required
-def edit_space(camera_id):
-    camera = Camera.query.get_or_404(camera_id)
+def edit_spaces(camera_id):
+    dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
+
+    camera = Camera.query.get(camera_id)
+    # TODO: error handling needed here
+    dbx = dropbox.Dropbox(dropbox_access_token)
+    ip_address = camera.ip_address
+    download_result = download(dbx, "", "", "{}.jpg".format(camera.ip_address))
+    download_bytes = base64.b64encode(download_result)
+    download_string = download_bytes.decode('ascii')
+    lot = camera.lot
+    zones = lot.zones.all()
+
+    control_point = {
+        "left": camera.control.start_x,
+        "top": camera.control.start_y
+    }
+
     spaces = []
 
-    for space in camera.spaces.all():
-        space_dimensions = space.dimensions.first()
+    for space in camera.spaces:
+        space_dimensions = space.dimensions
 
         spaces.append({
             "id": space.id,
-            "zones": [space.zone.name],
+            "zoneId": space.zone.id,
             "width": space_dimensions.width,
             "height": space_dimensions.height,
             "left": space_dimensions.start_x,
             "top": space_dimensions.start_y
         })
 
-    return render_template("spaces/view_spaces.html", title='Edit Parking Spaces', data={"spaces": spaces})
+    data = {'cameraInfo': camera.to_dict(), 'canvasImage': download_string, "spaces": spaces,"controlPoint": control_point}
 
-
-@bp.route('/spaces/delete', methods=['POST'])
-@login_required
-def delete_space():
-    return render_template("spaces/spaces.html", title='Parking Spaces')
+    return render_template("spaces/view_spaces.html", title="View & Edit Spaces", zones=zones, data=data)
 
 
 @bp.route('/system_log')

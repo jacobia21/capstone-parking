@@ -4,11 +4,11 @@
 var canvas = (this.__canvas = new fabric.Canvas("c"));
 var spaceCount = 0;
 
-var setZonesIcon = "/static/img/set_zones_icon.jpg";
+var setZonesIcon = "/static/img/set_zones_icon.svg";
 var setZonesImg = document.createElement("img");
 setZonesImg.src = setZonesIcon;
 
-var deleteIcon = "/static/img/delete_icon.png";
+var deleteIcon = "/static/img/delete_icon.svg";
 var deleteImg = document.createElement("img");
 deleteImg.src = deleteIcon;
 
@@ -22,6 +22,23 @@ var canvasImageData = null;
 function getCameraInfo(info) {
     cameraInfo = info['cameraInfo'];
     canvasImageData = info['canvasImage']
+    if ("spaces" in info) {
+        spaces = info["spaces"]
+        spaces.forEach((space) => {
+            var parkingSpace = new fabric.ParkingSpace({
+                width: space.width,
+                height: space.height,
+                left: space.left,
+                top: space.top,
+                id: space.id,
+                zoneId: space.zoneId,
+                fill: "white",
+            });
+            canvas.add(parkingSpace);
+        })
+        spaceCount = spaces.length;
+        console.log(spaces)
+    }
     return info;
 }
 function canvasCreation(){
@@ -109,9 +126,9 @@ const addSpace = () => {
 const setZonesHandler = (_, object) => {
     var zones = document.getElementsByName("zone");
     console.log(object.zoneId)
-    console.log()
     for (var zone of zones) {
-        if (object.zoneId === zone.value) {
+        if (object.zoneId === parseInt(zone.value)) {
+            console.log(true)
             zone.checked = true;
         } else {
             zone.checked = false;
@@ -219,7 +236,7 @@ fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
         options || (options = {});
         this.callSuper("initialize", options);
         this.set("id", options.id || 0);
-        this.set("zoneId", options.zones || "");
+        this.set("zoneId", options.zoneId || "");
         this.set("height", options.height || 150)
         this.set("width", options.width || 100)
     },
@@ -227,7 +244,7 @@ fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
     toObject: function () {
         return fabric.util.object.extend(this.callSuper("toObject"), {
             id: this.get("id"),
-            zones: this.get("zoneId"),
+            zoneId: this.get("zoneId"),
         });
     },
 
@@ -331,26 +348,4 @@ function saveAll() {
             location.href = "/admin/cameras";
         },
     });
-}
-
-
-
-let information;
-function getInfo(info) {
-    information = info
-    console.log(information)
-
-    spaces = information["spaces"]
-    for (space in spaces){
-        var parkingSpace = new fabric.ParkingSpace({
-            width: spaces[space].width,
-            height: spaces[space].height,
-            left: spaces[space].left,
-            top: spaces[space].top,
-            id: spaces[space].id,
-            fill: "white",
-        });
-        canvas.add(parkingSpace);
-    spaceCount = spaces.length;
-    }
 }

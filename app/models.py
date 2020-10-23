@@ -151,7 +151,7 @@ class ControlPoints(db.Model):
         'camera.id', ondelete="cascade"), nullable=False)
 
     camera = db.relationship(
-        'Camera', backref=db.backref('control', lazy='dynamic', cascade="all, delete-orphan"))
+        'Camera', backref=db.backref('control', uselist=False, cascade="all, delete"))
 
 
 class AdminGroup(db.Model):
