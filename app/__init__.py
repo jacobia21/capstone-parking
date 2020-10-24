@@ -11,7 +11,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-migrate = Migrate()
+migrate = Migrate(compare_type=True)
 login = LoginManager()
 login.login_view = 'auth.login'
 toolbar = DebugToolbarExtension()

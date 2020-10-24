@@ -98,10 +98,10 @@ class ParkingSpace(db.Model):
 class SpaceDimensions(db.Model):
     __tablename__ = 'space_dimensions'
     id = db.Column(db.Integer, primary_key=True)
-    start_x = db.Column(db.Integer)
-    start_y = db.Column(db.Integer)
-    width = db.Column(db.Integer)
-    height = db.Column(db.Integer)
+    start_x = db.Column(db.Float)
+    start_y = db.Column(db.Float)
+    width = db.Column(db.Float)
+    height = db.Column(db.Float)
     space_id = db.Column(db.Integer, db.ForeignKey('space.id', ondelete="cascade"), nullable=False)
 
     space = db.relationship(
@@ -143,10 +143,10 @@ class Camera(db.Model):
 class ControlPoints(db.Model):
     __tablename__ = 'control_points'
     id = db.Column(db.Integer, primary_key=True)
-    start_x = db.Column(db.Integer)
-    start_y = db.Column(db.Integer)
-    width = db.Column(db.Integer)
-    height = db.Column(db.Integer)
+    start_x = db.Column(db.Float)
+    start_y = db.Column(db.Float)
+    width = db.Column(db.Float)
+    height = db.Column(db.Float)
     camera_id = db.Column(db.Integer, db.ForeignKey(
         'camera.id', ondelete="cascade"), nullable=False)
 
