@@ -438,6 +438,69 @@ def add_spaces():
     return {"result": "success"}
 
 
+@bp.route('/spaces/update', methods=['POST'])
+@login_required
+def update_spaces():
+    data = request.json
+    camera = json.loads(data.get("camera"))
+    camera = camera.get("cameraInfo")
+    canvas = json.loads(data.get("canvas"))
+    objects = canvas.get("objects")
+
+    spacesToRemove = data.get("spacesToRemove")
+    for space in spacesToRemove:
+        space = ParkingSpace.query.get(int(space))
+        db.session.delete(space)
+        db.session.commit()
+
+    for object in objects:
+        if object.get("type") == "ParkingSpace":
+            if object.get("id") == 0:
+                parking_space = ParkingSpace(lot_id=camera["lot_id"], zone_id=object["zoneId"],
+                                             camera_id=camera["id"])
+
+                zone = Zone.query.get(parking_space.zone_id)
+                if zone.name == "Reserved":
+                    parking_space.availability = SpaceAvailability.RESERVED.value
+                else:
+                    parking_space.availability = SpaceAvailability.NOT_AVAILABLE.value
+
+                db.session.add(parking_space)
+                db.session.commit()
+
+                parking_space_coordinates = SpaceDimensions(
+                    start_x=object["left"], start_y=object["top"], width=(object["width"] * object["scaleX"]),
+                    height=(object["height"] * object["scaleY"]),
+                    space_id=parking_space.id)
+
+                db.session.add(parking_space_coordinates)
+                db.session.commit()
+            else:
+                old_space_id = object.get("id")
+                old_parking_space = ParkingSpace.query.get(int(old_space_id))
+                old_parking_space.zone_id = object["zoneId"]
+
+                dimensions = old_parking_space.dimensions
+                dimensions.start_x = object["left"]
+                dimensions.start_y = object["top"]
+                dimensions.width = object["width"] * object["scaleX"]
+                dimensions.height = object["height"] * object["scaleY"]
+
+                db.session.commit()
+
+        if object.get("type") == "ControlPoint":
+            controlPoint = Camera.query.get(camera["id"]).control
+            controlPoint.start_x = object["left"]
+            controlPoint.start_y = object["top"]
+            controlPoint.width = object["width"]
+            controlPoint.height = object["height"]
+
+            db.session.commit()
+
+    flash("Spaces and control point updated successfully!")
+    return {"result": "success"}
+
+
 @bp.route('/spaces/edit/<camera_id>', methods=['GET', 'POST'])
 @login_required
 def edit_spaces(camera_id):

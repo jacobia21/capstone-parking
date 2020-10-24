@@ -8,16 +8,14 @@ var setZonesIcon = "/static/img/set_zones_icon.svg";
 var setZonesImg = document.createElement("img");
 setZonesImg.src = setZonesIcon;
 
-var deleteIcon = "/static/img/delete_icon.svg";
-var deleteImg = document.createElement("img");
-deleteImg.src = deleteIcon;
+var plusMinusIcon = "/static/img/plus_minus.svg";
+var plusMinusImg = document.createElement("img");
+plusMinusImg.src = plusMinusIcon;
 
-var cloneIcon = "/static/img/duplicate_icon.png";
-var cloneImg = document.createElement("img");
-cloneImg.src = cloneIcon;
 
 var cameraInfo = null;
 var canvasImageData = null;
+var spacesToRemove = [];
 
 function getCameraInfo(info) {
     cameraInfo = info['cameraInfo'];
@@ -37,56 +35,66 @@ function getCameraInfo(info) {
             canvas.add(parkingSpace);
         })
         spaceCount = spaces.length;
-        console.log(spaces)
+        controlPoint = new fabric.ControlPoint({
+            width: 75,
+            height: 75,
+            left: info['controlPoint'].left,
+            top: info['controlPoint'].top,
+            fill: "lightblue",
+        });
+
+        canvas.add(controlPoint)
     }
+
     return info;
 }
-function canvasCreation(){
 
-fabric.Image.fromURL("data:image/jpg;base64," + canvasImageData, function (img) {
-  canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-    scaleX: canvas.width / img.width,
-    scaleY: canvas.height / img.height,
-  });
-});
+function canvasCreation() {
 
-canvas.on("object:moving", function (e) {
-    var obj = e.target;
-    // if object is too big ignore
-    if (
-        obj.currentHeight > obj.canvas.height ||
-        obj.currentWidth > obj.canvas.width
-    ) {
-        return;
-    }
-    obj.setCoords();
-    // top-left  corner
-    if (obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0) {
-        obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top);
-        obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left);
-    }
-    // bot-right corner
-    if (
-        obj.getBoundingRect().top + obj.getBoundingRect().height >
-        obj.canvas.height ||
-        obj.getBoundingRect().left + obj.getBoundingRect().width > obj.canvas.width
-    ) {
-        obj.top = Math.min(
-            obj.top,
-            obj.canvas.height -
-            obj.getBoundingRect().height +
-            obj.top -
-            obj.getBoundingRect().top
-        );
-        obj.left = Math.min(
-            obj.left,
-            obj.canvas.width -
-            obj.getBoundingRect().width +
-            obj.left -
-            obj.getBoundingRect().left
-        );
-    }
-});
+    fabric.Image.fromURL("data:image/jpg;base64," + canvasImageData, function (img) {
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.height / img.height,
+        });
+    });
+
+    canvas.on("object:moving", function (e) {
+        var obj = e.target;
+        // if object is too big ignore
+        if (
+            obj.currentHeight > obj.canvas.height ||
+            obj.currentWidth > obj.canvas.width
+        ) {
+            return;
+        }
+        obj.setCoords();
+        // top-left  corner
+        if (obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0) {
+            obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top);
+            obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left);
+        }
+        // bot-right corner
+        if (
+            obj.getBoundingRect().top + obj.getBoundingRect().height >
+            obj.canvas.height ||
+            obj.getBoundingRect().left + obj.getBoundingRect().width > obj.canvas.width
+        ) {
+            obj.top = Math.min(
+                obj.top,
+                obj.canvas.height -
+                obj.getBoundingRect().height +
+                obj.top -
+                obj.getBoundingRect().top
+            );
+            obj.left = Math.min(
+                obj.left,
+                obj.canvas.width -
+                obj.getBoundingRect().width +
+                obj.left -
+                obj.getBoundingRect().left
+            );
+        }
+    });
 }
 
 /**********************************************
@@ -107,17 +115,23 @@ const renderIcon = (icon) => {
  * Add Space
  ***********************************************/
 const addSpace = () => {
-    var parkingSpace = new fabric.ParkingSpace({
-        width: 100,
-        height: 150,
-        left: 100,
-        top: 100,
-        id: spaceCount + 1,
-        fill: "white",
-    });
-    canvas.add(parkingSpace);
-    canvas.setActiveObject(parkingSpace);
-    spaceCount += 1;
+    if (spaceCount < 10) {
+        var parkingSpace = new fabric.ParkingSpace({
+            width: 100,
+            height: 150,
+            left: 100,
+            top: 100,
+            fill: "white",
+        });
+        canvas.add(parkingSpace);
+        canvas.setActiveObject(parkingSpace);
+
+        spaceCount += 1;
+    } else {
+        $("#maxZonesModal").modal("show");
+    }
+    console.log(spaceCount)
+
 };
 
 /**********************************************
@@ -137,31 +151,17 @@ const setZonesHandler = (_, object) => {
     $("#setZonesModal").modal("show");
 };
 
+
 /**********************************************
- * Delete Space Handler
+ * Plus Minus Handler
  ***********************************************/
-const deleteSpaceHandler = (_, target) => {
+const plusMinusHandler = (_, target) => {
+    console.log(target)
     var canvas = target.canvas;
-    canvas.remove(target);
+    $("#plusMinusModal").modal("show");
     canvas.requestRenderAll();
 };
 
-/**********************************************
- * Clone Space Handler
- ***********************************************/
-const cloneSpaceHandler = (_, target) => {
-    var canvas = target.canvas;
-    target.clone(function (cloned) {
-        cloned.left += 10;
-        cloned.top += 10;
-        cloned.id = spaceCount + 1;
-        spaceCount = spaceCount + 1;
-        cloned.zones = [];
-        canvas.add(cloned);
-        canvas.setActiveObject(cloned);
-        canvas.bringToFront(cloned);
-    });
-};
 
 /**********************************************
  * Set Zones
@@ -172,20 +172,52 @@ const setZones = () => {
     var zones = document.getElementsByName("zone");
     for (var zone of zones) {
         if (zone.checked) {
-           activeObject.zoneId = `${zone.value}`
+            activeObject.zoneId = `${zone.value}`
+            activeObject.fill = "white"
+            canvas.renderAll()
             break
         }
     }
     $("#setZonesModal").modal("hide");
 };
 
+const addOrRemoveSpace = () => {
+    let selectedValue;
+    document.getElementsByName('action').forEach((action) => {
+        if (action.checked) {
+            selectedValue = action.value
+        }
+    })
+    object = canvas.getActiveObject()
+    if (selectedValue === "remove") {
+        spaceCount -= 1;
+        spacesToRemove.push(object.id)
+        canvas.remove(object)
+    } else {
+        if (spaceCount < 10) {
+            object.clone(function (cloned) {
+                cloned.left += 10;
+                cloned.top += 10;
+                cloned.id = 0
+                spaceCount = spaceCount + 1;
+                canvas.add(cloned);
+                canvas.setActiveObject(cloned);
+                canvas.bringToFront(cloned);
+            });
+        } else {
+            $("#maxZonesModal").modal("show")
+        }
+    }
+    $("#plusMinusModal").modal("hide");
+    console.log(spaceCount)
+}
 /**********************************************
  * Save Spaces
  ***********************************************/
 const saveSpaces = () => {
     parkingSpaces = canvas.getObjects("ParkingSpace");
     allZonesSet = true;
-    unsetSpaces = [];
+
 
     if (parkingSpaces.length < 1) {
         $("#unsetZonesText")[0].innerText = "No spaces have been added";
@@ -194,14 +226,14 @@ const saveSpaces = () => {
         parkingSpaces.forEach((space) => {
             if (space.zoneId === "") {
                 allZonesSet = false;
-                unsetSpaces.push(space.id);
+
+                space.fill = "yellow"
             }
         });
 
         if (!allZonesSet) {
             $("#unsetZonesText")[0].innerText =
-                "Must select a zone for the following space(s): \n" +
-                unsetSpaces.toString();
+                "You must associate each space with a parking zone. Spaces without a zone are marked in yellow."
             $("#unsetZonesModal").modal("show");
         } else {
             canvas.getObjects("ParkingSpace").forEach((object) => {
@@ -220,14 +252,13 @@ const saveSpaces = () => {
             $(".mark-spaces").addClass("d-none");
             $(".mark-control-point").removeClass("d-none");
         }
+        canvas.renderAll()
     }
 };
 
 /**********************************************
- *
  * ParkingSpace Object Creation
- *
- * *******************************************/
+ * ********************************************/
 fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
     type: "ParkingSpace",
     objectCaching: false,
@@ -250,10 +281,6 @@ fabric.ParkingSpace = fabric.util.createClass(fabric.Rect, {
 
     _render: function (ctx) {
         this.callSuper("_render", ctx);
-
-        ctx.font = "20px Helvetica";
-        ctx.fillStyle = "#333";
-        ctx.fillText(this.id, this.width / 2 - 20, -this.height / 2 + 20);
     },
 });
 
@@ -261,35 +288,27 @@ fabric.ParkingSpace.fromObject = function (object, callback) {
     return fabric.Object._fromObject("ParkingSpace", object, callback);
 };
 
+
 fabric.ParkingSpace.prototype.controls.setZones = new fabric.Control({
     x: -0.5,
     y: -0.5,
     offsetX: 15,
-    offsetY: 65,
+    offsetY: 45,
     cursorStyle: "pointer",
     mouseUpHandler: setZonesHandler,
     render: renderIcon(setZonesImg),
     cornerSize: 24,
 });
-fabric.ParkingSpace.prototype.controls.deleteControl = new fabric.Control({
-    x: -0.5,
-    y: -0.5,
-    offsetY: 40,
-    offsetX: 15,
-    cursorStyle: "pointer",
-    mouseUpHandler: deleteSpaceHandler,
-    render: renderIcon(deleteImg),
-    cornerSize: 24,
-});
 
-fabric.ParkingSpace.prototype.controls.clone = new fabric.Control({
+
+fabric.ParkingSpace.prototype.controls.plusMinus = new fabric.Control({
     x: -0.5,
     y: -0.5,
-    offsetY: 15,
     offsetX: 15,
+    offsetY: 15,
     cursorStyle: "pointer",
-    mouseUpHandler: cloneSpaceHandler,
-    render: renderIcon(cloneImg),
+    mouseUpHandler: plusMinusHandler,
+    render: renderIcon(plusMinusImg),
     cornerSize: 24,
 });
 
@@ -348,4 +367,48 @@ function saveAll() {
             location.href = "/admin/cameras";
         },
     });
+}
+
+function updateSpaces(){
+    parkingSpaces = canvas.getObjects("ParkingSpace");
+    allZonesSet = true;
+
+
+    if (parkingSpaces.length < 1) {
+        $("#unsetZonesText")[0].innerText = "No spaces have been added";
+        $("#unsetZonesModal").modal("show");
+    } else {
+        parkingSpaces.forEach((space) => {
+            if (space.zoneId === "") {
+                allZonesSet = false;
+
+                space.fill = "yellow"
+                canvas.renderAll()
+            }
+        });
+
+        if (!allZonesSet) {
+            $("#unsetZonesText")[0].innerText =
+                "You must associate each space with a parking zone. Spaces without a zone are marked in yellow."
+            $("#unsetZonesModal").modal("show");
+        } else {
+            canvasObjects = JSON.stringify(canvas);
+            camera = JSON.stringify(cameraInfo);
+            data = {camera: camera, canvas: canvasObjects, spacesToRemove:spacesToRemove};
+
+            $.ajax({
+                url: "/admin/spaces/update",
+                type: "post",
+                data: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                dataType: "json",
+                success: function (data) {
+                    console.log(data["result"]);
+                    location.href = "/admin/cameras";
+                },
+            });
+        }
+    }
 }

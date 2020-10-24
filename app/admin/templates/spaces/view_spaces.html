@@ -23,14 +23,15 @@
             <div class="edit-spaces-directions">
                 <p>Edit the control point or spaces as you see fit. Add new spaces by clicking the Add Space button or
                     the plus sign on any existing space. Remove spaces by clicking the minus sign on a space. Do not
-                    forget to assign a zone to each space by click the edit icon on the spaces. Click Save when finished.</p>
+                    forget to assign a zone to each space by click the edit icon on the spaces. Click Save when
+                    finished.</p>
             </div>
             <div class="edit-spaces-buttons">
                 <button id="add" class="btn btn-secondary btn-md m-2" onclick="addSpace()">
                     Add Space
                 </button>
-                <button id="save" class="btn btn-primary btn-md m-2" onclick="saveAll()">
-                    Save All
+                <button id="save" class="btn btn-primary btn-md m-2" onclick="updateSpaces()">
+                    Update All
                 </button>
             </div>
         </div>
@@ -110,6 +111,85 @@
                                 type="submit"
                                 onclick="$('#unsetZonesModal').modal('hide')"
                                 value="Go Back"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="maxZonesModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Max Spaces Reached</h4>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-hidden="true"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">You can ony add 10 spaces to this camera. If you wish to add a new
+                        space, you must remove an existing one first.
+                    </div>
+
+                    <div class="d-flex">
+                        <input
+                                class="btn btn-primary text-white btn-md btn-block ml-auto"
+                                id="submit"
+                                name="submit"
+                                type="submit"
+                                onclick="$('#maxZonesModal').modal('hide')"
+                                value="Go Back"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="plusMinusModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Select Action</h4>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-hidden="true"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="pb-3">
+                        <label for="zones">Would you like to add or remove this space?</label>
+                        <div class="form-check">
+
+                            <input class="form-check-input" type="radio" name="action" value="add">
+                            <label class="form-check-label" for="clone">
+                                Add
+                            </label>
+                            <br>
+                            <input class="form-check-input" type="radio" name="action" value="remove">
+                            <label class="form-check-label" for="remove">
+                                Remove
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <input
+                                class="btn btn-primary text-white btn-md btn-block ml-auto"
+                                id="submit"
+                                name="submit"
+                                type="submit"
+                                onclick="addOrRemoveSpace()"
+                                value="Add or Remove"
                         />
                     </div>
                 </div>

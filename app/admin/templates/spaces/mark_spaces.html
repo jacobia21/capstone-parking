@@ -25,7 +25,7 @@
                     completely fill the parking space. Additionally, select the zones that can park in each space by
                     clicking on the yellow button on a space. Once finished marking spaces, click Save Spaces to
                     continue to
-                    marking the control point.</p>
+                    marking the control point. <strong>You can only add 10 spaces to each camera.</strong></p>
             </div>
             <div class="mark-spaces-buttons">
                 <button id="add" class="btn btn-secondary btn-md mx-2" onclick="addSpace()">
@@ -129,6 +129,85 @@
                                 type="submit"
                                 onclick="$('#unsetZonesModal').modal('hide')"
                                 value="Go Back"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="maxZonesModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Max Spaces Reached</h4>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-hidden="true"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">You can ony add 10 spaces to this camera. If you wish to add a new
+                        space, you must remove an existing one first.
+                    </div>
+
+                    <div class="d-flex">
+                        <input
+                                class="btn btn-primary text-white btn-md btn-block ml-auto"
+                                id="submit"
+                                name="submit"
+                                type="submit"
+                                onclick="$('#maxZonesModal').modal('hide')"
+                                value="Go Back"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="plusMinusModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Select Action</h4>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-hidden="true"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="pb-3">
+                        <label for="zones">Would you like to add or remove this space?</label>
+                        <div class="form-check">
+
+                            <input class="form-check-input" type="radio" name="action" value="add">
+                            <label class="form-check-label" for="clone">
+                                Add
+                            </label>
+                            <br>
+                            <input class="form-check-input" type="radio" name="action" value="remove">
+                            <label class="form-check-label" for="remove">
+                                Remove
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <input
+                                class="btn btn-primary text-white btn-md btn-block ml-auto"
+                                id="submit"
+                                name="submit"
+                                type="submit"
+                                onclick="addOrRemoveSpace()"
+                                value="Add or Remove"
                         />
                     </div>
                 </div>
