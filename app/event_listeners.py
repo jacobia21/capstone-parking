@@ -45,6 +45,8 @@ def get_changes(model):
     state = db.inspect(model)
     changes = {}
     for attr in state.attrs:
+        if attr.key == "password_hash":
+            continue
         hist = state.get_history(attr.key, True)
 
         if not hist.has_changes():
