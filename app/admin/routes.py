@@ -192,7 +192,6 @@ def edit_camera(camera_id):
             camera.lot = form.lot.data
             db.session.commit()
             flash('Camera updated successfully!')
-            # TODO either send directly to edit spaces page or ask if they would like to edit spaces
         except Exception as error:
             current_app.logger.error(error)
             db.session.rollback()
