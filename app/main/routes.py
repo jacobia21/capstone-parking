@@ -51,4 +51,4 @@ def lots(zone_id):
                 else:
                     available_spaces[lot.name] = lot.get_available_spaces(zone.id)
 
-    return render_template("lots.html", title='Lots', available_spaces=available_spaces, zone=zone, child_zones=child_zones)
+    return render_template("lots.html", title='Lots', available_spaces=available_spaces, zone=Zone.query.get_or_404(zone_id), child_zones=child_zones)
