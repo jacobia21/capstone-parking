@@ -1,4 +1,4 @@
-<p>Dear {{ user.username }},</p>
+<p>Dear {{ user.first_name }},</p>
 <p>
     To set your password
     <a href="{{ url_for('auth.activate_account', token=token, _external=True) }}">
