@@ -58,7 +58,7 @@ def forgot():
             send_password_reset_email(user)
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('auth.login'))
-    return render_template('forgot.html', title='Reset Password', form=form)
+    return render_template('forgot_password.html', title='Reset Password', form=form)
 
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
