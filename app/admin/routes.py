@@ -81,6 +81,7 @@ def add_administrator():
             flash("New Admin Added")
             return redirect(url_for('admin.administrators'))
         except Exception as error:
+            print(error)
             current_app.logger.error(error)
             db.session.rollback()
             flash("Something went wrong! Try again later")

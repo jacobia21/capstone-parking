@@ -277,7 +277,7 @@ class Administrator(UserMixin, db.Model):
     # Generates and returns a JWT token for resetting a password, with a default expiration of 10 minutes.
     def get_reset_password_token(self, expires_in=timedelta(hours=24)):
         return jwt.encode(
-            {'reset_password': self.id, 'exp': time() + expires_in},
+            {'reset_password': self.id, 'exp': datetime.now() + expires_in},
             current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
     # Takes in a JWT token and verifies that is a valid, unexpired reset password token.
@@ -294,7 +294,7 @@ class Administrator(UserMixin, db.Model):
     # Generates and returns a JWT token for activating a new administrator, with a default expiration of 10 minutes.
     def get_activation_token(self, expires_in=timedelta(hours=24)):
         return jwt.encode(
-            {'activation': self.id, 'exp': time() + expires_in},
+            {'activation': self.id, 'exp': datetime.now() + expires_in},
             current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
     # Takes in a JWT token and verifies that is a valid, unexpired activation password token.

@@ -70,8 +70,7 @@ def reset_password(token):
     :type token: str
 
     """
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+
     user = Administrator.verify_reset_password_token(token)
     if not user:
         return redirect(url_for('main.index'))
@@ -81,6 +80,8 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('auth.login'))
+    if current_user.is_authenticated:
+        logout_user()
     return render_template('reset_password.html', form=form)
 
 
@@ -93,8 +94,7 @@ def activate_account(token):
     :type token: str
 
     """
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+
     user = Administrator.verify_activation_token(token)
 
     if not user:
@@ -105,4 +105,6 @@ def activate_account(token):
         db.session.commit()
         flash('You have successfully activated your account!')
         return redirect(url_for('auth.login'))
+    if current_user.is_authenticated:
+        logout_user()
     return render_template('activate_account.html', form=form)
