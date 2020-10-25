@@ -243,7 +243,7 @@ class Notifications(db.Model):
 
 class Administrator(UserMixin, db.Model):
     # Database table name
-    __tablename__ = 'administrators'
+    __tablename__ = 'administrator'
 
     # Table attributes
     id = db.Column(db.Integer, primary_key=True)
