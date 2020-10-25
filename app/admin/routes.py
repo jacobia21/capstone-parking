@@ -563,18 +563,24 @@ def resolve_log():
 @bp.route('/mark_spaces/<lot_id>/<camera_id>')
 @login_required
 def mark_spaces(lot_id, camera_id):
-    
-    dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
+    try:
+        dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
 
-    camera = Camera.query.get(camera_id)
-    # TODO: error handling needed here
-    dbx = dropbox.Dropbox(dropbox_access_token)
-    download_result = download(dbx, "", "", "{}.jpg".format(camera.ip_address))
-    download_bytes = base64.b64encode(download_result)
-    download_string = download_bytes.decode('ascii')
-    lot = Lot.query.get(lot_id)
-    zones = lot.zones.all()
-    camera = (Camera.query.get_or_404(camera_id)).to_dict()
+        camera = Camera.query.get(camera_id)
+        dbx = dropbox.Dropbox(dropbox_access_token)
+        download_result = download(dbx, "", "", "{}.jpg".format(camera.ip_address))
+        download_bytes = base64.b64encode(download_result)
+        download_string = download_bytes.decode('ascii')
+        lot = Lot.query.get(lot_id)
+        zones = lot.zones.all()
+        camera = (Camera.query.get_or_404(camera_id)).to_dict()
 
-    data = {'cameraInfo': camera, 'canvasImage': download_string}
+        data = {'cameraInfo': camera, 'canvasImage': download_string}
+    except Exception as error:
+        flash("Could not find an image for the camera with this IP address. Please make sure the camera is set up "
+              "properly and the IP address is correct.")
+        db.session.delete(camera)
+        db.session.commit()
+        return render_template("cameras/add_camera.html", title='Add Camera', form=AddCameraForm(), error=1)
+
     return render_template("spaces/mark_spaces.html", title="Mark Spaces", zones=zones, data=data)
