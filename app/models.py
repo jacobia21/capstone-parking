@@ -7,7 +7,7 @@ migrations directory. Then running the `flask db upgrade` command will make the 
 that is currently set up using the SQLALCHEMY_DATABASE_URI config environment variable.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import time
 
 import jwt
@@ -275,7 +275,7 @@ class Administrator(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     # Generates and returns a JWT token for resetting a password, with a default expiration of 10 minutes.
-    def get_reset_password_token(self, expires_in=datetime.timedelta(minutes=10)):
+    def get_reset_password_token(self, expires_in=timedelta(minutes=10)):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
