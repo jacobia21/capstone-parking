@@ -1,6 +1,6 @@
 import pytest
 
-from app.models import User
+from app.models import Administrator
 
 
 @pytest.mark.usefixtures("user")
@@ -26,7 +26,7 @@ class TestUser:
         THEN check the user data matches the retrieved User
         """
         assert (user.id == 1)
-        retrieved_user = User.query.get(user.id)
+        retrieved_user = Administrator.query.get(user.id)
 
         assert (retrieved_user is not None)
         assert (user == retrieved_user)
@@ -47,7 +47,7 @@ class TestUser:
 
         init_database.session.commit()
 
-        updated_user = User.query.get(user.id)
+        updated_user = Administrator.query.get(user.id)
 
         assert (updated_user == user)
         assert (user.check_password("capstoneparking"))

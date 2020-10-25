@@ -18,7 +18,11 @@ def send_async_email(app, msg):
     :type msg: Mail
 
     """
+
+    # The function is called on a custom Thread, so we need to get the application context before sending a message.
     with app.app_context():
+
+        # Instantiate the SendGridAPIClient with API key and send message
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         sg.send(msg)
 
@@ -38,14 +42,20 @@ def send_email(subject, sender, recipients, html_body):
     :type html_body: str
 
     """
-    message = Mail(
-        from_email=sender,
-        to_emails=recipients,
-        subject=subject,
-        html_content=html_body)
+
     try:
+        # Create a new SendGrid Mail object with the arguments given
+        message = Mail(
+            from_email=sender,
+            to_emails=recipients,
+            subject=subject,
+            html_content=html_body)
+
+        # We prepare a new Thread here to send the email in the background. This takes in the send_async_email
+        # function as its target and runs the function with the parameters passed through args.
         Thread(target=send_async_email,
                args=(current_app._get_current_object(), message)).start()
 
     except Exception as e:
         print(e)
+        # FIXME: should do some type of error handling here or allow error to bubble up

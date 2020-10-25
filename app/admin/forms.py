@@ -3,11 +3,11 @@ from wtforms import StringField, SubmitField, SelectField, HiddenField, \
     SelectMultipleField, IntegerField, widgets
 from wtforms.validators import DataRequired, Email, IPAddress, ValidationError
 
-from app.models import User, Zone, Lot, Camera
+from app.models import Administrator, Zone, Lot, Camera
 
 
 def validate_name(form, _):
-    user = User.query.filter_by(first_name=form.first_name.data).filter_by(
+    user = Administrator.query.filter_by(first_name=form.first_name.data).filter_by(
         last_name=form.last_name.data).filter_by(middle_initial=form.middle_initial.data).first()
     if user is not None:
         raise ValidationError('This person is already an administrator.')
@@ -36,7 +36,7 @@ class AddAdminForm(FlaskForm):
     submit = SubmitField('Add Administrator')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        user = Administrator.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
@@ -51,14 +51,14 @@ class EditAdminForm(FlaskForm):
     submit = SubmitField('Edit Administrator')
 
     def validate_email(self, email):
-        admin = User.query.filter_by(email=email.data).filter(
-            User.id != self.user_id.data).first()
+        admin = Administrator.query.filter_by(email=email.data).filter(
+            Administrator.id != self.user_id.data).first()
         if admin is not None:
             raise ValidationError('Please use a unique email.')
 
     def validate_first_name(self, first_name):
-        admin = User.query.filter_by(first_name=first_name.data).filter_by(last_name=self.last_name.data).filter_by(
-            middle_initial=self.middle_initial.data).filter(User.id != self.user_id.data).first()
+        admin = Administrator.query.filter_by(first_name=first_name.data).filter_by(last_name=self.last_name.data).filter_by(
+            middle_initial=self.middle_initial.data).filter(Administrator.id != self.user_id.data).first()
         if admin is not None:
             raise ValidationError('Please use a unique email.')
 

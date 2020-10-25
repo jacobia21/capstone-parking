@@ -15,14 +15,14 @@ from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneFo
 from app.admin.utils import download
 from app.auth.email import send_activation_email
 from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability
-from app.models import ControlPoints, SpaceDimensions, User, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup, \
+from app.models import ControlPoints, SpaceDimensions, Administrator, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup, \
     Notifications
 
 
 @bp.route('/home')
 @login_required
 def home():
-    user_count = User.query.count()
+    user_count = Administrator.query.count()
     camera_count = Camera.query.count()
     zone_count = Zone.query.count()
     lot_count = Lot.query.count()
@@ -57,7 +57,7 @@ def home():
 def administrators():
     if current_user.group.name != Groups.SUPER.value:
         return redirect('/')
-    admin = User.query.all()
+    admin = Administrator.query.all()
     return render_template("administrators/administrators.html", title='Administrators', administrators=admin)
 
 
@@ -72,8 +72,8 @@ def add_administrator():
 
     if form.validate_on_submit():
         try:
-            user = User(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data,
-                        middle_initial=form.middle_initial.data, group_id=form.group.data)
+            user = Administrator(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data,
+                                 middle_initial=form.middle_initial.data, group_id=form.group.data)
 
             db.session.add(user)
             db.session.commit()
@@ -100,7 +100,7 @@ def edit_administrator(user_id):
 
     if form.validate_on_submit():
         try:
-            admin = User.query.get(user_id)
+            admin = Administrator.query.get(user_id)
             admin.email = form.email.data
             admin.first_name = form.first_name.data
             admin.last_name = form.last_name.data
@@ -113,11 +113,11 @@ def edit_administrator(user_id):
             db.session.rollback()
             flash("Something went wrong! Try again later")
             return render_template("administrators/edit_administrator.html", title='Edit Administrator', form=form,
-                                   admin=User.query.get(user_id), error=1)
+                                   admin=Administrator.query.get(user_id), error=1)
 
         return redirect(url_for('admin.administrators'))
 
-    admin = User.query.get(user_id)
+    admin = Administrator.query.get(user_id)
     form.group.data = admin.group_id
     return render_template("administrators/edit_administrator.html", title='Edit Administrator', form=form, admin=admin)
 
@@ -128,7 +128,7 @@ def delete_administrator(user_id):
     if current_user.group.name != Groups.SUPER.value:
         return redirect('/')
     try:
-        admin = User.query.get(user_id)
+        admin = Administrator.query.get(user_id)
         db.session.delete(admin)
         db.session.commit()
         flash("Administrator removed")

@@ -3,14 +3,14 @@ import os
 import pytest
 
 from app import create_app, db
-from app.models import User, AdminGroup
+from app.models import Administrator, AdminGroup
 from config import TestingConfig
 
 
 @pytest.fixture
 def user():
-    user = User(id=1, email='patkennedy79@gmail.com', first_name="Pat", last_name="Kennedy", group_id=1,
-                middle_initial="N")
+    user = Administrator(id=1, email='patkennedy79@gmail.com', first_name="Pat", last_name="Kennedy", group_id=1,
+                         middle_initial="N")
     user.set_password('unittest')
     return user
 
@@ -45,8 +45,8 @@ def init_database():
     regular_admin_group = AdminGroup(name="Regular", description="This is for all regular administrators.")
     db.session.add(regular_admin_group)
 
-    user = User(id=1, email='patkennedy79@gmail.com', first_name="Pat", last_name="Kennedy",
-                group_id=regular_admin_group.id, middle_initial="N")
+    user = Administrator(id=1, email='patkennedy79@gmail.com', first_name="Pat", last_name="Kennedy",
+                         group_id=regular_admin_group.id, middle_initial="N")
     user.set_password('unittest')
     db.session.add(user)
 

@@ -8,7 +8,7 @@ from app import db
 from app.auth import bp
 from app.auth.email import send_password_reset_email
 from app.auth.forms import LoginForm, RequestResetPasswordForm, ResetPasswordForm, ActivateUserForm
-from app.models import User
+from app.models import Administrator
 
 
 @bp.route('/login', methods=["GET", 'POST'])
@@ -19,7 +19,7 @@ def login():
         return redirect(url_for('main.index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = Administrator.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return render_template("login.html", title="Login", form=form, error=1)
@@ -53,7 +53,7 @@ def forgot():
         return redirect(url_for('index'))
     form = RequestResetPasswordForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = Administrator.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
         flash('Check your email for the instructions to reset your password')
@@ -72,7 +72,7 @@ def reset_password(token):
     """
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    user = User.verify_reset_password_token(token)
+    user = Administrator.verify_reset_password_token(token)
     if not user:
         return redirect(url_for('main.index'))
     form = ResetPasswordForm()
@@ -95,7 +95,7 @@ def activate_account(token):
     """
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
-    user = User.verify_activation_token(token)
+    user = Administrator.verify_activation_token(token)
 
     if not user:
         return redirect(url_for('main.index'))
