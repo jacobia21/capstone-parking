@@ -1,4 +1,4 @@
-""" This module holds the route controllers for the main package """
+""" This module holds the route controllers for the main blueprint. """
 
 from flask import render_template
 

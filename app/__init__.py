@@ -2,7 +2,7 @@
 
 import logging
 import os
-from logging.handlers import SMTPHandler, RotatingFileHandler
+from logging.handlers import RotatingFileHandler
 
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
