@@ -1,12 +1,12 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
 import dropbox
 from flask import json
 from flask import render_template, url_for, flash, redirect, request, current_app
 from flask_login import current_user
 from flask_login import login_required
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from app import db
 from app.admin import bp
@@ -543,20 +543,34 @@ def edit_spaces(camera_id):
 @bp.route('/system_log')
 @login_required
 def system_log():
-    logs = SystemLog.query.all()
+    # logs = SystemLog.query.all()
+    filter_after = datetime.today() - timedelta(days=30)
+
+    logs = SystemLog.query.filter(or_(SystemLog.status == LogStatus.OPEN.value, SystemLog.updated_at >= filter_after)).all()
     return render_template("system_log/system_log.html", title='System Log', logs=logs)
 
 
 @bp.route('/resolve_log', methods=['POST'])
 @login_required
 def resolve_log():
-    logsToResolve = request.form['logs'].split(',')
+    logId = request.form['logId']
+    description = request.form['notes']
+
     updated_at = datetime.now()
-    for l_id in logsToResolve:
-        log = SystemLog.query.get(l_id)
-        log.updated_at = updated_at
-        log.status = LogStatus.RESOLVED
-        db.session.add(log)
+    print(logId, description)
+    log = SystemLog.query.get(int(logId))
+    log.updated_at = updated_at
+    log.status = LogStatus.RESOLVED
+    log.notes = description
+    db.session.add(log)
+    db.session.commit()
+    return redirect(url_for('.system_log'))
+
+@bp.route('/delete_log/<log_id>', methods=['POST'])
+@login_required
+def delete_log(log_id):
+    log = SystemLog.query.get(log_id)
+    db.session.delete(log)
     db.session.commit()
     return redirect(url_for('.system_log'))
 

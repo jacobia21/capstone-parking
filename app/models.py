@@ -223,6 +223,7 @@ class SystemLog(db.Model):
     message = db.Column(db.String(255))
     status = db.Column(db.Enum(LogStatus))
     type = db.Column(db.Enum(LogType), nullable=False)
+    notes = db.Column(db.String(1500))
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
     updated_at = db.Column(db.DateTime)
