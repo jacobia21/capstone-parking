@@ -141,9 +141,11 @@ def delete_administrator(user_id):
 @login_required
 def cameras():
     # cameras = Camera.query.all()
+
     cameras = Camera.query.all()
     lots = Lot.query.with_entities(Lot.name).all()
-    return render_template("cameras/cameras.html", title='Cameras', cameras=cameras, lots=lots)
+    error = request.args.get("error") or None
+    return render_template("cameras/cameras.html", title='Cameras', cameras=cameras, lots=lots, error=error)
 
 
 @bp.route('/cameras/add', methods=['GET', 'POST'])
@@ -500,15 +502,20 @@ def update_spaces():
 @bp.route('/spaces/edit/<camera_id>', methods=['GET', 'POST'])
 @login_required
 def edit_spaces(camera_id):
-    dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
 
-    camera = Camera.query.get(camera_id)
-    # TODO: error handling needed here
-    dbx = dropbox.Dropbox(dropbox_access_token)
-    ip_address = camera.ip_address
-    download_result = download(dbx, "", "", "{}.jpg".format(camera.ip_address))
-    download_bytes = base64.b64encode(download_result)
-    download_string = download_bytes.decode('ascii')
+    try:
+        dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
+
+        camera = Camera.query.get(camera_id)
+        dbx = dropbox.Dropbox(dropbox_access_token)
+        ip_address = camera.ip_address
+        download_result = download(dbx, "", "", "{}.jpg".format(camera.ip_address))
+        download_bytes = base64.b64encode(download_result)
+        download_string = download_bytes.decode('ascii')
+    except Exception as error:
+        flash("Could not retrieve the camera image")
+        return redirect(url_for(".cameras", title='Add Camera', form=AddCameraForm(), error=1))
+
     lot = camera.lot
     zones = lot.zones.all()
 
