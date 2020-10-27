@@ -6,7 +6,7 @@ from flask import json
 from flask import render_template, url_for, flash, redirect, request, current_app
 from flask_login import current_user
 from flask_login import login_required
-from sqlalchemy import func, or_
+from sqlalchemy import func, and_
 
 from app import db
 from app.admin import bp
@@ -541,8 +541,9 @@ def edit_spaces(camera_id):
 def system_log():
     # logs = SystemLog.query.all()
     filter_after = datetime.today() - timedelta(days=30)
-
-    logs = SystemLog.query.filter(or_(SystemLog.status == LogStatus.OPEN.value, SystemLog.updated_at >= filter_after)).all()
+    SystemLog.query.filter(and_(SystemLog.status == LogStatus.RESOLVED.value,SystemLog.updated_at <= filter_after)).delete()
+    db.session.commit()
+    logs = SystemLog.query.all()
     return render_template("system_log/system_log.html", title='System Log', logs=logs)
 
 
