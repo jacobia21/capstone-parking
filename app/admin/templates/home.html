@@ -1,22 +1,23 @@
 {% extends "admin_base.html" %}
 {% set active_page='home' %}
 {% block content %}
-<style>
-.dashboard-item{
-    color: #212529
-}
-.dashboard-item:hover {
-    color: #5a1807;
-    text-decoration: underline;
-    background-color: whitesmoke;
-}
-</style>
+    <style>
+        .dashboard-item {
+            color: #212529
+        }
+
+        .dashboard-item:hover {
+            color: #5a1807;
+            text-decoration: underline;
+            background-color: whitesmoke;
+        }
+    </style>
     <!-- Dashboard Counts Section-->
     <section class="dashboard-counts no-padding-bottom">
         <div class="container-fluid">
             <div class="row bg-white has-shadow">
                 <!-- Item -->
-                <div class="col-xl-3 col-sm-6" onclick="window.location.href='{{ url_for('admin.administrators')}}'">
+                <div class="col-xl-3 col-sm-6" onclick="window.location.href='{{ url_for('admin.administrators') }}'">
                     <div class="item d-flex align-items-center dashboard-item">
                         <div class="icon"><i class="fa fa-3x fa-user"></i></div>
                         <div class="title"><span>
@@ -79,31 +80,28 @@
                             <h3 class="h4">Recent Updates</h3>
                         </div>
                         <div class="card-body no-padding">
-                        {% if notifications|length == 0 %}
-                            <div class="container text-center p-5">
-                               <p> No recent updates found!</p>
-                            </div>
-                        {% else %}
-                            {% for notification in notifications %}
-                            <!-- Item-->
-                            <div class="item d-flex justify-content-between">
-                                <div class="info d-flex">
-                                    <div class="icon"><i class="fa fa-envelope"></i></div>
-                                    <div class="title">
-                                        <h5>{{ notification['title'] }}</h5>
-                                        <p>{{ notification['message'] }}
-                                        {%   if 'updates' in notification %}
-                                            {% for update in notification['updates'] %}
-                                                <br> &bull; {{ update }}
-                                            {% endfor %}
-                                        {% endif %}
-                                    </p>
-                                    </div>
+                            {% if notifications|length == 0 %}
+                                <div class="container text-center p-5">
+                                    <p> No recent updates found!</p>
                                 </div>
-                                <div class="date text-right"><strong>{{ notification['day'] }}</strong><span>{{ notification['month'] }}</span></div>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
+                            {% else %}
+                                {% for notification in notifications %}
+                                    <!-- Item-->
+                                    <div class="item d-flex justify-content-between">
+                                        <div class="info d-flex">
+                                            <div class="icon"><i class="fa fa-envelope"></i></div>
+                                            <div class="title">
+                                                <h5>{{ notification['title'] }}</h5>
+                                                <p>{{ notification['message'] }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="date text-right">
+                                            <strong>{{ notification['day'] }}</strong><span>{{ notification['month'] }}</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
 

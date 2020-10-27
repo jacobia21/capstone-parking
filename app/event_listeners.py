@@ -83,24 +83,12 @@ def send_update_notification(item, target, name):
     :type name: str
     """
 
-    # Get all the changes that were made on the target row.
+    # Check to see if anything actually changed. A row could be updated with the same values.
     changes = get_changes(target)
 
     # If no changes are found, then we do not need to create a notification.
     # Therefore, we check to see if there are changes before continuing.
     if changes:
-
-        # Iterate over all changes, create a phrase describing each change, and add each phrase to the changes_list.
-        changes_list = []
-        for change in changes:
-            attribute_name = change.replace("_", " ")
-            attribute_name = attribute_name.title()
-            phrase = "{} changed from {} to {}".format(attribute_name, changes[change][0], changes[change][1])
-            changes_list.append(phrase)
-
-        # Join all the phrases in the changes_list as a string with each phrase separated by a comma.
-        # This sentence will be added to the Notifications table as the updates column.
-        updates = ",".join(changes_list)
 
         # Get the name of the administrator who made the change.
         administrator = "{} {}".format(current_user.first_name, current_user.last_name)
@@ -112,7 +100,7 @@ def send_update_notification(item, target, name):
         message = "{} {} was updated by {}".format(item, name, administrator)
 
         # Create the new notification and add to the database.
-        new_notification = Notifications(title=title, message=message, updates=updates)
+        new_notification = Notifications(title=title, message=message)
         db.session.add(new_notification)
 
 
@@ -130,7 +118,7 @@ def get_changes(model_object):
 
     # Grab the current state of the model_object
     state = db.inspect(model_object)
-    changes = {}
+    changes = False
 
     for attr in state.attrs:
 
@@ -144,10 +132,9 @@ def get_changes(model_object):
         if not hist.has_changes():
             continue
 
-        # Get the old and new value and add the information to the changes dictionary.
-        old_value = hist.deleted[0] if hist.deleted else None
-        new_value = hist.added[0] if hist.added else None
-        changes[attr.key] = [old_value, new_value]
+        else:  # Found changes, so set changes to True and break from loop
+            changes = True
+            break
 
     return changes
 

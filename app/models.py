@@ -239,8 +239,6 @@ class Notifications(db.Model):
                           default=datetime.utcnow)
     title = db.Column(db.String(255), nullable=False)
     message = db.Column(db.String(255), nullable=False)
-    updates = db.Column(db.String(255), default="", nullable=False)
-
 
 class Administrator(UserMixin, db.Model):
     # Database table name

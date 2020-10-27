@@ -34,7 +34,6 @@ def home():
         month = calendar.month_abbr[notification.timestamp.month]
         day = notification.timestamp.day
         message = notification.message
-        updates = notification.updates if notification.updates != "" else None
 
         notification = {
             'title': title,
@@ -42,9 +41,6 @@ def home():
             'day': day,
             'message': message,
         }
-        if updates:
-            updates_list = updates.split(",")
-            notification['updates'] = updates_list
 
         notifications.append(notification)
 
