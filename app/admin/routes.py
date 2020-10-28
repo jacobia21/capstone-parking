@@ -477,6 +477,9 @@ def update_spaces():
                 old_space_id = object.get("id")
                 old_parking_space = ParkingSpace.query.get(int(old_space_id))
                 old_parking_space.zone_id = object["zoneId"]
+                zone = Zone.query.get(old_parking_space.zone_id)
+                if zone.name == "Reserved":
+                    old_parking_space.availability = SpaceAvailability.RESERVED.value
 
                 dimensions = old_parking_space.dimensions
                 dimensions.start_x = object["left"]
