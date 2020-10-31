@@ -17,10 +17,11 @@
         <div class="container-fluid">
             <div class="row bg-white has-shadow">
                 <!-- Item -->
-                <div class="col-xl-3 col-sm-6" onclick="window.location.href='{{ url_for('admin.administrators') }}'">
+                <div class="col-xl-3 col-sm-6" onclick="goToAdminPage()">
                     <div class="item d-flex align-items-center dashboard-item">
                         <div class="icon"><i class="fa fa-3x fa-user"></i></div>
                         <div class="title"><span>
+
                                 <div class="number"><strong>{{ users }}</strong></div>Administrators
                             </span>
 
@@ -136,4 +137,18 @@
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+
+        function goToAdminPage(){
+            var userType = "{{ current_user.group.name }}"
+            if (userType === "Super"){
+                window.location.href='{{ url_for('admin.administrators') }}'
+            }
+            alert("You do not have permission to access this page.")
+        }
+
+    </script>
 {% endblock %}
