@@ -105,21 +105,18 @@
     });
 </script>
 <script type="text/javascript">
-    $('.filter').on('click', 'span', function (e) {
-        e.preventDefault();
+function onSelectChange(){
+        value = document.getElementById("select-menu").value
+     console.log(value)
 
-        //Get filter data from active link
-        let filterValue = $(this).attr('data-filter');
-
-        if (filterValue === 'all') {
+     if (value === 'all') {
             $("#myTable").find("tr").show();
         } else {
             let rows = $("#myTable").find("tr").hide();
-            rows.filter(":contains(" + filterValue + ")").show();
+            rows.filter(":contains(" + value + ")").show();
         }
-        $('.filter span').removeClass('active');
-        $(this).closest('span').addClass('active');
-    });
+    }
+
 </script>
 {% block script %}{% endblock script %}
 </body>

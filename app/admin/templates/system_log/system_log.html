@@ -16,16 +16,17 @@
 
                                 <div class="row ">
                                     <div class="filter">
-                                <span class="badge badge-pill badge-secondary active" type="radio"
-                                      data-filter="all">
-                                    Show
-                                    All</span>
-                                        <span class="badge badge-pill badge-secondary ml-2" type="radio"
-                                              id="option2" data-filter="Website">Website</span>
-                                        <span class="badge badge-pill badge-secondary ml-2" type="radio"
-                                              id="option2" data-filter="Database">Database</span>
-                                        <span class="badge badge-pill badge-secondary ml-2" type="radio"
-                                              id="option2" data-filter="Hardware">Hardware</span>
+                                      <select id="select-menu" onchange="onSelectChange()"
+                                                class="browser-default custom-select ">
+
+                                            <option value="all" selected>Show All</option>
+
+                                                <option value="Hardware">Hardware</option>
+                                          <option value="Website">Website</option>
+                                          <option value="Database">Database</option>
+
+                                        </select>
+
                                     </div>
                                 </div>
 
