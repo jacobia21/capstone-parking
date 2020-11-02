@@ -12,9 +12,9 @@ from app import db
 from app.admin import bp
 from app.admin.forms import AddAdminForm, EditAdminForm, AddZoneForm, EditZoneForm, AddLotForm, EditLotForm, \
     AddCameraForm, EditCameraZone
-from app.admin.utils import download
+from app.admin.utils import download, log_error_to_database
 from app.auth.email import send_activation_email
-from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability
+from app.enums import Groups, LogStatus, CameraStatus, SpaceAvailability, LogType
 from app.models import ControlPoints, SpaceDimensions, Administrator, Zone, Camera, ParkingSpace, Lot, SystemLog, AdminGroup, \
     Notifications
 
@@ -22,27 +22,30 @@ from app.models import ControlPoints, SpaceDimensions, Administrator, Zone, Came
 @bp.route('/home')
 @login_required
 def home():
-    user_count = Administrator.query.count()
-    camera_count = Camera.query.count()
-    zone_count = Zone.query.count()
-    lot_count = Lot.query.count()
+    try:
+        user_count = Administrator.query.count()
+        camera_count = Camera.query.count()
+        zone_count = Zone.query.count()
+        lot_count = Lot.query.count()
 
-    notifications_query = Notifications.query.order_by(Notifications.timestamp.desc()).limit(3).all()
-    notifications = []
-    for notification in notifications_query:
-        title = notification.title
-        month = calendar.month_abbr[notification.timestamp.month]
-        day = notification.timestamp.day
-        message = notification.message
+        notifications_query = Notifications.query.order_by(Notifications.timestamp.desc()).limit(3).all()
+        notifications = []
+        for notification in notifications_query:
+            title = notification.title
+            month = calendar.month_abbr[notification.timestamp.month]
+            day = notification.timestamp.day
+            message = notification.message
 
-        notification = {
-            'title': title,
-            'month': month,
-            'day': day,
-            'message': message,
-        }
+            notification = {
+                'title': title,
+                'month': month,
+                'day': day,
+                'message': message,
+            }
 
-        notifications.append(notification)
+            notifications.append(notification)
+    except Exception as error:
+        log_error_to_database(error)
 
     return render_template("home.html", title='Command Center', users=user_count, cameras=camera_count,
                            zones=zone_count, lots=lot_count, notifications=notifications)
@@ -51,9 +54,12 @@ def home():
 @bp.route('/administrators')
 @login_required
 def administrators():
-    if current_user.group.name != Groups.SUPER.value:
-        return redirect('/')
-    admin = Administrator.query.all()
+    try:
+        if current_user.group.name != Groups.SUPER.value:
+            return redirect('/')
+        admin = Administrator.query.all()
+    except Exception as error:
+        log_error_to_database(error)
     return render_template("administrators/administrators.html", title='Administrators', administrators=admin)
 
 
@@ -77,9 +83,7 @@ def add_administrator():
             flash("New Admin Added")
             return redirect(url_for('admin.administrators'))
         except Exception as error:
-            print(error)
-            current_app.logger.error(error)
-            db.session.rollback()
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("administrators/add_administrator.html", title='Add Administrator', form=form,
                                    error=1)
@@ -106,8 +110,7 @@ def edit_administrator(user_id):
             db.session.commit()
             flash('Administrator updated successfully!')
         except Exception as error:
-            current_app.logger.error(error)
-            db.session.rollback()
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("administrators/edit_administrator.html", title='Edit Administrator', form=form,
                                    admin=Administrator.query.get(user_id), error=1)
@@ -130,8 +133,7 @@ def delete_administrator(user_id):
         db.session.commit()
         flash("Administrator removed")
     except Exception as error:
-        current_app.logger.error(error)
-        db.session.rollback()
+        log_error_to_database(error)
         flash("Something went wrong! Try again later")
         return redirect(url_for('admin.administrators', error=1))
     return redirect(url_for('admin.administrators'))
@@ -141,10 +143,13 @@ def delete_administrator(user_id):
 @login_required
 def cameras():
     # cameras = Camera.query.all()
-
-    cameras = Camera.query.all()
-    lots = Lot.query.with_entities(Lot.name).all()
-    error = request.args.get("error") or None
+    try:
+        cameras = Camera.query.all()
+        lots = Lot.query.with_entities(Lot.name).all()
+        error = request.args.get("error") or None
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later.")
     return render_template("cameras/cameras.html", title='Cameras', cameras=cameras, lots=lots, error=error)
 
 
@@ -168,8 +173,7 @@ def add_camera():
 
             return redirect(url_for('.mark_spaces', lot_id=camera.lot_id, camera_id=camera.id))
         except Exception as error:
-            current_app.logger.error(error)
-            db.session.rollback()
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("cameras/add_camera.html", title='Add Camera', form=form, error=1)
     return render_template("cameras/add_camera.html", title='Add Camera', form=form)
@@ -192,8 +196,7 @@ def edit_camera(camera_id):
             db.session.commit()
             flash('Camera updated successfully!')
         except Exception as error:
-            current_app.logger.error(error)
-            db.session.rollback()
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("cameras/edit_camera.html", title='Edit Camera', form=form,
                                    camera=Camera.query.get(camera_id), error=1)
@@ -219,8 +222,7 @@ def delete_camera(camera_id):
         db.session.commit()
         flash("Camera removed")
     except Exception as error:
-        current_app.logger.error(error)
-        db.session.rollback()
+        log_error_to_database(error)
         flash("Something went wrong! Try again later")
         return render_template('cameras/cameras.html', error=1)
 
@@ -263,8 +265,7 @@ def add_zone():
             flash("New Zone Added")
             return redirect(url_for('admin.zones'))
         except Exception as error:
-            current_app.logger.error(error)
-            db.session.rollback()
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("zones/add_zones.html", title='Add Zone', form=form, error=1)
     return render_template("zones/add_zones.html", title='Add Zone', form=form)
@@ -300,8 +301,7 @@ def edit_zone(zone_id):
             db.session.commit()
             flash('Zone updated successfully!')
         except Exception as error:
-            current_app.logger.error(error)
-            db.session.rollback()
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("zones/edit_zone.html", title='Edit Zone', form=form, zone=Zone.query.get(zone_id),
                                    error=1)
@@ -323,8 +323,7 @@ def delete_zone(zone_id):
         db.session.commit()
         flash("Zone removed")
     except Exception as error:
-        current_app.logger.error(error)
-        db.session.rollback()
+        log_error_to_database(error)
         flash("Something went wrong! Try again later")
         return render_template("zones/zones.html", title='Zones', zones=Zone.query.all(), error=1)
     return redirect(url_for('admin.zones'))
@@ -350,8 +349,7 @@ def add_lot():
             flash("New Lot Added")
             return redirect(url_for('admin.lots'))
         except Exception as error:
-            current_app.logger.error(error)
-            db.session.rollback()
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("lots/add_lot.html", title='Add Lot', form=form, error=1)
     return render_template("lots/add_lot.html", title='Add Lot', form=form)
@@ -371,6 +369,7 @@ def edit_lot(lot_id):
             db.session.commit()
             flash('Lot updated successfully!')
         except Exception as error:
+            log_error_to_database(error)
             flash("Something went wrong! Try again later")
             return render_template("lots/edit_lot.html", title='Edit Lot', form=form, lot=Lot.query.get(lot_id),
                                    error=1)
@@ -389,8 +388,7 @@ def delete_lot(lot_id):
         db.session.commit()
         flash("Lot removed")
     except Exception as error:
-        current_app.logger.error(error)
-        db.session.rollback()
+        log_error_to_database(error)
         flash("Something went wrong! Try again later")
         return render_template("lots/lots.html", title='Lots', lots=Lot.query.all(), error=1)
     return redirect(url_for('admin.lots'))
@@ -399,63 +397,17 @@ def delete_lot(lot_id):
 @bp.route('/spaces/add', methods=['POST'])
 @login_required
 def add_spaces():
-    data = request.json
-    camera = json.loads(data.get("camera"))
-    camera = camera.get("cameraInfo")
-    canvas = json.loads(data.get("canvas"))
-    objects = canvas.get("objects")
+    try:
+        data = request.json
+        camera = json.loads(data.get("camera"))
+        camera = camera.get("cameraInfo")
+        canvas = json.loads(data.get("canvas"))
+        objects = canvas.get("objects")
 
-    for object in objects:
-        if object.get("type") == "ParkingSpace":
-            parking_space = ParkingSpace(lot_id=camera["lot_id"], zone_id=object["zoneId"],
-                camera_id=camera["id"])
-
-            zone = Zone.query.get(parking_space.zone_id)
-            if zone.name == "Reserved":
-                parking_space.availability = SpaceAvailability.RESERVED.value
-            else:
-                parking_space.availability = SpaceAvailability.NOT_AVAILABLE.value
-
-            db.session.add(parking_space)
-            db.session.commit()
-
-            parking_space_coordinates = SpaceDimensions(
-                start_x=object["left"], start_y=object["top"], width=(object["width"] * object["scaleX"]), height=(object["height"] * object["scaleY"]),
-                space_id=parking_space.id)
-            db.session.add(parking_space_coordinates)
-            db.session.commit()
-
-
-        if object.get("type") == "ControlPoint":
-            controlPoint = ControlPoints(start_x=object["left"], start_y=object["top"],
-                                         width=object["width"], height=object["height"], camera_id=camera["id"])
-            db.session.add(controlPoint)
-            db.session.commit()
-
-    flash("Spaces and control point added successfully!")
-    return {"result": "success"}
-
-
-@bp.route('/spaces/update', methods=['POST'])
-@login_required
-def update_spaces():
-    data = request.json
-    camera = json.loads(data.get("camera"))
-    camera = camera.get("cameraInfo")
-    canvas = json.loads(data.get("canvas"))
-    objects = canvas.get("objects")
-
-    spacesToRemove = data.get("spacesToRemove")
-    for space in spacesToRemove:
-        space = ParkingSpace.query.get(int(space))
-        db.session.delete(space)
-        db.session.commit()
-
-    for object in objects:
-        if object.get("type") == "ParkingSpace":
-            if object.get("id") == 0:
+        for object in objects:
+            if object.get("type") == "ParkingSpace":
                 parking_space = ParkingSpace(lot_id=camera["lot_id"], zone_id=object["zoneId"],
-                                             camera_id=camera["id"])
+                    camera_id=camera["id"])
 
                 zone = Zone.query.get(parking_space.zone_id)
                 if zone.name == "Reserved":
@@ -467,39 +419,94 @@ def update_spaces():
                 db.session.commit()
 
                 parking_space_coordinates = SpaceDimensions(
-                    start_x=object["left"], start_y=object["top"], width=(object["width"] * object["scaleX"]),
-                    height=(object["height"] * object["scaleY"]),
+                    start_x=object["left"], start_y=object["top"], width=(object["width"] * object["scaleX"]), height=(object["height"] * object["scaleY"]),
                     space_id=parking_space.id)
-
                 db.session.add(parking_space_coordinates)
                 db.session.commit()
-            else:
-                old_space_id = object.get("id")
-                old_parking_space = ParkingSpace.query.get(int(old_space_id))
-                old_parking_space.zone_id = object["zoneId"]
-                zone = Zone.query.get(old_parking_space.zone_id)
-                if zone.name == "Reserved":
-                    old_parking_space.availability = SpaceAvailability.RESERVED.value
 
-                dimensions = old_parking_space.dimensions
-                dimensions.start_x = object["left"]
-                dimensions.start_y = object["top"]
-                dimensions.width = object["width"] * object["scaleX"]
-                dimensions.height = object["height"] * object["scaleY"]
+            if object.get("type") == "ControlPoint":
+                controlPoint = ControlPoints(start_x=object["left"], start_y=object["top"],
+                                             width=object["width"], height=object["height"], camera_id=camera["id"])
+                db.session.add(controlPoint)
+                db.session.commit()
+
+        flash("Spaces and control point added successfully!")
+        return {"result": "success"}
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later")
+        return {"result": "failed"}
+
+
+@bp.route('/spaces/update', methods=['POST'])
+@login_required
+def update_spaces():
+    try:
+        data = request.json
+        camera = json.loads(data.get("camera"))
+        camera = camera.get("cameraInfo")
+        canvas = json.loads(data.get("canvas"))
+        objects = canvas.get("objects")
+
+        spacesToRemove = data.get("spacesToRemove")
+        for space in spacesToRemove:
+            space = ParkingSpace.query.get(int(space))
+            db.session.delete(space)
+            db.session.commit()
+
+        for object in objects:
+            if object.get("type") == "ParkingSpace":
+                if object.get("id") == 0:
+                    parking_space = ParkingSpace(lot_id=camera["lot_id"], zone_id=object["zoneId"],
+                                                 camera_id=camera["id"])
+
+                    zone = Zone.query.get(parking_space.zone_id)
+                    if zone.name == "Reserved":
+                        parking_space.availability = SpaceAvailability.RESERVED.value
+                    else:
+                        parking_space.availability = SpaceAvailability.NOT_AVAILABLE.value
+
+                    db.session.add(parking_space)
+                    db.session.commit()
+
+                    parking_space_coordinates = SpaceDimensions(
+                        start_x=object["left"], start_y=object["top"], width=(object["width"] * object["scaleX"]),
+                        height=(object["height"] * object["scaleY"]),
+                        space_id=parking_space.id)
+
+                    db.session.add(parking_space_coordinates)
+                    db.session.commit()
+                else:
+                    old_space_id = object.get("id")
+                    old_parking_space = ParkingSpace.query.get(int(old_space_id))
+                    old_parking_space.zone_id = object["zoneId"]
+                    zone = Zone.query.get(old_parking_space.zone_id)
+                    if zone.name == "Reserved":
+                        old_parking_space.availability = SpaceAvailability.RESERVED.value
+
+                    dimensions = old_parking_space.dimensions
+                    dimensions.start_x = object["left"]
+                    dimensions.start_y = object["top"]
+                    dimensions.width = object["width"] * object["scaleX"]
+                    dimensions.height = object["height"] * object["scaleY"]
+
+                    db.session.commit()
+
+            if object.get("type") == "ControlPoint":
+                controlPoint = Camera.query.get(camera["id"]).control
+                controlPoint.start_x = object["left"]
+                controlPoint.start_y = object["top"]
+                controlPoint.width = object["width"]
+                controlPoint.height = object["height"]
 
                 db.session.commit()
 
-        if object.get("type") == "ControlPoint":
-            controlPoint = Camera.query.get(camera["id"]).control
-            controlPoint.start_x = object["left"]
-            controlPoint.start_y = object["top"]
-            controlPoint.width = object["width"]
-            controlPoint.height = object["height"]
-
-            db.session.commit()
-
-    flash("Spaces and control point updated successfully!")
-    return {"result": "success"}
+        flash("Spaces and control point updated successfully!")
+        return {"result": "success"}
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later")
+        return {"result": "failed"}
 
 
 @bp.route('/spaces/edit/<camera_id>', methods=['GET', 'POST'])
@@ -517,68 +524,85 @@ def edit_spaces(camera_id):
         download_string = download_bytes.decode('ascii')
     except Exception as error:
         flash("Could not retrieve the camera image")
+        log_error_to_database(error)
+
         return redirect(url_for(".cameras", title='Add Camera', form=AddCameraForm(), error=1))
+    try:
+        lot = camera.lot
+        zones = lot.zones.all()
 
-    lot = camera.lot
-    zones = lot.zones.all()
+        control_point = {
+            "left": camera.control.start_x,
+            "top": camera.control.start_y
+        }
 
-    control_point = {
-        "left": camera.control.start_x,
-        "top": camera.control.start_y
-    }
+        spaces = []
 
-    spaces = []
+        for space in camera.spaces:
+            space_dimensions = space.dimensions
 
-    for space in camera.spaces:
-        space_dimensions = space.dimensions
+            spaces.append({
+                "id": space.id,
+                "zoneId": space.zone.id,
+                "width": space_dimensions.width,
+                "height": space_dimensions.height,
+                "left": space_dimensions.start_x,
+                "top": space_dimensions.start_y
+            })
 
-        spaces.append({
-            "id": space.id,
-            "zoneId": space.zone.id,
-            "width": space_dimensions.width,
-            "height": space_dimensions.height,
-            "left": space_dimensions.start_x,
-            "top": space_dimensions.start_y
-        })
-
-    data = {'cameraInfo': camera.to_dict(), 'canvasImage': download_string, "spaces": spaces,"controlPoint": control_point}
-
+        data = {'cameraInfo': camera.to_dict(), 'canvasImage': download_string, "spaces": spaces,"controlPoint": control_point}
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later")
+        return redirect(url_for(".cameras", title='Add Camera', form=AddCameraForm(), error=1))
     return render_template("spaces/view_spaces.html", title="View & Edit Spaces", zones=zones, data=data)
 
 
 @bp.route('/system_log')
 @login_required
 def system_log():
-    # logs = SystemLog.query.all()
-    filter_after = datetime.today() - timedelta(days=30)
-    SystemLog.query.filter(and_(SystemLog.status == LogStatus.RESOLVED.value,SystemLog.updated_at <= filter_after)).delete()
-    db.session.commit()
-    logs = SystemLog.query.all()
+    try:
+        filter_after = datetime.today() - timedelta(days=30)
+        SystemLog.query.filter(and_(SystemLog.status == LogStatus.RESOLVED.value,SystemLog.updated_at <= filter_after)).delete()
+        db.session.commit()
+        logs = SystemLog.query.all()
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later.")
     return render_template("system_log/system_log.html", title='System Log', logs=logs)
 
 
 @bp.route('/resolve_log', methods=['POST'])
 @login_required
 def resolve_log():
-    logId = request.form['logId']
-    description = request.form['notes']
+    try:
+        logId = request.form['logId']
+        description = request.form['notes']
 
-    updated_at = datetime.now()
-    print(logId, description)
-    log = SystemLog.query.get(int(logId))
-    log.updated_at = updated_at
-    log.status = LogStatus.RESOLVED
-    log.notes = description
-    db.session.add(log)
-    db.session.commit()
+        updated_at = datetime.now()
+        print(logId, description)
+        log = SystemLog.query.get(int(logId))
+        log.updated_at = updated_at
+        log.status = LogStatus.RESOLVED
+        log.notes = description
+        db.session.add(log)
+        db.session.commit()
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later.")
     return redirect(url_for('.system_log'))
+
 
 @bp.route('/delete_log/<log_id>', methods=['POST'])
 @login_required
 def delete_log(log_id):
-    log = SystemLog.query.get(log_id)
-    db.session.delete(log)
-    db.session.commit()
+    try:
+        log = SystemLog.query.get(log_id)
+        db.session.delete(log)
+        db.session.commit()
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later.")
     return redirect(url_for('.system_log'))
 
 
@@ -602,6 +626,7 @@ def mark_spaces(lot_id, camera_id):
         flash("Could not find an image for the camera with this IP address. Please make sure the camera is set up "
               "properly and the IP address is correct.")
         db.session.delete(camera)
+
         db.session.commit()
         return render_template("cameras/add_camera.html", title='Add Camera', form=AddCameraForm(), error=1)
 

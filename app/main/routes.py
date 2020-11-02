@@ -1,7 +1,8 @@
 """ This module holds the route controllers for the main blueprint. """
 
-from flask import render_template
+from flask import render_template, flash
 
+from app.admin.utils import log_error_to_database
 from app.main import bp
 from app.models import Zone
 
@@ -30,25 +31,27 @@ def lots(zone_id):
     :type zone_id: int
 
     """
+    try:
+        zone = Zone.query.get_or_404(zone_id)
+        lots = zone.lots
 
-    zone = Zone.query.get_or_404(zone_id)
-    lots = zone.lots
+        available_spaces = {}
 
-    available_spaces = {}
+        for lot in lots:
+            available_spaces[lot.name] = lot.get_available_spaces(zone_id)
 
-    for lot in lots:
-        available_spaces[lot.name] = lot.get_available_spaces(zone_id)
-
-    children = zone.children.split(',') if zone.children != '' else None
-    child_zones = []
-    if children is not None:
-        for child in children:
-            zone = Zone.query.get_or_404(int(child))
-            child_zones.append(zone.name)
-            for lot in zone.lots:
-                if lot.name in available_spaces:
-                    available_spaces[lot.name] = available_spaces[lot.name] + lot.get_available_spaces(zone.id)
-                else:
-                    available_spaces[lot.name] = lot.get_available_spaces(zone.id)
-
+        children = zone.children.split(',') if zone.children != '' else None
+        child_zones = []
+        if children is not None:
+            for child in children:
+                zone = Zone.query.get_or_404(int(child))
+                child_zones.append(zone.name)
+                for lot in zone.lots:
+                    if lot.name in available_spaces:
+                        available_spaces[lot.name] = available_spaces[lot.name] + lot.get_available_spaces(zone.id)
+                    else:
+                        available_spaces[lot.name] = lot.get_available_spaces(zone.id)
+    except Exception as error:
+        log_error_to_database(error)
+        flash("Something went wrong, try again later.")
     return render_template("lots.html", title='Lots', available_spaces=available_spaces, zone=Zone.query.get_or_404(zone_id), child_zones=child_zones)
