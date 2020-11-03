@@ -147,7 +147,9 @@
             if (userType === "Super"){
                 window.location.href='{{ url_for('admin.administrators') }}'
             }
-            alert("You do not have permission to access this page.")
+            else {
+                alert("You do not have permission to access this page.")
+            }
         }
 
     </script>
