@@ -26,7 +26,7 @@ def download(dbx, folder, subfolder, name):
 
 
 def log_error_to_database(error):
-    current_app.logger.log.error(error)
+    current_app.logger.error(error)
     db.session.rollback()
     error_message = str(error)
     log = SystemLog(message=error_message, status=LogStatus.OPEN, type=LogType.WEBSITE,
