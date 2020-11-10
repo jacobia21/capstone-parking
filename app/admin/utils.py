@@ -30,6 +30,6 @@ def log_error_to_database(error):
     db.session.rollback()
     error_message = str(error)
     log = SystemLog(message=error_message, status=LogStatus.OPEN, type=LogType.WEBSITE,
-                    created_at=datetime.date.now())
+                    created_at=datetime.datetime.now())
     db.session.add(log)
     db.session.commit()

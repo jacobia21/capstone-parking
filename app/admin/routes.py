@@ -142,7 +142,6 @@ def delete_administrator(user_id):
 @bp.route('/cameras')
 @login_required
 def cameras():
-    # cameras = Camera.query.all()
     try:
         cameras = Camera.query.all()
         lots = Lot.query.with_entities(Lot.name).all()
@@ -239,27 +238,48 @@ def zones():
 @bp.route('/zones/add', methods=['GET', 'POST'])
 @login_required
 def add_zone():
+    """ 
+    On GET requests, renders the Add Zone Form to an administrator.
+    On POST requests, adds a new zone to the database with the data provided by an administrator.
+    """
+
+    # Instantiate the AddZoneForm from admin/forms.py
     form = AddZoneForm()
+
+    # Retrieve all current zones. These zones will show up in a list so that administrators can select
+    # what zones this newly added zone has the ability the park in.
     form.additional_zones.choices = [(z.id, z.name) for z in Zone.query.order_by('name')]
     form.additional_zones.render_kw = {'style': 'height: fit-content; list-style: none;'}
 
+    # Retrieve all current lots. These lots will show up in a list so that administrators can select
+    # what lots this newly added zone can park in.
     form.lots.choices = [(l.id, l.name) for l in Lot.query.order_by('name')]
     form.lots.render_kw = {'style': 'height: fit-content; list-style: none;'}
+
+    # Checks to see if this is a POST request by seeing if the form is filled out.
+    # In this case we want to process the form and add the new zone.
     if form.validate_on_submit():
         try:
+            # Create a new Zone object.
             new_zone = Zone(name=form.name.data, color=form.color.data)
+
+            # Create an empty list of children zones; append child zones the administrator selected.
             children = []
             for z in form.additional_zones.data:
                 children.append(z)
 
+            # Convert the children list to a string with a comma between each of the child zone ids.
+            # Add this string to the newly created zone as its children attribute.
             converted_list = [str(child) for child in children]
             children_csv = ",".join(converted_list)
             new_zone.children = children_csv
 
+            # Get all the lots the administrator selected and add this to newly created zone.
             for lot_id in form.lots.data:
                 lot = Lot.query.get(lot_id)
                 new_zone.lots.append(lot)
 
+            # Add the new zone to the database, and redirect to the Zones page.
             db.session.add(new_zone)
             db.session.commit()
             flash("New Zone Added")
@@ -609,9 +629,20 @@ def delete_log(log_id):
 @bp.route('/mark_spaces/<lot_id>/<camera_id>')
 @login_required
 def mark_spaces(lot_id, camera_id):
-    try:
-        dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
+    """ 
+    Renders the page for administrators to mark camera spaces.
 
+    :param lot_id: The id of the lot that the camera is in.
+    :type lot_id: int
+
+    :param lot_id: The id of the camera spaces are being marked for.
+    :type lot_id: int
+    """
+
+    try:
+        # Get the image for this specific camera from the Dropbox account. Images are named by their ip_address.
+        # For example, an image may be named 192.123.93.0.jpg
+        dropbox_access_token = current_app.config["DROPBOX_ACCESS_TOKEN"]
         camera = Camera.query.get(camera_id)
         dbx = dropbox.Dropbox(dropbox_access_token)
         download_result = download(dbx, "", "", "{}.jpg".format(camera.ip_address))
